@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A-to-Mind — AI Operations with Receipts</title>
+    <meta name="description" content="A-to-Mind turns messy work into browser actions, evidence logs, and repeatable automations. AI operations with receipts.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+        
+        :root {
+            --bg: #0a0a0b;
+            --card: #111113;
+            --border: #27272a;
+        }
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .font-display {
+            font-family: 'Space Grotesk', 'Inter', system_ui, sans-serif;
+        }
+
+        .cosmic-slate {
+            background-color: #0a0a0b;
+            color: #e4e4e7;
+        }
+
+        .panel {
+            background-color: #111113;
+            border: 1px solid #27272a;
+            transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .panel:hover {
+            border-color: #3f3f46;
+            transform: translateY(-2px);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #10b981 0%, #3b82f6 100%);
+        }
+
+        .status-badge {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .7; }
+        }
+
+        .feature-card {
+            background: linear-gradient(180deg, #111113 0%, #0a0a0b 100%);
+        }
+
+        .timeline-dot {
+            box-shadow: 0 0 0 4px #111113;
+        }
+
+        .screenshot-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+
+        .screenshot-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 1px solid #27272a;
+            border-radius: 12px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="cosmic-slate min-h-screen">
+    <!-- Navigation -->
+    <nav class="border-b border-zinc-800 sticky top-0 z-50 bg-[#0a0a0b]/95 backdrop-blur">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-x-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-blue-500 rounded-xl flex items-center justify-center">
+                    <i class="fa-solid fa-brain text-white text-lg"></i>
+                </div>
+                <div>
+                    <div class="font-display text-xl font-semibold">A-to-Mind</div>
+                    <div class="text-[10px] text-zinc-500 -mt-1">AI OPERATIONS WITH RECEIPTS</div>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-x-4">
+                <div class="hidden md:flex items-center gap-x-2 px-3 py-1.5 bg-amber-950/50 border border-amber-900/50 rounded-full text-amber-400 text-xs font-medium">
+                    <div class="w-2 h-2 bg-amber-400 rounded-full status-badge"></div>
+                    <span>Work in Progress</span>
+                </div>
+                <a href="#signup" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-black font-medium text-sm rounded-lg transition-colors">
+                    Get Updates
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="max-w-6xl mx-auto px-6 py-20 md:py-32">
+        <div class="text-center max-w-3xl mx-auto">
+            <div class="inline-flex items-center gap-x-2 px-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-full text-xs text-zinc-400 mb-6">
+                <i class="fa-solid fa-hammer text-amber-400"></i>
+                <span>Active Development • Not Yet Public</span>
+            </div>
+            
+            <h1 class="font-display text-4xl md:text-6xl font-bold mb-6 leading-tight">
+                AI Operations<br>
+                <span class="gradient-text">with Receipts</span>
+            </h1>
+            
+            <p class="text-lg text-zinc-400 mb-8 leading-relaxed">
+                A-to-Mind turns messy work into browser actions, evidence logs, and repeatable automations. It coordinates AI tools, tests real workflows, and documents what happened.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#tour" class="px-6 py-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-x-2">
+                    <i class="fa-solid fa-play"></i>
+                    <span>See the Prototype</span>
+                </a>
+                <a href="#signup" class="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-black font-medium rounded-lg transition-colors">
+                    Start with an automation audit
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Status Banner -->
+    <section class="border-y border-zinc-800 bg-zinc-900/30">
+        <div class="max-w-6xl mx-auto px-6 py-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                <div>
+                    <div class="text-2xl font-bold text-emerald-400">Browser</div>
+                    <div class="text-xs text-zinc-500 mt-1">Automation</div>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-blue-400">Evidence</div>
+                    <div class="text-xs text-zinc-500 mt-1">Logs</div>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-purple-400">AI Crew</div>
+                    <div class="text-xs text-zinc-500 mt-1">Coordination</div>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-amber-400">Workflow</div>
+                    <div class="text-xs text-zinc-500 mt-1">Repair</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Features -->
+    <section class="max-w-6xl mx-auto px-6 py-20">
+        <div class="text-center mb-12">
+            <h2 class="font-display text-3xl font-bold mb-4">How A-to-Mind Works</h2>
+            <p class="text-zinc-400 max-w-2xl mx-auto">Turn messy manual work into automated, documented operations with full traceability.</p>
+        </div>
+        
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="panel feature-card rounded-2xl p-6">
+                <div class="w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-globe text-emerald-400 text-xl"></i>
+                </div>
+                <h3 class="font-semibold text-lg mb-2">Browser Automation</h3>
+                <p class="text-sm text-zinc-400">Execute real browser actions with Playwright. Navigate forms, scrape data, and interact with web applications like a human operator.</p>
+            </div>
+            
+            <div class="panel feature-card rounded-2xl p-6">
+                <div class="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-scroll text-blue-400 text-xl"></i>
+                </div>
+                <h3 class="font-semibold text-lg mb-2">Evidence Logs</h3>
+                <p class="text-sm text-zinc-400">Every action generates a receipt. Screenshots, network logs, and step-by-step documentation create an immutable audit trail.</p>
+            </div>
+            
+            <div class="panel feature-card rounded-2xl p-6">
+                <div class="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-users text-purple-400 text-xl"></i>
+                </div>
+                <h3 class="font-semibold text-lg mb-2">AI Crew Coordination</h3>
+                <p class="text-sm text-zinc-400">Multiple AI agents work together with specialized roles. Atom, Viktor, Devin, and Warden coordinate complex multi-step workflows.</p>
+            </div>
+            
+            <div class="panel feature-card rounded-2xl p-6">
+                <div class="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-wrench text-amber-400 text-xl"></i>
+                </div>
+                <h3 class="font-semibold text-lg mb-2">Workflow Repair</h3>
+                <p class="text-sm text-zinc-400">When automations break, A-to-Mind detects failures and attempts self-repair. Test real workflows and iterate automatically.</p>
+            </div>
+            
+            <div class="panel feature-card rounded-2xl p-6">
+                <div class="w-12 h-12 bg-cyan-500/10 rounded-xl flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-gauge-high text-cyan-400 text-xl"></i>
+                </div>
+                <h3 class="font-semibold text-lg mb-2">Operator Dashboard</h3>
+                <p class="text-sm text-zinc-400">HomeBase cockpit provides real-time monitoring of all operations. Track agent heartbeats, task status, and system health in one view.</p>
+            </div>
+            
+            <div class="panel feature-card rounded-2xl p-6">
+                <div class="w-12 h-12 bg-rose-500/10 rounded-xl flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-shield-halved text-rose-400 text-xl"></i>
+                </div>
+                <h3 class="font-semibold text-lg mb-2">Governance Gate</h3>
+                <p class="text-sm text-zinc-400">Default-deny policies validate all AI actions before execution. Human-in-the-loop oversight ensures safety and compliance.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Prototype Tour -->
+    <section id="tour" class="max-w-6xl mx-auto px-6 py-20">
+        <div class="text-center mb-12">
+            <h2 class="font-display text-3xl font-bold mb-4">Interactive Prototype Demo</h2>
+            <p class="text-zinc-400 max-w-2xl mx-auto">Try the HomeBase cockpit yourself — this is the actual command center interface (read-only demo mode).</p>
+        </div>
+        
+        <div class="panel rounded-2xl p-4 mb-8">
+            <div class="screenshot-container bg-zinc-900 rounded-lg overflow-hidden">
+                <iframe 
+                    src="homebase-cockpit-prototype.html" 
+                    class="w-full h-[600px] border-0"
+                    title="HomeBase Cockpit Interactive Demo"
+                    loading="lazy"
+                ></iframe>
+            </div>
+            
+            <div class="mt-4 flex items-center justify-between text-xs text-zinc-500">
+                <div class="flex items-center gap-x-4">
+                    <span><i class="fa-solid fa-server mr-1"></i> 8 Workers</span>
+                    <span><i class="fa-solid fa-database mr-1"></i> D1 + KV + Queues</span>
+                    <span><i class="fa-solid fa-bolt mr-1"></i> Real-time Monitoring</span>
+                </div>
+                <div class="flex items-center gap-x-2">
+                    <span class="px-2 py-1 bg-amber-950/50 border border-amber-900/50 rounded text-amber-400">READ-ONLY DEMO</span>
+                    <span>HomeBase v0.6.5</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Interactive Guided Tour -->
+        <div class="panel rounded-2xl p-6 mb-8">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h3 class="font-semibold text-lg mb-1">Interactive Feature Tour</h3>
+                    <p class="text-sm text-zinc-400">Click through each feature to learn how HomeBase orchestrates your automation infrastructure</p>
+                </div>
+                <button onclick="startTour()" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-black font-medium text-sm rounded-lg transition-colors flex items-center gap-x-2">
+                    <i class="fa-solid fa-play"></i>
+                    <span>Start Tour</span>
+                </button>
+            </div>
+            
+            <div id="tour-container" class="relative">
+                <!-- Tour Steps -->
+                <div id="tour-steps" class="space-y-4">
+                    <div class="tour-step panel rounded-xl p-4 cursor-pointer transition-all hover:border-emerald-500/50" onclick="showStep(0)">
+                        <div class="flex items-start gap-x-4">
+                            <div class="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-heartbeat text-emerald-400"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-x-2 mb-1">
+                                    <span class="font-medium text-sm">Status Monitor</span>
+                                    <span class="text-xs text-zinc-500">Step 1 of 6</span>
+                                </div>
+                                <p class="text-xs text-zinc-400">Real-time CPU, memory, disk, and latency monitoring across all 8 workers. Get instant visibility into system health with color-coded status indicators.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tour-step panel rounded-xl p-4 cursor-pointer transition-all hover:border-blue-500/50" onclick="showStep(1)">
+                        <div class="flex items-start gap-x-4">
+                            <div class="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-link text-blue-400"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-x-2 mb-1">
+                                    <span class="font-medium text-sm">Service Bindings</span>
+                                    <span class="text-xs text-zinc-500">Step 2 of 6</span>
+                                </div>
+                                <p class="text-xs text-zinc-400">Visual overview of all service connections: D1 databases (Sapphire), KV namespaces (Amethyst), and Queues (ACTIONS, INTAKE, SLACK, TASKS). See exactly how each worker connects to your infrastructure.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tour-step panel rounded-xl p-4 cursor-pointer transition-all hover:border-purple-500/50" onclick="showStep(2)">
+                        <div class="flex items-start gap-x-4">
+                            <div class="w-10 h-10 bg-purple-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-users text-purple-400"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-x-2 mb-1">
+                                    <span class="font-medium text-sm">Governance Council</span>
+                                    <span class="text-xs text-zinc-500">Step 3 of 6</span>
+                                </div>
+                                <p class="text-xs text-zinc-400">AI agent coordination with human-in-the-loop oversight. Track Nucleus (Atom), Viktor, Devin, and Warden agents with real-time heartbeat monitoring and status updates.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tour-step panel rounded-xl p-4 cursor-pointer transition-all hover:border-amber-500/50" onclick="showStep(3)">
+                        <div class="flex items-start gap-x-4">
+                            <div class="w-10 h-10 bg-amber-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-list-check text-amber-400"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-x-2 mb-1">
+                                    <span class="font-medium text-sm">Tasks Hub</span>
+                                    <span class="text-xs text-zinc-500">Step 4 of 6</span>
+                                </div>
+                                <p class="text-xs text-zinc-400">Centralized task management with priority tracking (P0-P2). Monitor automation jobs, deployment tasks, and reconciliation workflows with real-time status updates.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tour-step panel rounded-xl p-4 cursor-pointer transition-all hover:border-red-500/50" onclick="showStep(4)">
+                        <div class="flex items-start gap-x-4">
+                            <div class="w-10 h-10 bg-red-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-scroll text-red-400"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-x-2 mb-1">
+                                    <span class="font-medium text-sm">Audit Events</span>
+                                    <span class="text-xs text-zinc-500">Step 5 of 6</span>
+                                </div>
+                                <p class="text-xs text-zinc-400">Comprehensive audit trail with timestamped events from all workers. Track heartbeat successes, PR merges, evidence gate passes, and configuration changes for complete transparency.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tour-step panel rounded-xl p-4 cursor-pointer transition-all hover:border-cyan-500/50" onclick="showStep(5)">
+                        <div class="flex items-start gap-x-4">
+                            <div class="w-10 h-10 bg-cyan-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-terminal text-cyan-400"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-x-2 mb-1">
+                                    <span class="font-medium text-sm">Command Palette</span>
+                                    <span class="text-xs text-zinc-500">Step 6 of 6</span>
+                                </div>
+                                <p class="text-xs text-zinc-400">Powerful command interface (Cmd+K) for quick actions: refresh panels, show incidents, publish snapshots to Notion, pull long-state, and execute custom commands without navigating through menus.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tour Progress -->
+                <div class="mt-6 flex items-center justify-between">
+                    <div class="flex items-center gap-x-2">
+                        <div class="text-xs text-zinc-500">Tour Progress</div>
+                        <div class="flex gap-x-1">
+                            <div class="tour-progress-dot w-2 h-2 rounded-full bg-emerald-400"></div>
+                            <div class="tour-progress-dot w-2 h-2 rounded-full bg-zinc-700"></div>
+                            <div class="tour-progress-dot w-2 h-2 rounded-full bg-zinc-700"></div>
+                            <div class="tour-progress-dot w-2 h-2 rounded-full bg-zinc-700"></div>
+                            <div class="tour-progress-dot w-2 h-2 rounded-full bg-zinc-700"></div>
+                            <div class="tour-progress-dot w-2 h-2 rounded-full bg-zinc-700"></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-x-2">
+                        <button onclick="prevStep()" class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs rounded-lg transition-colors disabled:opacity-50" id="prev-btn" disabled>
+                            <i class="fa-solid fa-arrow-left mr-1"></i> Previous
+                        </button>
+                        <button onclick="nextStep()" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-black text-xs font-medium rounded-lg transition-colors" id="next-btn">
+                            Next <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Timeline -->
+    <section class="max-w-6xl mx-auto px-6 py-20">
+        <div class="text-center mb-12">
+            <h2 class="font-display text-3xl font-bold mb-4">Development Timeline</h2>
+            <p class="text-zinc-400 max-w-2xl mx-auto">We're actively building. Here's where we are and where we're headed.</p>
+        </div>
+        
+        <div class="relative">
+            <div class="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-zinc-800"></div>
+            
+            <div class="space-y-8">
+                <!-- Completed -->
+                <div class="relative flex items-center md:justify-center">
+                    <div class="absolute left-4 md:left-1/2 w-3 h-3 bg-emerald-500 rounded-full timeline-dot transform -translate-x-1/2"></div>
+                    <div class="ml-12 md:ml-0 md:w-5/12 md:pr-8 md:text-right">
+                        <div class="panel rounded-xl p-4">
+                            <div class="text-xs text-emerald-400 font-medium mb-1">COMPLETED</div>
+                            <div class="font-semibold mb-1">Core Infrastructure</div>
+                            <p class="text-sm text-zinc-400">40+ worker applications, 87 API endpoints, Cloudflare Workers deployment pipeline</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- In Progress -->
+                <div class="relative flex items-center md:justify-center">
+                    <div class="absolute left-4 md:left-1/2 w-3 h-3 bg-amber-500 rounded-full timeline-dot transform -translate-x-1/2 status-badge"></div>
+                    <div class="ml-12 md:ml-0 md:w-5/12 md:ml-auto md:pl-8">
+                        <div class="panel rounded-xl p-4 border-amber-900/50">
+                            <div class="text-xs text-amber-400 font-medium mb-1">IN PROGRESS</div>
+                            <div class="font-semibold mb-1">HomeBase Cockpit</div>
+                            <p class="text-sm text-zinc-400">Command center UI, real-time monitoring, governance interface, audit trails</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Next -->
+                <div class="relative flex items-center md:justify-center">
+                    <div class="absolute left-4 md:left-1/2 w-3 h-3 bg-zinc-600 rounded-full timeline-dot transform -translate-x-1/2"></div>
+                    <div class="ml-12 md:ml-0 md:w-5/12 md:pr-8 md:text-right">
+                        <div class="panel rounded-xl p-4 opacity-75">
+                            <div class="text-xs text-zinc-500 font-medium mb-1">NEXT</div>
+                            <div class="font-semibold mb-1">Public Beta</div>
+                            <p class="text-sm text-zinc-400">User onboarding, documentation, sandbox environment, feedback collection</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Future -->
+                <div class="relative flex items-center md:justify-center">
+                    <div class="absolute left-4 md:left-1/2 w-3 h-3 bg-zinc-700 rounded-full timeline-dot transform -translate-x-1/2"></div>
+                    <div class="ml-12 md:ml-0 md:w-5/12 md:ml-auto md:pl-8">
+                        <div class="panel rounded-xl p-4 opacity-50">
+                            <div class="text-xs text-zinc-600 font-medium mb-1">FUTURE</div>
+                            <div class="font-semibold mb-1">Enterprise Launch</div>
+                            <p class="text-sm text-zinc-500">SSO, RBAC, enterprise integrations, SLA guarantees, dedicated support</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Credibility Section -->
+    <section class="border-y border-zinc-800 bg-zinc-900/30">
+        <div class="max-w-6xl mx-auto px-6 py-16">
+            <div class="text-center mb-8">
+                <h2 class="font-display text-2xl font-bold mb-4">Transparency Matters</h2>
+                <p class="text-zinc-400 max-w-2xl mx-auto">We believe in being open about our development progress. Here's how you can verify this is real:</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-zinc-800 rounded-xl flex items-center justify-center mx-auto mb-3">
+                        <i class="fa-brands fa-github text-zinc-400 text-xl"></i>
+                    </div>
+                    <div class="font-medium mb-1">Public Development</div>
+                    <p class="text-xs text-zinc-500">Active development with real commits and issues</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-zinc-800 rounded-xl flex items-center justify-center mx-auto mb-3">
+                        <i class="fa-solid fa-chart-line text-zinc-400 text-xl"></i>
+                    </div>
+                    <div class="font-medium mb-1">Real Traffic</div>
+                    <p class="text-xs text-zinc-500">2,000+ daily requests from real visitors worldwide</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-zinc-800 rounded-xl flex items-center justify-center mx-auto mb-3">
+                        <i class="fa-solid fa-code text-zinc-400 text-xl"></i>
+                    </div>
+                    <div class="font-medium mb-1">Working Prototype</div>
+                    <p class="text-xs text-zinc-500">Functional HomeBase cockpit with live data</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Email Signup -->
+    <section id="signup" class="max-w-6xl mx-auto px-6 py-20">
+        <div class="max-w-xl mx-auto text-center">
+            <h2 class="font-display text-3xl font-bold mb-4">Start with an automation audit</h2>
+            <p class="text-zinc-400 mb-8">We'll analyze your current workflows and identify automation opportunities with full evidence documentation.</p>
+            
+            <form id="signup-form" class="flex flex-col sm:flex-row gap-3">
+                <input 
+                    type="email" 
+                    id="email-input"
+                    placeholder="Enter your email" 
+                    required
+                    class="flex-1 px-4 py-3 bg-zinc-900 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-emerald-500 transition-colors"
+                >
+                <button 
+                    type="submit"
+                    class="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-black font-medium rounded-lg transition-colors whitespace-nowrap"
+                >
+                    Start Audit
+                </button>
+            </form>
+            
+            <div id="signup-message" class="mt-4 text-sm hidden"></div>
+            
+            <p class="text-xs text-zinc-600 mt-4">
+                <i class="fa-solid fa-lock mr-1"></i>
+                Your email is safe. We'll never share it with third parties.
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-zinc-800">
+        <div class="max-w-6xl mx-auto px-6 py-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-x-3">
+                    <div class="w-8 h-8 bg-gradient-to-br from-emerald-500 to-blue-500 rounded-lg flex items-center justify-center">
+                        <i class="fa-solid fa-brain text-white text-sm"></i>
+                    </div>
+                    <div class="text-sm text-zinc-400">© 2026 A-to-Mind. Work in Progress.</div>
+                </div>
+                
+                <div class="flex items-center gap-x-6 text-sm text-zinc-500">
+                    <a href="#" class="hover:text-zinc-300 transition-colors">GitHub</a>
+                    <a href="#" class="hover:text-zinc-300 transition-colors">Twitter</a>
+                    <a href="#" class="hover:text-zinc-300 transition-colors">Discord</a>
+                    <a href="https://rapidapi.com/organization/a-to-mind" target="_blank" rel="noopener noreferrer" class="hover:text-zinc-300 transition-colors flex items-center gap-x-1">
+                        <i class="fa-solid fa-bolt text-xs"></i>
+                        <span>RapidAPI</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Tour functionality
+        let currentStep = 0;
+        const totalSteps = 6;
+        
+        function showStep(index) {
+            currentStep = index;
+            const steps = document.querySelectorAll('.tour-step');
+            const dots = document.querySelectorAll('.tour-progress-dot');
+            
+            // Update step visibility
+            steps.forEach((step, i) => {
+                if (i === index) {
+                    step.classList.add('border-emerald-500', 'bg-emerald-500/5');
+                    step.classList.remove('opacity-50');
+                } else {
+                    step.classList.remove('border-emerald-500', 'bg-emerald-500/5');
+                    step.classList.add('opacity-50');
+                }
+            });
+            
+            // Update progress dots
+            dots.forEach((dot, i) => {
+                if (i <= index) {
+                    dot.classList.remove('bg-zinc-700');
+                    dot.classList.add('bg-emerald-400');
+                } else {
+                    dot.classList.remove('bg-emerald-400');
+                    dot.classList.add('bg-zinc-700');
+                }
+            });
+            
+            // Update buttons
+            document.getElementById('prev-btn').disabled = index === 0;
+            document.getElementById('next-btn').innerHTML = index === totalSteps - 1 
+                ? 'Complete <i class="fa-solid fa-check ml-1"></i>' 
+                : 'Next <i class="fa-solid fa-arrow-right ml-1"></i>';
+        }
+        
+        function nextStep() {
+            if (currentStep < totalSteps - 1) {
+                showStep(currentStep + 1);
+            } else {
+                // Tour complete
+                alert('Tour complete! Try the interactive demo above to explore HomeBase yourself.');
+            }
+        }
+        
+        function prevStep() {
+            if (currentStep > 0) {
+                showStep(currentStep - 1);
+            }
+        }
+        
+        function startTour() {
+            showStep(0);
+            // Scroll to tour section
+            document.getElementById('tour-container').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        
+        // Initialize tour
+        showStep(0);
+
+        // Form handling
+        document.getElementById('signup-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email-input').value;
+            const messageEl = document.getElementById('signup-message');
+            
+            // Simulate form submission
+            messageEl.classList.remove('hidden', 'text-red-400');
+            messageEl.classList.add('text-emerald-400');
+            messageEl.textContent = 'Thanks! We\'ll be in touch about your automation audit.';
+            
+            // Clear input
+            document.getElementById('email-input').value = '';
+            
+            // In production, you'd send this to your backend
+            console.log('Audit request email:', email);
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
