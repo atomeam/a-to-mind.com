@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "A-to-Mind",
+      "hasCanvas": false,
+      "bodyTextLen": 1341,
+      "bodyTextHash": "9ba2c10a4596f5b2ef4adeac4d7210a6e5369249c22e9a6a8881a5022ed8d4b0",
+      "bodyTextPrefix": "A-to-Mind Home Templates Packages Surface ledger Live run DURABL",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "A-to-Mind",
+      "hasCanvas": false,
+      "bodyTextLen": 1341,
+      "bodyTextHash": "9ba2c10a4596f5b2ef4adeac4d7210a6e5369249c22e9a6a8881a5022ed8d4b0",
+      "bodyTextPrefix": "A-to-Mind Home Templates Packages Surface ledger Live run DURABL",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-preview.json"
+}

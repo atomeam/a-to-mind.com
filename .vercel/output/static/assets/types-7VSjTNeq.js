@@ -1,0 +1,1 @@
+var e={astra:`gpt-6-astra`,flash:`gemini-3.8-flash`,flash_cyber:`gemini-3.8-flash-cyber`,grok:`grok-4.5`,auto:`auto`};export{e as t};
