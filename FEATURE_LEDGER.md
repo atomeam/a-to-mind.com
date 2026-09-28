@@ -16,10 +16,10 @@ This file exists so hourly research automations never recommend the same capabil
 | slug | date | run | status | one-line |
 |---|---|---|---|---|
 | attested-faq-native-details | 2026-09-28 | 001 | specified | Native `<details>` Q&A tiles with attested answers + optional FAQPage JSON-LD |
+| skip-link-landmarks-reduced-motion | 2026-09-28 | 002 | specified | Skip pack + named landmarks + opt-in motion; attested structure, hold-gate only |
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-- skip-link-landmarks-reduced-motion
 - sitemap-robots-organization-jsonld
 - native-dialog-seal-gate
 - copy-clipboard-with-attested-toast
