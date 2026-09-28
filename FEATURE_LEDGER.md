@@ -1,0 +1,46 @@
+# A-to-Mind Feature Assimilation Ledger
+
+This file exists so hourly research automations never recommend the same capability twice.
+
+## Rules for every future run
+
+1. Read this ledger first (`https://raw.githubusercontent.com/atomeam/a-to-mind.com/master/FEATURE_LEDGER.md`).
+2. Pick **exactly one** unused slug from the Queue, starting at the top (easiest / most common first).
+3. Do not invent a new slug that collides with Used or Queue.
+4. After the pick, append a Used row and remove that slug from Queue. Commit the ledger update.
+5. Deliver: what existing sites do, the better A-to-Mind version, and a build a human can seal.
+6. Do not push live marketing copy or product behavior without a human seal. Ledger updates and draft issues are allowed.
+
+## Used (assimilated or specified)
+
+| slug | date | run | status | one-line |
+|---|---|---|---|---|
+| attested-faq-native-details | 2026-09-28 | 001 | specified | Native `<details>` Q&A tiles with attested answers + optional FAQPage JSON-LD |
+
+## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
+
+- skip-link-landmarks-reduced-motion
+- sitemap-robots-organization-jsonld
+- native-dialog-seal-gate
+- copy-clipboard-with-attested-toast
+- hashed-public-changelog
+- attested-status-page
+- gated-command-palette
+- 404-useful-not-cute
+- void-monthly-email-capture
+- theme-prefers-color-scheme-toggle
+- bento-capability-grid
+- variable-font-kinetic-headline
+- view-transitions-api
+- popover-api-nav-menus
+- web-share-and-copy-run-link
+- interactive-budget-estimator
+- live-readonly-run-preview
+- glassbox-view-source-page
+- answer-ready-modular-blocks
+- pwa-install-and-offline-ledger
+- voice-query-to-plan
+- agentic-personalization-with-hold-gate
+- functional-3d-run-graph
+- carbon-weight-badge
+- wcag-3-continuous-audit-badge
