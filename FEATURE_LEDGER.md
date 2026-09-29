@@ -18,10 +18,10 @@ This file exists so hourly research automations never recommend the same capabil
 | attested-faq-native-details | 2026-09-28 | 001 | specified | Native `<details>` Q&A tiles with attested answers + optional FAQPage JSON-LD |
 | skip-link-landmarks-reduced-motion | 2026-09-28 | 002 | specified | Skip pack + named landmarks + opt-in motion; attested structure, hold-gate only |
 | sitemap-robots-organization-jsonld | 2026-09-28 | 003 | specified | Attested robots + sitemap + lean Organization/WebSite JSON-LD; no invented address |
+| native-dialog-seal-gate | 2026-09-28 | 004 | specified | Native `<dialog>` hold-gate; closedby none on writes; hashed grant; focus on Hold |
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-- native-dialog-seal-gate
 - copy-clipboard-with-attested-toast
 - hashed-public-changelog
 - attested-status-page
