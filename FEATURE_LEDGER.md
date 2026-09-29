@@ -24,10 +24,10 @@ This file exists so hourly research automations never recommend the same capabil
 | attested-status-page | 2026-09-29 | 007 | specified | Hashed status snapshot; unattested default; no auto-green; no subscribe; hold-gate only |
 | gated-command-palette | 2026-09-29 | 008 | specified | Attested Cmd/Ctrl+K catalog; navigate/copy allowlisted; writes hold; no cmdk |
 | 404-useful-not-cute | 2026-09-29 | 009 | specified | Honest HTTP 404 + attested dest catalog; no cute, no search backend; hold-gate only |
+| void-monthly-email-capture | 2026-09-29 | 010 | specified | Double-opt-in notes list; no popup; hold until confirm; hashed purpose; hold-gate only |
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-- void-monthly-email-capture
 - theme-prefers-color-scheme-toggle
 - bento-capability-grid
 - variable-font-kinetic-headline
