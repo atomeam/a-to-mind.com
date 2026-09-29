@@ -22,10 +22,10 @@ This file exists so hourly research automations never recommend the same capabil
 | copy-clipboard-with-attested-toast | 2026-09-29 | 005 | specified | Allowlisted writeText + SHA-256 receipt toast; no clipboard read; hold-gate only |
 | hashed-public-changelog | 2026-09-29 | 006 | specified | Sealed Keep-a-Changelog page; per-entry SHA-256; no Unreleased; no CTA; hold-gate only |
 | attested-status-page | 2026-09-29 | 007 | specified | Hashed status snapshot; unattested default; no auto-green; no subscribe; hold-gate only |
+| gated-command-palette | 2026-09-29 | 008 | specified | Attested Cmd/Ctrl+K catalog; navigate/copy allowlisted; writes hold; no cmdk |
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-- gated-command-palette
 - 404-useful-not-cute
 - void-monthly-email-capture
 - theme-prefers-color-scheme-toggle
