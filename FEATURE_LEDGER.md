@@ -53,3 +53,7 @@ Queue was empty on 2026-09-30. Run 027 did **not** invent a Used row. Candidate 
 ## Halt (run 028)
 
 Queue was still empty on 2026-09-30. Run 028 did **not** invent a Used row and did **not** promote the run 027 candidate. Candidate draft only: `attested-security-txt` in `drafts/028-attested-security-txt/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/28. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. `/.well-known/security.txt` was not added.
+
+## Halt (run 029)
+
+Queue was still empty on 2026-09-30. Run 029 did **not** invent a Used row and did **not** promote the run 027 or 028 candidates. Candidate draft only: `hashed-privacy-policy` in `drafts/029-hashed-privacy-policy/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/29. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. `/privacy` was not added.
