@@ -28,10 +28,10 @@ This file exists so hourly research automations never recommend the same capabil
 | theme-prefers-color-scheme-toggle | 2026-09-29 | 011 | specified | System-default scheme; 3-state radios; hashed contract; no cookie; hold-gate only |
 | bento-capability-grid | 2026-09-30 | 012 | specified | Attested 6-tile CSS Grid; span from catalog; no motion theater; hold-gate only |
 | variable-font-kinetic-headline | 2026-09-30 | 013 | specified | Opt-in one-shot wght/opsz settle; one text node; no GSAP; hold-gate only |
+| view-transitions-api | 2026-09-30 | 014 | specified | Opt-in same-doc pane fade; no MPA auto; allowlisted name; hold-gate only |
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-- view-transitions-api
 - popover-api-nav-menus
 - web-share-and-copy-run-link
 - interactive-budget-estimator
