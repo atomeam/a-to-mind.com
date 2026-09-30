@@ -36,10 +36,10 @@ This file exists so hourly research automations never recommend the same capabil
 | glassbox-view-source-page | 2026-09-30 | 019 | specified | First-party hashed source catalog; no proxy; bytes default unattested; hold-gate only |
 | answer-ready-modular-blocks | 2026-09-30 | 020 | specified | Six hashed self-contained blocks; no chatbot; no FAQPage emit; hold-gate only |
 | pwa-install-and-offline-ledger | 2026-09-30 | 021 | specified | Allowlisted SW + honest install; offline ledger not a run promise; hold-gate only |
+| voice-query-to-plan | 2026-09-30 | 022 | specified | Gesture listen; catalog plan; transcript is data; run holds; no TTS |
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-- voice-query-to-plan
 - agentic-personalization-with-hold-gate
 - functional-3d-run-graph
 - carbon-weight-badge
