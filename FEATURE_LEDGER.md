@@ -30,10 +30,10 @@ This file exists so hourly research automations never recommend the same capabil
 | variable-font-kinetic-headline | 2026-09-30 | 013 | specified | Opt-in one-shot wght/opsz settle; one text node; no GSAP; hold-gate only |
 | view-transitions-api | 2026-09-30 | 014 | specified | Opt-in same-doc pane fade; no MPA auto; allowlisted name; hold-gate only |
 | popover-api-nav-menus | 2026-09-30 | 015 | specified | Click-only `popover=auto` dest list; hashed hrefs; no hover/ARIA menu; hold-gate only |
+| web-share-and-copy-run-link | 2026-09-30 | 016 | specified | Attested run URL only; canShare exact payload; copy ≠ share; no social row; hold-gate only |
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-- web-share-and-copy-run-link
 - interactive-budget-estimator
 - live-readonly-run-preview
 - glassbox-view-source-page
