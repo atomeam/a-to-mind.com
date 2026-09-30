@@ -25,10 +25,10 @@ This file exists so hourly research automations never recommend the same capabil
 | gated-command-palette | 2026-09-29 | 008 | specified | Attested Cmd/Ctrl+K catalog; navigate/copy allowlisted; writes hold; no cmdk |
 | 404-useful-not-cute | 2026-09-29 | 009 | specified | Honest HTTP 404 + attested dest catalog; no cute, no search backend; hold-gate only |
 | void-monthly-email-capture | 2026-09-29 | 010 | specified | Double-opt-in notes list; no popup; hold until confirm; hashed purpose; hold-gate only |
+| theme-prefers-color-scheme-toggle | 2026-09-29 | 011 | specified | System-default scheme; 3-state radios; hashed contract; no cookie; hold-gate only |
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-- theme-prefers-color-scheme-toggle
 - bento-capability-grid
 - variable-font-kinetic-headline
 - view-transitions-api
