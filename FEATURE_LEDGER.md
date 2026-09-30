@@ -40,7 +40,8 @@ This file exists so hourly research automations never recommend the same capabil
 | agentic-personalization-with-hold-gate | 2026-09-30 | 023 | specified | Zero-party facets only; infer deny; persist/apply hold; hold-gate only |
 | functional-3d-run-graph | 2026-09-30 | 024 | specified | CSS-3D attested run graph; 2D default; no WebGL/Three; rewire holds |
 | carbon-weight-badge | 2026-09-30 | 025 | specified | Sealed SWDMv4 page-weight badge; unattested default; no third-party widget; hold-gate only |
+| wcag-3-continuous-audit-badge | 2026-09-30 | 026 | specified | Sealed WCAG 2.2 AA snapshot badge; WCAG 3 claim denied; no overlay; hold-gate only |
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-- wcag-3-continuous-audit-badge
+_(empty as of run 026. Do not invent slugs in this file without a human adding them.)_
