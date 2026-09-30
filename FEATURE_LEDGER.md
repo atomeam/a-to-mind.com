@@ -45,3 +45,7 @@ This file exists so hourly research automations never recommend the same capabil
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
 _(empty as of run 026. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 027)
+
+Queue was empty on 2026-09-30. Run 027 did **not** invent a Used row. Candidate draft only: `default-deny-cookie-notice` in `drafts/027-default-deny-cookie-notice/`. A human must add the next slug to Queue before an assimilation run may pick it. Live site copy was not changed.
