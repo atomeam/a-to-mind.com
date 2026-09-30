@@ -38,9 +38,9 @@ This file exists so hourly research automations never recommend the same capabil
 | pwa-install-and-offline-ledger | 2026-09-30 | 021 | specified | Allowlisted SW + honest install; offline ledger not a run promise; hold-gate only |
 | voice-query-to-plan | 2026-09-30 | 022 | specified | Gesture listen; catalog plan; transcript is data; run holds; no TTS |
 | agentic-personalization-with-hold-gate | 2026-09-30 | 023 | specified | Zero-party facets only; infer deny; persist/apply hold; hold-gate only |
+| functional-3d-run-graph | 2026-09-30 | 024 | specified | CSS-3D attested run graph; 2D default; no WebGL/Three; rewire holds |
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-- functional-3d-run-graph
 - carbon-weight-badge
 - wcag-3-continuous-audit-badge
