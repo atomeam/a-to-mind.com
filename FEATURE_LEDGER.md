@@ -48,4 +48,4 @@ _(empty as of run 026. Do not invent slugs in this file without a human adding t
 
 ## Halt (run 027)
 
-Queue was empty on 2026-09-30. Run 027 did **not** invent a Used row. Candidate draft only: `default-deny-cookie-notice` in `drafts/027-default-deny-cookie-notice/`. A human must add the next slug to Queue before an assimilation run may pick it. Live site copy was not changed.
+Queue was empty on 2026-09-30. Run 027 did **not** invent a Used row. Candidate draft only: `default-deny-cookie-notice` in `drafts/027-default-deny-cookie-notice/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/27. A human must add the next slug to Queue before an assimilation run may pick it. Live site copy was not changed.
