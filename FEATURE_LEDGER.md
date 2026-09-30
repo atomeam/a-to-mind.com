@@ -49,3 +49,7 @@ _(empty as of run 026. Do not invent slugs in this file without a human adding t
 ## Halt (run 027)
 
 Queue was empty on 2026-09-30. Run 027 did **not** invent a Used row. Candidate draft only: `default-deny-cookie-notice` in `drafts/027-default-deny-cookie-notice/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/27. A human must add the next slug to Queue before an assimilation run may pick it. Live site copy was not changed.
+
+## Halt (run 028)
+
+Queue was still empty on 2026-09-30. Run 028 did **not** invent a Used row and did **not** promote the run 027 candidate. Candidate draft only: `attested-security-txt` in `drafts/028-attested-security-txt/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/28. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. `/.well-known/security.txt` was not added.
