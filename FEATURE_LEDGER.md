@@ -61,3 +61,7 @@ Queue was still empty on 2026-09-30. Run 029 did **not** invent a Used row and d
 ## Halt (run 030)
 
 Queue was still empty on 2026-09-30. Run 030 did **not** invent a Used row and did **not** promote the run 027, 028, or 029 candidates. Candidate draft only: `attested-contact-channel` in `drafts/030-attested-contact-channel/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/30. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. `/contact` was not added. No form backend, Calendly embed, chatbot, or invented mailbox was published.
+
+## Halt (run 031)
+
+Queue was still empty on 2026-09-30. Run 031 did **not** invent a Used row and did **not** promote the run 027, 028, 029, or 030 candidates. Candidate draft only: `hashed-terms-of-service` in `drafts/031-hashed-terms-of-service/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/31. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. `/terms` was not added. No generator embed, clickwrap checkbox, auto-renew clause theater, or invented governing-law address was published.
