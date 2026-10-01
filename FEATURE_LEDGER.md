@@ -121,3 +121,7 @@ Queue was still empty on 2026-10-01. Run 044 did **not** invent a Used row and d
 ## Halt (run 045)
 
 Queue was still empty on 2026-10-01. Run 045 did **not** invent a Used row and did **not** promote the run 027–044 candidates. Candidate draft only: `attested-strict-transport-security` in `drafts/045-attested-strict-transport-security/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/45. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. No `Strict-Transport-Security` header was added. No `_headers` line, Cloudflare Transform Rule, `includeSubDomains`, `preload` token, hstspreload.org submission, or SSL-grade badge was published.
+
+## Halt (run 046)
+
+Queue was still empty on 2026-10-01. Run 046 did **not** invent a Used row and did **not** promote the run 027–045 candidates. Candidate draft only: `attested-cross-origin-isolation` in `drafts/046-attested-cross-origin-isolation/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/46. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. No `Cross-Origin-Opener-Policy`, `Cross-Origin-Embedder-Policy`, or `Cross-Origin-Resource-Policy` header was added. No `_headers` file, Cloudflare Transform Rule, `report-to` endpoint, SharedArrayBuffer demo, or isolated badge was published.
