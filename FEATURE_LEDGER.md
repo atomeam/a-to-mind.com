@@ -105,3 +105,7 @@ Queue was still empty on 2026-10-01. Run 040 did **not** invent a Used row and d
 ## Halt (run 041)
 
 Queue was still empty on 2026-10-01. Run 041 did **not** invent a Used row and did **not** promote the run 027–040 candidates. Candidate draft only: `attested-open-graph-cards` in `drafts/041-attested-open-graph-cards/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/41. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. No `og:*` or `twitter:*` tags were added. No `?v=` cache-bust URL, dynamic image generator, `article:published_time`, `fb:app_id`, or share-preview badge was published.
+
+## Halt (run 042)
+
+Queue was still empty on 2026-10-01. Run 042 did **not** invent a Used row and did **not** promote the run 027–041 candidates. Candidate draft only: `attested-subresource-integrity` in `drafts/042-attested-subresource-integrity/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/42. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. No `integrity` attribute was added. No `Integrity-Policy` header, `Integrity-Policy-Report-Only` header, CDN hash fetch, report collector, or SRI badge was published.
