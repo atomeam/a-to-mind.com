@@ -94,3 +94,6 @@ Queue was still empty on 2026-10-01. Run 037 did **not** invent a Used row and d
 
 Queue was still empty on 2026-10-01. Run 038 did **not** invent a Used row and did **not** promote the run 027, 028, 029, 030, 031, 032, 033, 034, 035, 036, or 037 candidates. Candidate draft only: `speculation-rules-default-deny` in `drafts/038-speculation-rules-default-deny/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/38. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. No `<script type="speculationrules">` was added. No `Speculation-Rules` header, prerender rule, document-wide `href_matches`, or instant-nav badge was published.
 
+## Halt (run 039)
+
+Queue was still empty on 2026-10-01. Run 039 did **not** invent a Used row and did **not** promote the run 027, 028, 029, 030, 031, 032, 033, 034, 035, 036, 037, or 038 candidates. Candidate draft only: `attested-permissions-policy` in `drafts/039-attested-permissions-policy/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/39. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. No `Permissions-Policy` header was added. No `_headers` file, `report-to` endpoint, iframe `allow` list, or opted-out badge was published.
