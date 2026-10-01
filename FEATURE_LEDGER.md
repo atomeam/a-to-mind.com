@@ -97,3 +97,7 @@ Queue was still empty on 2026-10-01. Run 038 did **not** invent a Used row and d
 ## Halt (run 039)
 
 Queue was still empty on 2026-10-01. Run 039 did **not** invent a Used row and did **not** promote the run 027, 028, 029, 030, 031, 032, 033, 034, 035, 036, 037, or 038 candidates. Candidate draft only: `attested-permissions-policy` in `drafts/039-attested-permissions-policy/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/39. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. No `Permissions-Policy` header was added. No `_headers` file, `report-to` endpoint, iframe `allow` list, or opted-out badge was published.
+
+## Halt (run 040)
+
+Queue was still empty on 2026-10-01. Run 040 did **not** invent a Used row and did **not** promote the run 027, 028, 029, 030, 031, 032, 033, 034, 035, 036, 037, 038, or 039 candidates. Candidate draft only: `attested-content-security-policy` in `drafts/040-attested-content-security-policy/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/40. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. No `Content-Security-Policy` header was added. No `Content-Security-Policy-Report-Only` header, `_headers` file, meta CSP, nonce, `unsafe-inline`, report collector, or A+ badge was published.
