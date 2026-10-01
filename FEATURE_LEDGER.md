@@ -113,3 +113,7 @@ Queue was still empty on 2026-10-01. Run 042 did **not** invent a Used row and d
 ## Halt (run 043)
 
 Queue was still empty on 2026-10-01. Run 043 did **not** invent a Used row and did **not** promote the run 027–042 candidates. Candidate draft only: `attested-subprocessors` in `drafts/043-attested-subprocessors/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/43. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. `/subprocessors` was not added. No footer link, subscribe form, invented mailbox, vendor row, objection-window claim, or compliance badge was published.
+
+## Halt (run 044)
+
+Queue was still empty on 2026-10-01. Run 044 did **not** invent a Used row and did **not** promote the run 027–043 candidates. Candidate draft only: `attested-referrer-policy` in `drafts/044-attested-referrer-policy/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/44. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. No `Referrer-Policy` header was added. No referrer meta, comma chain, Cloudflare Transform Rule, `_headers` line, or privacy-grade badge was published.
