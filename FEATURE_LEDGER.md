@@ -78,3 +78,6 @@ Queue was still empty on 2026-09-30. Run 033 did **not** invent a Used row and d
 
 Queue was still empty on 2026-09-30. Run 034 did **not** invent a Used row and did **not** promote the run 027, 028, 029, 030, 031, 032, or 033 candidates. Candidate draft only: `attested-atom-feed` in `drafts/034-attested-atom-feed/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/34. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. `/feed.atom` was not added. No `rel=alternate` head link, invented entries, deploy-bumped `updated`, tracking pixel, or email-subscribe enclosure was published.
 
+## Halt (run 035)
+
+Queue was still empty on 2026-10-01. Run 035 did **not** invent a Used row and did **not** promote the run 027, 028, 029, 030, 031, 032, 033, or 034 candidates. Candidate draft only: `attested-gpc-well-known` in `drafts/035-attested-gpc-well-known/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/35. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. `/.well-known/gpc.json` was not added. No CMP, consent cookie, `gpc: true` declaration, or honored badge was published.
