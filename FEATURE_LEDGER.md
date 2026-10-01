@@ -89,3 +89,8 @@ Queue was still empty on 2026-10-01. Run 036 did **not** invent a Used row and d
 ## Halt (run 037)
 
 Queue was still empty on 2026-10-01. Run 037 did **not** invent a Used row and did **not** promote the run 027, 028, 029, 030, 031, 032, 033, 034, 035, or 036 candidates. Candidate draft only: `attested-api-catalog` in `drafts/037-attested-api-catalog/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/37. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. `/.well-known/api-catalog` was not added. No `rel=api-catalog` link, invented OpenAPI, MCP URL, llms.txt-as-service-desc, or agent-ready badge was published.
+
+## Halt (run 038)
+
+Queue was still empty on 2026-10-01. Run 038 did **not** invent a Used row and did **not** promote the run 027, 028, 029, 030, 031, 032, 033, 034, 035, 036, or 037 candidates. Candidate draft only: `speculation-rules-default-deny` in `drafts/038-speculation-rules-default-deny/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/38. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. No `<script type="speculationrules">` was added. No `Speculation-Rules` header, prerender rule, document-wide `href_matches`, or instant-nav badge was published.
+
