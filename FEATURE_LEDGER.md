@@ -65,3 +65,7 @@ Queue was still empty on 2026-09-30. Run 030 did **not** invent a Used row and d
 ## Halt (run 031)
 
 Queue was still empty on 2026-09-30. Run 031 did **not** invent a Used row and did **not** promote the run 027, 028, 029, or 030 candidates. Candidate draft only: `hashed-terms-of-service` in `drafts/031-hashed-terms-of-service/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/31. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. `/terms` was not added. No generator embed, clickwrap checkbox, auto-renew clause theater, or invented governing-law address was published.
+
+## Halt (run 032)
+
+Queue was still empty on 2026-09-30. Run 032 did **not** invent a Used row and did **not** promote the run 027, 028, 029, 030, or 031 candidates. Candidate draft only: `hashed-accessibility-statement` in `drafts/032-hashed-accessibility-statement/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/32. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. `/accessibility` was not added. No overlay widget, statement generator, WCAG 3 claim, conformant chip, invented feedback mailbox, or run 026 badge restatement was published.
