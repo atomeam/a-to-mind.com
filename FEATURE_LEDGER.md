@@ -85,3 +85,7 @@ Queue was still empty on 2026-10-01. Run 035 did **not** invent a Used row and d
 ## Halt (run 036)
 
 Queue was still empty on 2026-10-01. Run 036 did **not** invent a Used row and did **not** promote the run 027, 028, 029, 030, 031, 032, 033, 034, or 035 candidates. Candidate draft only: `attested-tdm-reservation` in `drafts/036-attested-tdm-reservation/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/36. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. `/.well-known/tdmrep.json` was not added. No Content-Signal rewrite of robots.txt, opted-out badge, ODRL policy URL, or crawler-honor claim was published.
+
+## Halt (run 037)
+
+Queue was still empty on 2026-10-01. Run 037 did **not** invent a Used row and did **not** promote the run 027, 028, 029, 030, 031, 032, 033, 034, 035, or 036 candidates. Candidate draft only: `attested-api-catalog` in `drafts/037-attested-api-catalog/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/37. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. `/.well-known/api-catalog` was not added. No `rel=api-catalog` link, invented OpenAPI, MCP URL, llms.txt-as-service-desc, or agent-ready badge was published.
