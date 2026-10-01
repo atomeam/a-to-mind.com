@@ -125,3 +125,8 @@ Queue was still empty on 2026-10-01. Run 045 did **not** invent a Used row and d
 ## Halt (run 046)
 
 Queue was still empty on 2026-10-01. Run 046 did **not** invent a Used row and did **not** promote the run 027–045 candidates. Candidate draft only: `attested-cross-origin-isolation` in `drafts/046-attested-cross-origin-isolation/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/46. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. No `Cross-Origin-Opener-Policy`, `Cross-Origin-Embedder-Policy`, or `Cross-Origin-Resource-Policy` header was added. No `_headers` file, Cloudflare Transform Rule, `report-to` endpoint, SharedArrayBuffer demo, or isolated badge was published.
+
+## Halt (run 047)
+
+Queue was still empty on 2026-10-01. Run 047 did **not** invent a Used row and did **not** promote the run 027–046 candidates. Candidate draft only: `attested-heading-permalinks` in `drafts/047-attested-heading-permalinks/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/47. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. No heading `id` was added. No permalink control, DOM-walking table of contents, hover-only hash icon, clipboard write, JSON-LD, or deep-link badge was published.
+
