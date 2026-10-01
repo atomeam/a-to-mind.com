@@ -135,3 +135,8 @@ Queue was still empty on 2026-10-01. Run 047 did **not** invent a Used row and d
 
 Queue was still empty on 2026-10-01. Run 048 did **not** invent a Used row and did **not** promote the run 027–047 candidates. Candidate draft only: `attested-breadcrumb-trail` in `drafts/048-attested-breadcrumb-trail/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/48. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. No breadcrumb `nav` was added. No BreadcrumbList JSON-LD, microdata, URL-inferred trail, house icon, ellipsis truncation, or rich-result badge was published.
 
+
+## Halt (run 049)
+
+Queue was still empty on 2026-10-01. Run 049 did **not** invent a Used row and did **not** promote the run 027–048 candidates. Candidate draft only: `attested-external-link-policy` in `drafts/049-attested-external-link-policy/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/49. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. No outbound link policy was added. No `target="_blank"`, `rel=opener`, external-link icon, affiliate wrapper, `utm_*`, click collector, leaving-site interstitial, destination fetch, or trust badge was published.
+
