@@ -117,3 +117,7 @@ Queue was still empty on 2026-10-01. Run 043 did **not** invent a Used row and d
 ## Halt (run 044)
 
 Queue was still empty on 2026-10-01. Run 044 did **not** invent a Used row and did **not** promote the run 027–043 candidates. Candidate draft only: `attested-referrer-policy` in `drafts/044-attested-referrer-policy/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/44. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. No `Referrer-Policy` header was added. No referrer meta, comma chain, Cloudflare Transform Rule, `_headers` line, or privacy-grade badge was published.
+
+## Halt (run 045)
+
+Queue was still empty on 2026-10-01. Run 045 did **not** invent a Used row and did **not** promote the run 027–044 candidates. Candidate draft only: `attested-strict-transport-security` in `drafts/045-attested-strict-transport-security/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/45. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. No `Strict-Transport-Security` header was added. No `_headers` line, Cloudflare Transform Rule, `includeSubDomains`, `preload` token, hstspreload.org submission, or SSL-grade badge was published.
