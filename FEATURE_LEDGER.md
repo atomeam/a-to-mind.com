@@ -109,3 +109,7 @@ Queue was still empty on 2026-10-01. Run 041 did **not** invent a Used row and d
 ## Halt (run 042)
 
 Queue was still empty on 2026-10-01. Run 042 did **not** invent a Used row and did **not** promote the run 027–041 candidates. Candidate draft only: `attested-subresource-integrity` in `drafts/042-attested-subresource-integrity/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/42. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. No `integrity` attribute was added. No `Integrity-Policy` header, `Integrity-Policy-Report-Only` header, CDN hash fetch, report collector, or SRI badge was published.
+
+## Halt (run 043)
+
+Queue was still empty on 2026-10-01. Run 043 did **not** invent a Used row and did **not** promote the run 027–042 candidates. Candidate draft only: `attested-subprocessors` in `drafts/043-attested-subprocessors/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/43. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. `/subprocessors` was not added. No footer link, subscribe form, invented mailbox, vendor row, objection-window claim, or compliance badge was published.
