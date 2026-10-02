@@ -156,3 +156,7 @@ Queue was still empty on 2026-10-02. Run 052 did **not** invent a Used row and d
 ## Autopilot (2026-10-02)
 
 Owner instruction: stop waiting on interactive permission forms. Assimilation runs commit ledger and draft files directly. Autopilot does not set `emit: true`, does not write a human seal, and does not invent allowlist hrefs. Interactive hold-gate issues are no longer required for a draft commit.
+
+## Fringe engine (2026-10-02)
+
+Owner direction: Void grows from under-discussed abilities (attention, timing, sensory substitution, incubation logs, weak-signal hypotheses, co-agency, opt-in gesture, miss-board memory, correlation views, anomalous-event timelines). These are hypotheses, not sealed facts. Do not claim contact, healing, remote viewing, or extraterrestrial hardware as attested. Rotate family each run. Do not repeat a family from the last 6 runs, and do not keep emitting security-header or well-known-file variants. Autopilot still commits drafts only. `emit` stays false. No spend, no owner key.
