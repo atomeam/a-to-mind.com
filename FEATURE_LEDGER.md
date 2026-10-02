@@ -160,3 +160,14 @@ Owner instruction: stop waiting on interactive permission forms. Assimilation ru
 ## Fringe engine (2026-10-02)
 
 Owner direction: Void grows from under-discussed abilities (attention, timing, sensory substitution, incubation logs, weak-signal hypotheses, co-agency, opt-in gesture, miss-board memory, correlation views, anomalous-event timelines). These are hypotheses, not sealed facts. Do not claim contact, healing, remote viewing, or extraterrestrial hardware as attested. Rotate family each run. Do not repeat a family from the last 6 runs, and do not keep emitting security-header or well-known-file variants. Autopilot still commits drafts only. `emit` stays false. No spend, no owner key.
+
+## Halt (run 053)
+
+Queue was still empty on 2026-10-02. Run 053 did **not** invent a Used row and did **not** promote the run 027–052 candidates. Family: attention/interoception. Candidate draft only: `local-attention-schema-note` in `drafts/053-local-attention-schema-note/`. One-line: Local attention-schema note; self-report is a hashed hypothesis; no sensor, no accuracy score, unattested default. No hold-gate issue was opened. Live site copy was not changed. No attention probe was added to a live page. No camera, microphone, PPG, ECG, haptic actuator, heartbeat count, accuracy score, healing claim, contact claim, or aware badge was published.
+
+## Fringe rotation
+
+| run | date | family | slug | status |
+|---|---|---|---|---|
+| 053 | 2026-10-02 | attention/interoception | local-attention-schema-note | candidate, not used |
+
