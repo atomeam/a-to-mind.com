@@ -165,9 +165,13 @@ Owner direction: Void grows from under-discussed abilities (attention, timing, s
 
 Queue was still empty on 2026-10-02. Run 053 did **not** invent a Used row and did **not** promote the run 027–052 candidates. Family: attention/interoception. Candidate draft only: `local-attention-schema-note` in `drafts/053-local-attention-schema-note/`. One-line: Local attention-schema note; self-report is a hashed hypothesis; no sensor, no accuracy score, unattested default. No hold-gate issue was opened. Live site copy was not changed. No attention probe was added to a live page. No camera, microphone, PPG, ECG, haptic actuator, heartbeat count, accuracy score, healing claim, contact claim, or aware badge was published.
 
+## Halt (run 054)
+
+Queue was still empty on 2026-10-02. Run 054 did **not** invent a Used row and did **not** promote the run 027–053 candidates. Family: interval timing. Candidate draft only: `local-interval-timing-note` in `drafts/054-local-interval-timing-note/`. One-line: Local interval-timing note; clock span vs felt duration is a hashed hypothesis; no presentiment score, no accuracy badge, unattested default. No hold-gate issue was opened. Live site copy was not changed. No interval probe was added to a live page. No audio tone, random stimulus, physiology sensor, intentional-binding score, Weber-fraction badge, presentiment claim, healing claim, contact claim, or timed-future badge was published.
+
 ## Fringe rotation
 
 | run | date | family | slug | status |
 |---|---|---|---|---|
 | 053 | 2026-10-02 | attention/interoception | local-attention-schema-note | candidate, not used |
-
+| 054 | 2026-10-02 | interval timing | local-interval-timing-note | candidate, not used |
