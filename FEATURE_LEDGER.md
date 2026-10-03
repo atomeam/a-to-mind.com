@@ -44,7 +44,7 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 026. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 058. Do not invent slugs in this file without a human adding them.)_
 
 ## Halt (run 027)
 
@@ -182,6 +182,7 @@ Queue was still empty on 2026-10-02. Run 055 did **not** invent a Used row and d
 | 055 | 2026-10-02 | sensory substitution | local-cross-sense-map | candidate, not used |
 | 056 | 2026-10-03 | private incubation log | local-private-incubation-log | candidate, not used |
 | 057 | 2026-10-03 | weak-signal hypothesis ledger | local-weak-signal-ledger | candidate, not used |
+| 058 | 2026-10-03 | human-machine co-agency | local-co-agency-split | candidate, not used |
 
 ## Halt (run 056)
 
@@ -190,3 +191,7 @@ Queue was still empty on 2026-10-03. Run 056 did **not** invent a Used row and d
 ## Halt (run 057)
 
 Queue was still empty on 2026-10-03. Run 057 did **not** invent a Used row and did **not** promote the run 027–056 candidates. Family: weak-signal hypothesis ledger. Candidate draft only: `local-weak-signal-ledger` in `drafts/057-local-weak-signal-ledger/`. One-line: Local weak-signal ledger; a faint note plus a required disconfirm path is a hashed hypothesis; no intensity radar, no early-warning badge, unattested default. No hold-gate issue was opened. Live site copy was not changed. No signal radar was added to a live page. No sensor, prediction market, intensity score, early-warning badge, healing claim, contact claim, or conscious-access badge was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 058)
+
+Queue was still empty on 2026-10-03. Run 058 did **not** invent a Used row and did **not** promote the run 027–057 candidates. Family: human-machine co-agency. Candidate draft only: `local-co-agency-split` in `drafts/058-local-co-agency-split/`. One-line: Local co-agency split; a human initiation beside a machine proposal is a hashed hypothesis; no handoff, no centaur badge, unattested default. No hold-gate issue was opened. Live site copy was not changed. No co-agency board was added to a live page. No agent loop, tool call, implant, camera, microphone, handoff endpoint, centaur badge, healing claim, contact claim, or shared-mind badge was published. X scan is in `x-scan.md` and is not a seal.
