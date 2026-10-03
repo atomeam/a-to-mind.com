@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 060. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 061. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 061)
+
+Queue was still empty on 2026-10-03. Run 061 did **not** invent a Used row and did **not** promote the run 027–060 candidates. Family: correlation-not-causation sync view. Candidate draft only: `local-sync-not-cause-view` in `drafts/061-local-sync-not-cause-view/`. One-line: Local sync-not-cause view; a co-timed note against a sealed clock fixture is a hashed hypothesis; the gap is not a cause; unattested default. No hold-gate issue was opened. Live site copy was not changed. No sync view was added to a live page. No cause arrow, meaningful badge, acausal-principle seal, bar aggregate, network fetch of posts, contact claim, healing claim, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 060)
 
@@ -58,7 +62,16 @@ Queue was still empty on 2026-10-03. Run 059 did **not** invent a Used row and d
 
 | run | date | family | slug | status |
 |---|---|---|---|---|
+| 061 | 2026-10-03 | correlation-not-causation sync view | local-sync-not-cause-view | candidate, not used |
 | 060 | 2026-10-03 | collective-memory miss board | local-collective-miss-board | candidate, not used |
 | 059 | 2026-10-03 | opt-in gesture or gaze as local input | local-opt-in-gaze-note | candidate, not used |
+| 058 | 2026-10-03 | human-machine co-agency | local-co-agency-split | candidate, not used |
+| 057 | 2026-10-03 | weak-signal hypothesis ledger | local-weak-signal-ledger | candidate, not used |
+| 056 | 2026-10-03 | private incubation log | local-private-incubation-log | candidate, not used |
+| 055 | 2026-10-02 | sensory substitution | local-cross-sense-map | candidate, not used |
+| 054 | 2026-10-02 | interval timing | local-interval-timing-note | candidate, not used |
+| 053 | 2026-10-02 | attention/interoception | local-attention-schema-note | candidate, not used |
 
-RECOVERY NOTE: A bad write replaced this file with the word PLACEHOLDER. This commit restores the queue line and the run 059 halt. Prior halt notes 027-058 remain in git history at commit fd9acab8a966d161b6ca4f4ea84b6155564926cc and must be merged back by a human if this shorter file landed. The candidate draft is not a Used row. Run 060 appends a halt and a fringe row only.
+Last 6 families before run 061 were sensory substitution, private incubation log, weak-signal hypothesis ledger, human-machine co-agency, opt-in gesture or gaze as local input, and collective-memory miss board. Run 061 used correlation-not-causation sync view. Still unused: anomalous-event timeline, quiet-signal filter, non-lexical intent capture.
+
+RECOVERY NOTE: A bad write replaced this file with the word PLACEHOLDER. Commit history at fd9acab8a966d161b6ca4f4ea84b6155564926cc still holds halt notes 027–058. This file keeps the run 059–061 halt notes and the fringe rotation recovered from that history. The candidate draft is not a Used row. Run 061 appends a halt and a fringe row only.
