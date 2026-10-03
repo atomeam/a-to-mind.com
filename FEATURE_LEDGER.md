@@ -169,9 +169,14 @@ Queue was still empty on 2026-10-02. Run 053 did **not** invent a Used row and d
 
 Queue was still empty on 2026-10-02. Run 054 did **not** invent a Used row and did **not** promote the run 027–053 candidates. Family: interval timing. Candidate draft only: `local-interval-timing-note` in `drafts/054-local-interval-timing-note/`. One-line: Local interval-timing note; clock span vs felt duration is a hashed hypothesis; no presentiment score, no accuracy badge, unattested default. No hold-gate issue was opened. Live site copy was not changed. No interval probe was added to a live page. No audio tone, random stimulus, physiology sensor, intentional-binding score, Weber-fraction badge, presentiment claim, healing claim, contact claim, or timed-future badge was published.
 
+## Halt (run 055)
+
+Queue was still empty on 2026-10-02. Run 055 did **not** invent a Used row and did **not** promote the run 027–054 candidates. Family: sensory substitution. Candidate draft only: `local-cross-sense-map` in `drafts/055-local-cross-sense-map/`. One-line: Local cross-sense map; a closed glyph-to-tone label is a hashed hypothesis; no camera, no sight-restoration badge, unattested default. No hold-gate issue was opened. Live site copy was not changed. No substitution device was added to a live page. No camera, microphone, tongue array, skin electrode, implant, accuracy badge, healing claim, contact claim, or sight-restored badge was published. X scan is in `x-scan.md` and is not a seal.
+
 ## Fringe rotation
 
 | run | date | family | slug | status |
 |---|---|---|---|---|
 | 053 | 2026-10-02 | attention/interoception | local-attention-schema-note | candidate, not used |
 | 054 | 2026-10-02 | interval timing | local-interval-timing-note | candidate, not used |
+| 055 | 2026-10-02 | sensory substitution | local-cross-sense-map | candidate, not used |
