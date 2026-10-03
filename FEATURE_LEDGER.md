@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 059. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 060. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 060)
+
+Queue was still empty on 2026-10-03. Run 060 did **not** invent a Used row and did **not** promote the run 027–059 candidates. Family: collective-memory miss board. Candidate draft only: `local-collective-miss-board` in `drafts/060-local-collective-miss-board/`. One-line: Local collective miss board; a recalled public wording is a hashed hypothesis against a sealed fixture; disagreement is data, not a timeline proof; unattested default. No hold-gate issue was opened. Live site copy was not changed. No miss probe was added to a live page. No timeline-verified badge, double claim, contact claim, healing claim, or collective-memory seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 059)
 
@@ -54,6 +58,7 @@ Queue was still empty on 2026-10-03. Run 059 did **not** invent a Used row and d
 
 | run | date | family | slug | status |
 |---|---|---|---|---|
+| 060 | 2026-10-03 | collective-memory miss board | local-collective-miss-board | candidate, not used |
 | 059 | 2026-10-03 | opt-in gesture or gaze as local input | local-opt-in-gaze-note | candidate, not used |
 
-RECOVERY NOTE: A bad write replaced this file with the word PLACEHOLDER. This commit restores the queue line and the run 059 halt. Prior halt notes 027-058 remain in git history at commit fd9acab8a966d161b6ca4f4ea84b6155564926cc and must be merged back by a human if this shorter file landed. The candidate draft is not a Used row.
+RECOVERY NOTE: A bad write replaced this file with the word PLACEHOLDER. This commit restores the queue line and the run 059 halt. Prior halt notes 027-058 remain in git history at commit fd9acab8a966d161b6ca4f4ea84b6155564926cc and must be merged back by a human if this shorter file landed. The candidate draft is not a Used row. Run 060 appends a halt and a fringe row only.
