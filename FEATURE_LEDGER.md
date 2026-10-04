@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 063. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 064. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 064)
+
+Queue was still empty on 2026-10-04. Run 064 did **not** invent a Used row and did **not** promote the run 027–063 candidates. Family: non-lexical intent capture. Candidate draft only: `local-nonlexical-intent-note` in `drafts/064-local-nonlexical-intent-note/`. One-line: Local non-lexical intent note; a sealed mark plus an optional gloss is a hashed hypothesis of intent; the mark is not a received mind; unattested default. No hold-gate issue was opened. Live site copy was not changed. No intent note was added to a live page. No letter board, facilitator, neural decode, microphone, received-mind badge, telepathy badge, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 063)
 
@@ -70,6 +74,7 @@ Queue was still empty on 2026-10-03. Run 059 did **not** invent a Used row and d
 
 | run | date | family | slug | status |
 |---|---|---|---|---|
+| 064 | 2026-10-04 | non-lexical intent capture | local-nonlexical-intent-note | candidate, not used |
 | 063 | 2026-10-04 | quiet-signal filter | local-quiet-signal-filter | candidate, not used |
 | 062 | 2026-10-03 | anomalous-event timeline | local-anomaly-timeline | candidate, not used |
 | 061 | 2026-10-03 | correlation-not-causation sync view | local-sync-not-cause-view | candidate, not used |
@@ -82,6 +87,6 @@ Queue was still empty on 2026-10-03. Run 059 did **not** invent a Used row and d
 | 054 | 2026-10-02 | interval timing | local-interval-timing-note | candidate, not used |
 | 053 | 2026-10-02 | attention/interoception | local-attention-schema-note | candidate, not used |
 
-Last 6 families before run 063 were weak-signal hypothesis ledger, human-machine co-agency, opt-in gesture or gaze as local input, collective-memory miss board, correlation-not-causation sync view, and anomalous-event timeline. Run 063 used quiet-signal filter. Still unused: non-lexical intent capture.
+Last 6 families before run 064 were human-machine co-agency, opt-in gesture or gaze as local input, collective-memory miss board, correlation-not-causation sync view, anomalous-event timeline, and quiet-signal filter. Run 064 used non-lexical intent capture. The listed fringe families are now all drafted as candidates, not Used. Do not repeat a family from the last 6 runs.
 
-RECOVERY NOTE: A bad write replaced this file with the word PLACEHOLDER. Commit history at fd9acab8a966d161b6ca4f4ea84b6155564926cc still holds halt notes 027–058. This file keeps the run 059–063 halt notes and the fringe rotation recovered from that history. The candidate draft is not a Used row. Run 063 appends a halt and a fringe row only.
+RECOVERY NOTE: A bad write replaced this file with the word PLACEHOLDER. Commit history at fd9acab8a966d161b6ca4f4ea84b6155564926cc still holds halt notes 027–058. This file keeps the run 059–064 halt notes and the fringe rotation recovered from that history. The candidate draft is not a Used row. Run 064 appends a halt and a fringe row only.
