@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 066. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 067. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 067)
+
+Queue was still empty on 2026-10-04. Run 067 did **not** invent a Used row and did **not** promote the run 027–066 candidates. Family: sensory substitution, reused only after the six-run cooldown (last family use was run 055, slug `local-cross-sense-map`). Candidate draft only: `local-proxy-channel-card` in `drafts/067-local-proxy-channel-card/`. One-line: Local proxy-channel card; a closed source/substitute pair plus a residue token is a hashed hypothesis of substitution; the pair is not a restored sense; unattested default. No hold-gate issue was opened. Live site copy was not changed. No proxy card was added to a live page. No camera, microphone, Web Audio, vibration, tongue array, stripe render, sight-restored badge, acuity score, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 066)
 
@@ -82,6 +86,7 @@ Queue was still empty on 2026-10-03. Run 059 did **not** invent a Used row and d
 
 | run | date | family | slug | status |
 |---|---|---|---|---|
+| 067 | 2026-10-04 | sensory substitution | local-proxy-channel-card | candidate, not used |
 | 066 | 2026-10-04 | interval timing | local-two-clock-gap-card | candidate, not used |
 | 065 | 2026-10-04 | attention/interoception | local-felt-locus-card | candidate, not used |
 | 064 | 2026-10-04 | non-lexical intent capture | local-nonlexical-intent-note | candidate, not used |
@@ -97,6 +102,6 @@ Queue was still empty on 2026-10-03. Run 059 did **not** invent a Used row and d
 | 054 | 2026-10-02 | interval timing | local-interval-timing-note | candidate, not used |
 | 053 | 2026-10-02 | attention/interoception | local-attention-schema-note | candidate, not used |
 
-Last 6 families before run 066 were collective-memory miss board, correlation-not-causation sync view, anomalous-event timeline, quiet-signal filter, non-lexical intent capture, and attention/interoception. Run 066 reused interval timing only after that cooldown, with a new slug. Do not repeat a family from the last 6 runs. Do not reuse `local-two-clock-gap-card` or `local-interval-timing-note`.
+Last 6 families before run 067 were correlation-not-causation sync view, anomalous-event timeline, quiet-signal filter, non-lexical intent capture, attention/interoception, and interval timing. Run 067 reused sensory substitution only after that cooldown, with a new slug. Do not repeat a family from the last 6 runs. Do not reuse `local-proxy-channel-card` or `local-cross-sense-map`.
 
 RECOVERY NOTE: A bad write replaced this file with the word PLACEHOLDER. Commit history at fd9acab8a966d161b6ca4f4ea84b6155564926cc still holds halt notes 027–058. This file keeps the run 059–066 halt notes and the fringe rotation recovered from that history. The candidate draft is not a Used row. Run 066 appends a halt and a fringe row only.
