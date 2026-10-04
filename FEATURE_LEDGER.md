@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 062. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 063. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 063)
+
+Queue was still empty on 2026-10-04. Run 063 did **not** invent a Used row and did **not** promote the run 027–062 candidates. Family: quiet-signal filter. Candidate draft only: `local-quiet-signal-filter` in `drafts/063-local-quiet-signal-filter/`. One-line: Local quiet-signal filter; a typed residue against a sealed floor is a hashed hypothesis; clearing the floor is not a signal; unattested default. No hold-gate issue was opened. Live site copy was not changed. No filter was added to a live page. No microphone, live analyser, detection chip, green-box seal, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 062)
 
@@ -66,6 +70,7 @@ Queue was still empty on 2026-10-03. Run 059 did **not** invent a Used row and d
 
 | run | date | family | slug | status |
 |---|---|---|---|---|
+| 063 | 2026-10-04 | quiet-signal filter | local-quiet-signal-filter | candidate, not used |
 | 062 | 2026-10-03 | anomalous-event timeline | local-anomaly-timeline | candidate, not used |
 | 061 | 2026-10-03 | correlation-not-causation sync view | local-sync-not-cause-view | candidate, not used |
 | 060 | 2026-10-03 | collective-memory miss board | local-collective-miss-board | candidate, not used |
@@ -77,6 +82,6 @@ Queue was still empty on 2026-10-03. Run 059 did **not** invent a Used row and d
 | 054 | 2026-10-02 | interval timing | local-interval-timing-note | candidate, not used |
 | 053 | 2026-10-02 | attention/interoception | local-attention-schema-note | candidate, not used |
 
-Last 6 families before run 062 were private incubation log, weak-signal hypothesis ledger, human-machine co-agency, opt-in gesture or gaze as local input, collective-memory miss board, and correlation-not-causation sync view. Run 062 used anomalous-event timeline. Still unused: quiet-signal filter, non-lexical intent capture.
+Last 6 families before run 063 were weak-signal hypothesis ledger, human-machine co-agency, opt-in gesture or gaze as local input, collective-memory miss board, correlation-not-causation sync view, and anomalous-event timeline. Run 063 used quiet-signal filter. Still unused: non-lexical intent capture.
 
-RECOVERY NOTE: A bad write replaced this file with the word PLACEHOLDER. Commit history at fd9acab8a966d161b6ca4f4ea84b6155564926cc still holds halt notes 027–058. This file keeps the run 059–062 halt notes and the fringe rotation recovered from that history. The candidate draft is not a Used row. Run 062 appends a halt and a fringe row only.
+RECOVERY NOTE: A bad write replaced this file with the word PLACEHOLDER. Commit history at fd9acab8a966d161b6ca4f4ea84b6155564926cc still holds halt notes 027–058. This file keeps the run 059–063 halt notes and the fringe rotation recovered from that history. The candidate draft is not a Used row. Run 063 appends a halt and a fringe row only.
