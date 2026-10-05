@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 068. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 069. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 069)
+
+Queue was still empty on 2026-10-05. Run 069 did **not** invent a Used row and did **not** promote the run 027–068 candidates. Family: weak-signal hypothesis ledger, reused only after the six-run cooldown (last family use was run 057, slug `local-weak-signal-ledger`). Candidate draft only: `local-null-first-strip` in `drafts/069-local-null-first-strip/`. One-line: Local null-first strip; an ordinary account must be typed before a remainder can be hashed; the remainder is a hypothesis of what that account does not cover, not an early warning; unattested default. No hold-gate issue was opened. Live site copy was not changed. No strip was added to a live page. No radar, intensity color, early-warning badge, centrality rank, triage score, prediction market, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 068)
 
@@ -90,6 +94,7 @@ Queue was still empty on 2026-10-03. Run 059 did **not** invent a Used row and d
 
 | run | date | family | slug | status |
 |---|---|---|---|---|
+| 069 | 2026-10-05 | weak-signal hypothesis ledger | local-null-first-strip | candidate, not used |
 | 068 | 2026-10-04 | private incubation log | local-blanked-prompt-card | candidate, not used |
 | 067 | 2026-10-04 | sensory substitution | local-proxy-channel-card | candidate, not used |
 | 066 | 2026-10-04 | interval timing | local-two-clock-gap-card | candidate, not used |
@@ -107,6 +112,6 @@ Queue was still empty on 2026-10-03. Run 059 did **not** invent a Used row and d
 | 054 | 2026-10-02 | interval timing | local-interval-timing-note | candidate, not used |
 | 053 | 2026-10-02 | attention/interoception | local-attention-schema-note | candidate, not used |
 
-Last 6 families before run 068 were anomalous-event timeline, quiet-signal filter, non-lexical intent capture, attention/interoception, interval timing, and sensory substitution. Run 068 reused private incubation log only after that cooldown, with a new slug. Do not repeat a family from the last 6 runs. Do not reuse `local-blanked-prompt-card` or `local-private-incubation-log`.
+Last 6 families before run 069 were private incubation log, sensory substitution, interval timing, attention/interoception, non-lexical intent capture, and quiet-signal filter. Run 069 reused weak-signal hypothesis ledger only after that cooldown, with a new slug. Do not repeat a family from the last 6 runs. Do not reuse `local-null-first-strip` or `local-weak-signal-ledger`.
 
 RECOVERY NOTE: A bad write replaced this file with the word PLACEHOLDER. Commit history at fd9acab8a966d161b6ca4f4ea84b6155564926cc still holds halt notes 027–058. This file keeps the run 059–066 halt notes and the fringe rotation recovered from that history. The candidate draft is not a Used row. Run 066 appends a halt and a fringe row only.
