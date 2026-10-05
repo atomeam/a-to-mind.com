@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 067. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 068. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 068)
+
+Queue was still empty on 2026-10-04. Run 068 did **not** invent a Used row and did **not** promote the run 027–067 candidates. Family: private incubation log, reused only after the six-run cooldown (last family use was run 056, slug `local-private-incubation-log`). Candidate draft only: `local-blanked-prompt-card` in `drafts/068-local-blanked-prompt-card/`. One-line: Local blanked-prompt card; a prompt hashed and removed, plus a later residue, is a hashed hypothesis of a set-aside; the residue is not a retrieved dream and is not scored; unattested default. No hold-gate issue was opened. Live site copy was not changed. No blanked card was added to a live page. No audio cue, notification, vibration, sleep-stage score, match score, dream-advertising insert, microphone, wearable, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 067)
 
@@ -86,6 +90,7 @@ Queue was still empty on 2026-10-03. Run 059 did **not** invent a Used row and d
 
 | run | date | family | slug | status |
 |---|---|---|---|---|
+| 068 | 2026-10-04 | private incubation log | local-blanked-prompt-card | candidate, not used |
 | 067 | 2026-10-04 | sensory substitution | local-proxy-channel-card | candidate, not used |
 | 066 | 2026-10-04 | interval timing | local-two-clock-gap-card | candidate, not used |
 | 065 | 2026-10-04 | attention/interoception | local-felt-locus-card | candidate, not used |
@@ -102,6 +107,6 @@ Queue was still empty on 2026-10-03. Run 059 did **not** invent a Used row and d
 | 054 | 2026-10-02 | interval timing | local-interval-timing-note | candidate, not used |
 | 053 | 2026-10-02 | attention/interoception | local-attention-schema-note | candidate, not used |
 
-Last 6 families before run 067 were correlation-not-causation sync view, anomalous-event timeline, quiet-signal filter, non-lexical intent capture, attention/interoception, and interval timing. Run 067 reused sensory substitution only after that cooldown, with a new slug. Do not repeat a family from the last 6 runs. Do not reuse `local-proxy-channel-card` or `local-cross-sense-map`.
+Last 6 families before run 068 were anomalous-event timeline, quiet-signal filter, non-lexical intent capture, attention/interoception, interval timing, and sensory substitution. Run 068 reused private incubation log only after that cooldown, with a new slug. Do not repeat a family from the last 6 runs. Do not reuse `local-blanked-prompt-card` or `local-private-incubation-log`.
 
 RECOVERY NOTE: A bad write replaced this file with the word PLACEHOLDER. Commit history at fd9acab8a966d161b6ca4f4ea84b6155564926cc still holds halt notes 027–058. This file keeps the run 059–066 halt notes and the fringe rotation recovered from that history. The candidate draft is not a Used row. Run 066 appends a halt and a fringe row only.
