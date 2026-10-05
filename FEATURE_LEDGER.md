@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 072. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 073. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 073)
+
+Queue was still empty on 2026-10-05. Run 073 did **not** invent a Used row and did **not** promote the run 027–072 candidates. Family: correlation-not-causation sync view, reused only after the six-run cooldown (last family use was run 061, slug `local-sync-not-cause-view`). Candidate draft only: `local-bin-not-arrow` in `drafts/073-local-bin-not-arrow/`. One-line: Local bin-not-arrow; two typed minute stamps that fall in the same allowlisted bin hash to a bin id; the card draws a refusal instead of an arrow; a shared bin is not a cause and not an acausal principle; unattested default. No hold-gate issue was opened. Live site copy was not changed. No bin card was added to a live page. No arrow, meaningful chip, acausal-principle seal, cause seal, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 072)
 
@@ -58,6 +62,7 @@ Queue was still empty on 2026-10-05. Run 071 did **not** invent a Used row and d
 
 | run | date | family | slug | status |
 |---|---|---|---|---|
+| 073 | 2026-10-05 | correlation-not-causation sync view | local-bin-not-arrow | candidate, not used |
 | 072 | 2026-10-05 | collective-memory miss board | local-pair-recall-gap | candidate, not used |
 | 071 | 2026-10-05 | opt-in gesture or gaze as local input | local-region-token-slip | candidate, not used |
 | 070 | 2026-10-05 | human-machine co-agency | local-single-mover-card | candidate, not used |
@@ -79,6 +84,6 @@ Queue was still empty on 2026-10-05. Run 071 did **not** invent a Used row and d
 | 054 | 2026-10-02 | interval timing | local-interval-timing-note | candidate, not used |
 | 053 | 2026-10-02 | attention/interoception | local-attention-schema-note | candidate, not used |
 
-Last 6 families before run 072 were opt-in gesture or gaze as local input, human-machine co-agency, weak-signal hypothesis ledger, private incubation log, sensory substitution, and interval timing. Run 072 reused collective-memory miss board only after that cooldown, with a new slug. Do not repeat a family from the last 6 runs. Do not reuse `local-pair-recall-gap` or `local-collective-miss-board`.
+Last 6 families before run 073 were collective-memory miss board, opt-in gesture or gaze as local input, human-machine co-agency, weak-signal hypothesis ledger, private incubation log, and sensory substitution. Run 073 reused correlation-not-causation sync view only after that cooldown, with a new slug. Do not repeat a family from the last 6 runs. Do not reuse `local-bin-not-arrow` or `local-sync-not-cause-view`.
 
 RECOVERY NOTE: A bad write replaced this file with the word PLACEHOLDER. Commit history at fd9acab8a966d161b6ca4f4ea84b6155564926cc still holds halt notes 027–058. Commit 3ba4e8b061682ccabff0bd14342c5b230916bc5b held halt notes 059–071 before a later placeholder write at 81162f0a72516269c884bee68fecd1af543bee11. This restore keeps the Used table, the run 072 halt, and the fringe rotation. Halt notes 059–070 remain in that commit. The candidate draft is not a Used row.
