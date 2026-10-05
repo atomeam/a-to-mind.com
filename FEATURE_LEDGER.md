@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 070. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 071. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 071)
+
+Queue was still empty on 2026-10-05. Run 071 did **not** invent a Used row and did **not** promote the run 027–070 candidates. Family: opt-in gesture or gaze as local input, reused only after the six-run cooldown (last family use was run 059, slug `local-opt-in-gaze-note`). Candidate draft only: `local-region-token-slip` in `drafts/071-local-region-token-slip/`. One-line: Local region-token slip; a sealed region id is a hashed hypothesis of a local mark; coordinates, path, and gaze stay discarded; the mark is not intent; unattested default. No hold-gate issue was opened. Live site copy was not changed. No region slip was added to a live page. No camera, microphone, getUserMedia, WebGazer, MediaPipe, landmark mesh, dwell timer, path store, gaze-verified badge, mind-read badge, pinch-to-click, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 070)
 
@@ -98,6 +102,7 @@ Queue was still empty on 2026-10-03. Run 059 did **not** invent a Used row and d
 
 | run | date | family | slug | status |
 |---|---|---|---|---|
+| 071 | 2026-10-05 | opt-in gesture or gaze as local input | local-region-token-slip | candidate, not used |
 | 070 | 2026-10-05 | human-machine co-agency | local-single-mover-card | candidate, not used |
 | 069 | 2026-10-05 | weak-signal hypothesis ledger | local-null-first-strip | candidate, not used |
 | 068 | 2026-10-04 | private incubation log | local-blanked-prompt-card | candidate, not used |
@@ -117,6 +122,6 @@ Queue was still empty on 2026-10-03. Run 059 did **not** invent a Used row and d
 | 054 | 2026-10-02 | interval timing | local-interval-timing-note | candidate, not used |
 | 053 | 2026-10-02 | attention/interoception | local-attention-schema-note | candidate, not used |
 
-Last 6 families before run 070 were weak-signal hypothesis ledger, private incubation log, sensory substitution, interval timing, attention/interoception, and non-lexical intent capture. Run 070 reused human-machine co-agency only after that cooldown, with a new slug. Do not repeat a family from the last 6 runs. Do not reuse `local-single-mover-card` or `local-co-agency-split`.
+Last 6 families before run 071 were human-machine co-agency, weak-signal hypothesis ledger, private incubation log, sensory substitution, interval timing, and attention/interoception. Run 071 reused opt-in gesture or gaze as local input only after that cooldown, with a new slug. Do not repeat a family from the last 6 runs. Do not reuse `local-region-token-slip` or `local-opt-in-gaze-note`.
 
 RECOVERY NOTE: A bad write replaced this file with the word PLACEHOLDER. Commit history at fd9acab8a966d161b6ca4f4ea84b6155564926cc still holds halt notes 027–058. This file keeps the run 059–066 halt notes and the fringe rotation recovered from that history. The candidate draft is not a Used row. Run 066 appends a halt and a fringe row only.
