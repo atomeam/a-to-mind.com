@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 075. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 076. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 076)
+
+Queue was still empty on 2026-10-06. Run 076 did **not** invent a Used row and did **not** promote the run 027–075 candidates. Family: non-lexical intent capture, reused only after the six-run cooldown (last family use was run 064, slug `local-nonlexical-intent-note`). Candidate draft only: `local-empty-lexeme-slot` in `drafts/076-local-empty-lexeme-slot/`. One-line: Local empty lexeme slot; a committed blank with a disconfirm line hashes to a slot-refusal id; letters stay out; an empty slot is not intent and not a decoded sentence; unattested default. No hold-gate issue was opened. Live site copy was not changed. No slot card was added to a live page. No filled word, decoded sentence, received-mind badge, telepathy chip, letter board, facilitator, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 075)
 
@@ -70,6 +74,7 @@ Queue was still empty on 2026-10-05. Run 071 did **not** invent a Used row and d
 
 | run | date | family | slug | status |
 |---|---|---|---|---|
+| 076 | 2026-10-06 | non-lexical intent capture | local-empty-lexeme-slot | candidate, not used |
 | 075 | 2026-10-05 | quiet-signal filter | local-underfloor-stub | candidate, not used |
 | 074 | 2026-10-05 | anomalous-event timeline | local-unfilled-span | candidate, not used |
 | 073 | 2026-10-05 | correlation-not-causation sync view | local-bin-not-arrow | candidate, not used |
@@ -94,6 +99,6 @@ Queue was still empty on 2026-10-05. Run 071 did **not** invent a Used row and d
 | 054 | 2026-10-02 | interval timing | local-interval-timing-note | candidate, not used |
 | 053 | 2026-10-02 | attention/interoception | local-attention-schema-note | candidate, not used |
 
-Last 6 families before run 075 were anomalous-event timeline, correlation-not-causation sync view, collective-memory miss board, opt-in gesture or gaze as local input, human-machine co-agency, and weak-signal hypothesis ledger. Run 075 reused quiet-signal filter only after that cooldown, with a new slug. Do not repeat a family from the last 6 runs. Do not reuse `local-underfloor-stub` or `local-quiet-signal-filter`.
+Last 6 families before run 076 were quiet-signal filter, anomalous-event timeline, correlation-not-causation sync view, collective-memory miss board, opt-in gesture or gaze as local input, and human-machine co-agency. Run 076 reused non-lexical intent capture only after that cooldown, with a new slug. Do not repeat a family from the last 6 runs. Do not reuse `local-empty-lexeme-slot` or `local-nonlexical-intent-note`.
 
 RECOVERY NOTE: A bad write replaced this file with the word PLACEHOLDER. Commit history at fd9acab8a966d161b6ca4f4ea84b6155564926cc still holds halt notes 027–058. Commit 3ba4e8b061682ccabff0bd14342c5b230916bc5b held halt notes 059–071 before a later placeholder write at 81162f0a72516269c884bee68fecd1af543bee11. This restore keeps the Used table, the run 072 halt, and the fringe rotation. Halt notes 059–070 remain in that commit. The candidate draft is not a Used row.
