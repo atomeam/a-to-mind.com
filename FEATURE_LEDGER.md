@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 078. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 079. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 079)
+
+Queue was still empty on 2026-10-06. Run 079 did **not** invent a Used row and did **not** promote the run 027–078 candidates. Family: sensory substitution, reused only after the six-run cooldown (last family use was run 067, slug `local-proxy-channel-card`). Candidate draft only: `local-encoding-not-scene` in `drafts/079-local-encoding-not-scene/`. One-line: Local encoding-not-scene stub; a sealed encoding label hashes to a stub id; no frame is drawn; a simultaneous label is not a scene and not restored sight; unattested default. No hold-gate issue was opened. Live site copy was not changed. No encoding card was added to a live page. No camera, microphone, Web Audio, canvas scene, Hilbert curve, acuity score, sight-restored badge, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 078)
 
@@ -82,6 +86,7 @@ Queue was still empty on 2026-10-05. Run 071 did **not** invent a Used row and d
 
 | run | date | family | slug | status |
 |---|---|---|---|---|
+| 079 | 2026-10-06 | sensory substitution | local-encoding-not-scene | candidate, not used |
 | 078 | 2026-10-06 | interval timing | local-scalar-tick-stub | candidate, not used |
 | 077 | 2026-10-06 | attention/interoception | local-notice-lag-bin | candidate, not used |
 | 076 | 2026-10-06 | non-lexical intent capture | local-empty-lexeme-slot | candidate, not used |
@@ -109,6 +114,6 @@ Queue was still empty on 2026-10-05. Run 071 did **not** invent a Used row and d
 | 054 | 2026-10-02 | interval timing | local-interval-timing-note | candidate, not used |
 | 053 | 2026-10-02 | attention/interoception | local-attention-schema-note | candidate, not used |
 
-Last 6 families before run 078 were attention/interoception, non-lexical intent capture, quiet-signal filter, anomalous-event timeline, correlation-not-causation sync view, and collective-memory miss board. Run 078 reused interval timing only after that cooldown, with a new slug. Do not repeat a family from the last 6 runs. Do not reuse `local-scalar-tick-stub`, `local-two-clock-gap-card`, or `local-interval-timing-note`.
+Last 6 families before run 079 were interval timing, attention/interoception, non-lexical intent capture, quiet-signal filter, anomalous-event timeline, and correlation-not-causation sync view. Run 079 reused sensory substitution only after that cooldown, with a new slug. Do not repeat a family from the last 6 runs. Do not reuse `local-encoding-not-scene`, `local-proxy-channel-card`, or `local-cross-sense-map`.
 
 RECOVERY NOTE: A bad write replaced this file with the word PLACEHOLDER. Commit history at fd9acab8a966d161b6ca4f4ea84b6155564926cc still holds halt notes 027–058. Commit 3ba4e8b061682ccabff0bd14342c5b230916bc5b held halt notes 059–071 before a later placeholder write at 81162f0a72516269c884bee68fecd1af543bee11. This restore keeps the Used table, the run 072 halt, and the fringe rotation. Halt notes 059–070 remain in that commit. The candidate draft is not a Used row.
