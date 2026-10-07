@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 081. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 082. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 082)
+
+Queue was still empty on 2026-10-06. Run 082 did **not** invent a Used row and did **not** promote the run 027–081 candidates. Family: human-machine co-agency, reused only after the six-run cooldown (last family use was run 070, slug `local-single-mover-card`). Candidate draft only: `local-abstain-seat` in `drafts/082-local-abstain-seat/`. One-line: Local abstain seat; a sealed abstain class hashes to a seat-refusal id; the instrument seat stays empty and is not in the hash; an abstain is not a partner and not a waiting agent; unattested default. No hold-gate issue was opened. Live site copy was not changed. No abstain card was added to a live page. No handoff, partner badge, waiting-agent chip, oversight-equilibrium seal, shared-mind badge, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 081)
 
@@ -94,6 +98,7 @@ Queue was still empty on 2026-10-05. Run 071 did **not** invent a Used row and d
 
 | run | date | family | slug | status |
 |---|---|---|---|---|
+| 082 | 2026-10-06 | human-machine co-agency | local-abstain-seat | candidate, not used |
 | 081 | 2026-10-06 | weak-signal hypothesis ledger | local-bound-not-hit | candidate, not used |
 | 080 | 2026-10-06 | private incubation log | local-held-cue-stub | candidate, not used |
 | 079 | 2026-10-06 | sensory substitution | local-encoding-not-scene | candidate, not used |
@@ -124,6 +129,6 @@ Queue was still empty on 2026-10-05. Run 071 did **not** invent a Used row and d
 | 054 | 2026-10-02 | interval timing | local-interval-timing-note | candidate, not used |
 | 053 | 2026-10-02 | attention/interoception | local-attention-schema-note | candidate, not used |
 
-Last 6 families before run 081 were private incubation log, sensory substitution, interval timing, attention/interoception, non-lexical intent capture, and quiet-signal filter. Run 081 reused weak-signal hypothesis ledger only after that cooldown, with a new slug. Do not repeat a family from the last 6 runs. Do not reuse `local-bound-not-hit`, `local-null-first-strip`, or `local-weak-signal-ledger`.
+Last 6 families before run 082 were weak-signal hypothesis ledger, private incubation log, sensory substitution, interval timing, attention/interoception, and non-lexical intent capture. Run 082 reused human-machine co-agency only after that cooldown, with a new slug. Do not repeat a family from the last 6 runs. Do not reuse `local-abstain-seat`, `local-single-mover-card`, or `local-co-agency-split`.
 
 RECOVERY NOTE: A bad write replaced this file with the word PLACEHOLDER. Commit history at fd9acab8a966d161b6ca4f4ea84b6155564926cc still holds halt notes 027–058. Commit 3ba4e8b061682ccabff0bd14342c5b230916bc5b held halt notes 059–071 before a later placeholder write at 81162f0a72516269c884bee68fecd1af543bee11. This restore keeps the Used table, the run 072 halt, and the fringe rotation. Halt notes 059–070 remain in that commit. The candidate draft is not a Used row.
