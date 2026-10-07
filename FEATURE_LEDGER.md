@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 083. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 084. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 084)
+
+Queue was still empty on 2026-10-07. Run 084 did **not** invent a Used row and did **not** promote the run 027–083 candidates. Family: collective-memory miss board, reused only after the six-run cooldown (last family use was run 072, slug `local-pair-recall-gap`). Candidate draft only: `local-shared-blank` in `drafts/084-local-shared-blank/`. One-line: Local shared-blank; a sealed miss class hashes to a blank id; the recalled token is discarded and is not in the hash; a shared blank is not a collective memory and not a correction; unattested default. No hold-gate issue was opened. Live site copy was not changed. No miss card was added to a live page. No consensus count, correction fill, timeline-shift badge, false-memory score, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 083)
 
