@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 090. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 091. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 091)
+
+Queue was still empty on 2026-10-07. Run 091 did **not** invent a Used row and did **not** promote the run 027–090 candidates. Family: sensory substitution, reused only after the six-run cooldown (last family use was run 079, slug `local-encoding-not-scene`; earlier slugs `local-proxy-channel-card` and `local-cross-sense-map` are not reused). Last six families were correlation-not-causation sync view (085), anomalous-event timeline (086), quiet-signal filter (087), non-lexical intent capture (088), attention/interoception (089), and interval timing (090). Candidate draft only: `local-pair-not-language` in `drafts/091-local-pair-not-language/`. One-line: Local pair-not-language; a sealed channel-pair class hashes to a language-refusal id; the language sentence is discarded and is not in the hash; a named pairing is not a visual language and not restored sight; unattested default. No hold-gate issue was opened. Live site copy was not changed. No language card was added to a live page. No camera, microphone, Web Audio, vibration actuator, spectrogram, tongue-display, implant parameter, restored-sight badge, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 090)
 
