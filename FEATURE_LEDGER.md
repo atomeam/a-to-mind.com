@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 085. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 086. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 086)
+
+Queue was still empty on 2026-10-07. Run 086 did **not** invent a Used row and did **not** promote the run 027–085 candidates. Family: anomalous-event timeline, reused only after the six-run cooldown (last family use was run 074, slug `local-unfilled-span`). Candidate draft only: `local-sort-not-arc` in `drafts/086-local-sort-not-arc/`. One-line: Local sort-not-arc; two sealed year-month classes hash to a sort id; the narrative string is discarded and is not in the hash; a sorted pair is not an arc and not a disclosure sequence; unattested default. No hold-gate issue was opened. Live site copy was not changed. No arc card was added to a live page. No arrow, flap count, disclosure-sequence badge, day field, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 085)
 
