@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 093. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 094. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 094)
+
+Queue was still empty on 2026-10-07. Run 094 did **not** invent a Used row and did **not** promote the run 027–093 candidates. Family: human-machine co-agency, reused only after the six-run cooldown (last family use was run 082, slug `local-abstain-seat`; earlier slugs `local-co-agency-split` and `local-single-mover-card` are not reused). Last six families were non-lexical intent capture (088), attention/interoception (089), interval timing (090), sensory substitution (091), private incubation log (092), and weak-signal hypothesis ledger (093). Candidate draft only: `local-gap-not-handoff` in `drafts/094-local-gap-not-handoff/`. One-line: Local gap-not-handoff; two sealed lane classes hash to a gap id; the handoff sentence is discarded and is not in the hash; a gap between lanes is not a handoff and not shared control; unattested default. No hold-gate issue was opened. Live site copy was not changed. No gap card was added to a live page. No arrow, handoff button, steer control, voice control, implant parameter, shared-control badge, partner badge, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 093)
 
