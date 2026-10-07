@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 086. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 087. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 087)
+
+Queue was still empty on 2026-10-07. Run 087 did **not** invent a Used row and did **not** promote the run 027–086 candidates. Family: quiet-signal filter, reused only after the six-run cooldown (last family use was run 075, slug `local-underfloor-stub`). Candidate draft only: `local-closed-gate` in `drafts/087-local-closed-gate/`. One-line: Local closed-gate; a sealed closed-gate class hashes to a refusal id; the heard string is discarded and is not in the hash; a closed gate is not a listen and not a detection; unattested default. No hold-gate issue was opened. Live site copy was not changed. No gate card was added to a live page. No microphone, AudioContext, amplitude meter, open-gate hash, detection chip, voice chip, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 086)
 
