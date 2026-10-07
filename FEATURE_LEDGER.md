@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 089. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 090. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 090)
+
+Queue was still empty on 2026-10-07. Run 090 did **not** invent a Used row and did **not** promote the run 027–089 candidates. Family: interval timing, reused only after the six-run cooldown (last family use was run 078, slug `local-scalar-tick-stub`). Last six families were collective-memory miss board (084), correlation-not-causation sync view (085), anomalous-event timeline (086), quiet-signal filter (087), non-lexical intent capture (088), and attention/interoception (089). Candidate draft only: `local-indifference-blank` in `drafts/090-local-indifference-blank/`. One-line: Local indifference blank; a sealed prior-set class hashes to a blank id; the reproduction sentence is discarded and is not in the hash; a prior-set mark is not a measured interval and not a missing-time span; unattested default. No hold-gate issue was opened. Live site copy was not changed. No indifference card was added to a live page. No start/stop trial, millisecond field, Vierordt coefficient, pacemaker reading, missing-time badge, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 089)
 
