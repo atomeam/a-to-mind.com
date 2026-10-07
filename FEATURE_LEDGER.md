@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 100. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 101. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 101)
+
+Queue was still empty on 2026-10-07. Run 101 did **not** invent a Used row and did **not** promote the run 027–100 candidates. Family: attention/interoception, reused only after the six-run cooldown (last family use was run 089, slug `local-count-withheld`; earlier slugs `local-attention-schema-note`, `local-felt-locus-card`, and `local-notice-lag-bin` are not reused). Last six families were opt-in gesture or gaze as local input (095), collective-memory miss board (096), correlation-not-causation sync view (097), anomalous-event timeline (098), quiet-signal filter (099), and non-lexical intent capture (100). Candidate draft only: `local-attend-not-pulse` in `drafts/101-local-attend-not-pulse/`. One-line: Local attend-not-pulse; a sealed attention class hashes to a pulse-refusal id; no pulse field, tally, or appraisal sentence exists on the page; an attend mark is not a heartbeat and not a meaning assigned to a body signal; unattested default. No hold-gate issue was opened. Live site copy was not changed. No attend card was added to a live page. No camera, microphone, PPG, Web Bluetooth, beat timer, accuracy badge, appraisal field, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 100)
 
