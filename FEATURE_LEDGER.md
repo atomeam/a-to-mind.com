@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 092. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 093. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 093)
+
+Queue was still empty on 2026-10-07. Run 093 did **not** invent a Used row and did **not** promote the run 027–092 candidates. Family: weak-signal hypothesis ledger, reused only after the six-run cooldown (last family use was run 057, slug `local-weak-signal-ledger`). Last six families were quiet-signal filter (087), non-lexical intent capture (088), attention/interoception (089), interval timing (090), sensory substitution (091), and private incubation log (092). Candidate draft only: `local-unpromoted-bin` in `drafts/093-local-unpromoted-bin/`. One-line: Local unpromoted bin; a sealed SNR class hashes to a promotion-refusal id; the beacon sentence is discarded and is not in the hash; an unpromoted bin is not a detection and not a technosignature; unattested default. No hold-gate issue was opened. Live site copy was not changed. No bin card was added to a live page. No radio, microphone, FFT, SNR number, promotion chip, beacon badge, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 092)
 
