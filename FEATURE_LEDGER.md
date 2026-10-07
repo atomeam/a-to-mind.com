@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 094. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 095. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 095)
+
+Queue was still empty on 2026-10-07. Run 095 did **not** invent a Used row and did **not** promote the run 027–094 candidates. Family: opt-in gesture or gaze as local input, reused only after the six-run cooldown (last family use was run 083, slug `local-dwell-not-select`; earlier slugs `local-opt-in-gaze-note` and `local-region-token-slip` are not reused). Last six families were attention/interoception (089), interval timing (090), sensory substitution (091), private incubation log (092), weak-signal hypothesis ledger (093), and human-machine co-agency (094). Candidate draft only: `local-lift-not-confirm` in `drafts/095-local-lift-not-confirm/`. One-line: Local lift-not-confirm; a sealed lift class hashes to a confirm-refusal id; the confirm sentence is discarded and is not in the hash; a pointer lift is not a confirm and not a gaze commit; unattested default. No hold-gate issue was opened. Live site copy was not changed. No lift card was added to a live page. No confirm control, gaze-commit control, foveated-target badge, camera permission, dwell timer, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 094)
 
