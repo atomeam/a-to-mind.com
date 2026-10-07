@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 096. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 097. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 097)
+
+Queue was still empty on 2026-10-07. Run 097 did **not** invent a Used row and did **not** promote the run 027–096 candidates. Family: correlation-not-causation sync view, reused only after the six-run cooldown (last family use was run 085, slug `local-residual-blank`; earlier slug `local-bin-not-arrow` is not reused). Last six families were sensory substitution (091), private incubation log (092), weak-signal hypothesis ledger (093), human-machine co-agency (094), opt-in gesture or gaze as local input (095), and collective-memory miss board (096). Candidate draft only: `local-offset-not-message` in `drafts/097-local-offset-not-message/`. One-line: Local offset-not-message; a sealed offset class hashes to a message-refusal id; the message sentence is discarded and is not in the hash; an offset is not a message and not a synchronicity; unattested default. No hold-gate issue was opened. Live site copy was not changed. No offset card was added to a live page. No arrow, message fill, synchronicity score, acausal-principle badge, shared-bin seal, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 096)
 
