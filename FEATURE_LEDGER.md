@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 098. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 099. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 099)
+
+Queue was still empty on 2026-10-07. Run 099 did **not** invent a Used row and did **not** promote the run 027–098 candidates. Family: quiet-signal filter, reused only after the six-run cooldown (last family use was run 087, slug `local-closed-gate`; earlier slugs `local-underfloor-stub` and `local-quiet-signal-filter` are not reused). Last six families were weak-signal hypothesis ledger (093), human-machine co-agency (094), opt-in gesture or gaze as local input (095), collective-memory miss board (096), correlation-not-causation sync view (097), and anomalous-event timeline (098). Candidate draft only: `local-hush-not-speech` in `drafts/099-local-hush-not-speech/`. One-line: Local hush-not-speech; a sealed hush class hashes to a speech-refusal id; the speech sentence is discarded and is not in the hash; a hush is not speech and not a decoded pass; unattested default. No hold-gate issue was opened. Live site copy was not changed. No hush card was added to a live page. No microphone, AudioContext, FFT, SNR number, voice chip, patent badge, decode button, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 098)
 
