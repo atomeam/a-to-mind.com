@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 084. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 085. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 085)
+
+Queue was still empty on 2026-10-07. Run 085 did **not** invent a Used row and did **not** promote the run 027–084 candidates. Family: correlation-not-causation sync view, reused only after the six-run cooldown (last family use was run 073, slug `local-bin-not-arrow`). Candidate draft only: `local-residual-blank` in `drafts/085-local-residual-blank/`. One-line: Local residual-blank; a sealed co-presence class hashes to a residual id; the mechanism token is discarded and is not in the hash; a blank residual is not a cause and not an acausal principle; unattested default. No hold-gate issue was opened. Live site copy was not changed. No residual card was added to a live page. No arrow, shared-bin seal, acausal-principle badge, synchronicity score, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 084)
 
@@ -53,7 +57,3 @@ Queue was still empty on 2026-10-07. Run 084 did **not** invent a Used row and d
 ## Halt (run 083)
 
 Queue was still empty on 2026-10-07. Run 083 did **not** invent a Used row and did **not** promote the run 027–082 candidates. Family: opt-in gesture or gaze as local input, reused only after the six-run cooldown (last family use was run 071, slug `local-region-token-slip`). Candidate draft only: `local-dwell-not-select` in `drafts/083-local-dwell-not-select/`. One-line: Local dwell-not-select; a sealed dwell class hashes to a refusal id; no clock is read and no target is activated; a completed look is not a click and not a decoded intention; unattested default. No hold-gate issue was opened. Live site copy was not changed. No dwell card was added to a live page. No camera, microphone, getUserMedia, WebGazer, MediaPipe, dwell timer, SELECT-on-over-floor, foveated-stream seal, gaze-verified badge, mind-read badge, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
-
-## Halt (run 082)
-
-Queue was still empty on 2026-10-06. Run 082 did **not** invent a Used row and did **not** promote the run 027–081 candidates. Family: human-machine co-agency, reused only after the six-run cooldown (last family use was run 070, slug `local-single-mover-card`). Candidate draft only: `local-abstain-seat` in `drafts/082-local-abstain-seat/`. One-line: Local abstain seat; a sealed abstain class hashes to a seat-refusal id; the instrument seat stays empty and is not in the hash; an abstain is not a partner and not a waiting agent; unattested default. No hold-gate issue was opened. Live site copy was not changed. No abstain card was added to a live page. No handoff, partner badge, waiting-agent chip, oversight-equilibrium seal, shared-mind badge, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
