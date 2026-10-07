@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 097. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 098. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 098)
+
+Queue was still empty on 2026-10-07. Run 098 did **not** invent a Used row and did **not** promote the run 027–097 candidates. Family: anomalous-event timeline, reused only after the six-run cooldown (last family use was run 086, slug `local-sort-not-arc`; earlier slug `local-unfilled-span` is not reused). Last six families were private incubation log (092), weak-signal hypothesis ledger (093), human-machine co-agency (094), opt-in gesture or gaze as local input (095), collective-memory miss board (096), and correlation-not-causation sync view (097). Candidate draft only: `local-cluster-not-wave` in `drafts/098-local-cluster-not-wave/`. One-line: Local cluster-not-wave; a sealed cluster class hashes to a wave-refusal id; the wave sentence is discarded and is not in the hash; a cluster is not a wave and not a flap; unattested default. No hold-gate issue was opened. Live site copy was not changed. No cluster card was added to a live page. No arrow, flap count, disclosure-sequence badge, day field, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 097)
 
