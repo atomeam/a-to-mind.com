@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 091. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 092. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 092)
+
+Queue was still empty on 2026-10-07. Run 092 did **not** invent a Used row and did **not** promote the run 027–091 candidates. Family: private incubation log, reused only after the six-run cooldown (last family use was run 080, slug `local-held-cue-stub`; earlier slugs `local-private-incubation-log` and `local-blanked-prompt-card` are not reused). Last six families were anomalous-event timeline (086), quiet-signal filter (087), non-lexical intent capture (088), attention/interoception (089), interval timing (090), and sensory substitution (091). Candidate draft only: `local-unopened-return` in `drafts/092-local-unopened-return/`. One-line: Local unopened return; a sealed set-aside class hashes to a return-refusal id; the return sentence is discarded and is not in the hash; an unopened return is not a dream report and not an incubation result; unattested default. No hold-gate issue was opened. Live site copy was not changed. No return card was added to a live page. No microphone, camera, AudioContext, sleep-stage detector, countdown, cue player, wearable, dream-report field, incorporation badge, creativity score, healing claim, contact claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 091)
 
