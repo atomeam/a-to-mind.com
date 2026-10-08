@@ -366,6 +366,26 @@ Queue was empty on 2026-09-30. Run 027 did **not** invent a Used row. Candidate 
 
 | run | date | family | slug | status |
 |---|---|---|---|---|
+| 102 | 2026-10-07 | interval timing | local-mark-not-span | candidate, not used |
+| 101 | 2026-10-07 | attention/interoception | local-attend-not-pulse | candidate, not used |
+| 100 | 2026-10-07 | non-lexical intent capture | local-press-not-word | candidate, not used |
+| 099 | 2026-10-07 | quiet-signal filter | local-hush-not-speech | candidate, not used |
+| 098 | 2026-10-07 | anomalous-event timeline | local-cluster-not-wave | candidate, not used |
+| 097 | 2026-10-07 | correlation-not-causation sync view | local-offset-not-message | candidate, not used |
+| 096 | 2026-10-07 | collective-memory miss board | local-schema-not-miss | candidate, not used |
+| 095 | 2026-10-07 | opt-in gesture or gaze as local input | local-lift-not-confirm | candidate, not used |
+| 094 | 2026-10-07 | human-machine co-agency | local-gap-not-handoff | candidate, not used |
+| 093 | 2026-10-07 | weak-signal hypothesis ledger | local-unpromoted-bin | candidate, not used |
+| 092 | 2026-10-07 | private incubation log | local-unopened-return | candidate, not used |
+| 091 | 2026-10-07 | sensory substitution | local-pair-not-language | candidate, not used |
+| 090 | 2026-10-07 | interval timing | local-indifference-blank | candidate, not used |
+| 089 | 2026-10-07 | attention/interoception | local-count-withheld | candidate, not used |
+| 088 | 2026-10-07 | non-lexical intent capture | local-gloss-withheld | candidate, not used |
+| 087 | 2026-10-07 | quiet-signal filter | local-closed-gate | candidate, not used |
+| 086 | 2026-10-07 | anomalous-event timeline | local-sort-not-arc | candidate, not used |
+| 085 | 2026-10-07 | correlation-not-causation sync view | local-residual-blank | candidate, not used |
+| 084 | 2026-10-07 | collective-memory miss board | local-shared-blank | candidate, not used |
+| 083 | 2026-10-07 | opt-in gesture or gaze as local input | local-dwell-not-select | candidate, not used |
 | 082 | 2026-10-06 | human-machine co-agency | local-abstain-seat | candidate, not used |
 | 081 | 2026-10-06 | weak-signal hypothesis ledger | local-bound-not-hit | candidate, not used |
 | 080 | 2026-10-06 | private incubation log | local-held-cue-stub | candidate, not used |
@@ -397,7 +417,7 @@ Queue was empty on 2026-09-30. Run 027 did **not** invent a Used row. Candidate 
 | 054 | 2026-10-02 | interval timing | local-interval-timing-note | candidate, not used |
 | 053 | 2026-10-02 | attention/interoception | local-attention-schema-note | candidate, not used |
 
-Last 6 families before run 082 were weak-signal hypothesis ledger, private incubation log, sensory substitution, interval timing, attention/interoception, and non-lexical intent capture. Run 082 reused human-machine co-agency only after that cooldown, with a new slug. Do not repeat a family from the last 6 runs. Do not reuse `local-abstain-seat`, `local-single-mover-card`, or `local-co-agency-split`.
+Last 6 families before run 103 were interval timing, attention/interoception, non-lexical intent capture, quiet-signal filter, anomalous-event timeline, and correlation-not-causation sync view (runs 102–097). Run 102 reused interval timing only after the six-run cooldown, with a new slug. Do not repeat a family from the last 6 runs. Do not reuse `local-mark-not-span`, `local-indifference-blank`, `local-scalar-tick-stub`, `local-two-clock-gap-card`, or `local-interval-timing-note`.
 
 RECOVERY NOTE: A bad write replaced this file with the word PLACEHOLDER. This commit restores the queue line and the run 059 halt. Prior halt notes 027-058 remain in git history at commit fd9acab8a966d161b6ca4f4ea84b6155564926cc and must be merged back by a human if this shorter file landed. The candidate draft is not a Used row. Run 060 appends a halt and a fringe row only.
 
