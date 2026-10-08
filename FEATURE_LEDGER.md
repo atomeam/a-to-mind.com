@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 111. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 112. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 112)
+
+Queue was still empty on 2026-10-08. Run 112 did **not** invent a Used row and did **not** promote the run 027–111 candidates. Family: non-lexical intent capture, reused only after the six-run cooldown (last family use was run 100, slug `local-press-not-word`; earlier slugs `local-gloss-withheld`, `local-empty-lexeme-slot`, and `local-nonlexical-intent-note` are not reused). Last six families were human-machine co-agency (106), opt-in gesture or gaze as local input (107), collective-memory miss board (108), correlation-not-causation sync view (109), anomalous-event timeline (110), and quiet-signal filter (111). Candidate draft only: `local-trace-not-lexeme` in `drafts/112-local-trace-not-lexeme/`. One-line: Local trace-not-lexeme; a sealed trace class hashes to a lexeme-refusal id; the lexeme sentence is discarded and is not in the hash; a trace is not a lexeme and not a decoded intention; unattested default. No hold-gate issue was opened. Live site copy was not changed. No trace card was added to a live page. No microphone, camera, implant, letter board, facilitator, inner-speech decoder, word field, WPM score, vocabulary size, mind-read badge, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 111)
 
@@ -405,6 +409,7 @@ Queue was empty on 2026-09-30. Run 027 did **not** invent a Used row. Candidate 
 
 | run | date | family | slug | status |
 |---|---|---|---|---|
+| 112 | 2026-10-08 | non-lexical intent capture | local-trace-not-lexeme | candidate, not used |
 | 102 | 2026-10-07 | interval timing | local-mark-not-span | candidate, not used |
 | 101 | 2026-10-07 | attention/interoception | local-attend-not-pulse | candidate, not used |
 | 100 | 2026-10-07 | non-lexical intent capture | local-press-not-word | candidate, not used |
