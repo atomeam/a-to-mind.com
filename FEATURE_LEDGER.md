@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 115. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 116. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 116)
+
+Queue was still empty on 2026-10-08. Run 116 did **not** invent a Used row and did **not** promote the run 027–115 candidates. Family: private incubation log, reused only after the six-run cooldown (last family use was run 104, slug `local-onset-not-answer`; earlier slugs `local-unopened-return`, `local-held-cue-stub`, `local-private-incubation-log`, and `local-blanked-prompt-card` are not reused). Last six families were anomalous-event timeline (110), quiet-signal filter (111), non-lexical intent capture (112), attention/interoception (113), interval timing (114), and sensory substitution (115). Candidate draft only: `local-shelf-not-solve` in `drafts/116-local-shelf-not-solve/`. One-line: Local shelf-not-solve; a sealed shelf class hashes to a solve-refusal id; the solve sentence is discarded and is not in the hash; a shelf mark is not a solution and not a dream report; unattested default. No hold-gate issue was opened. Live site copy was not changed. No shelf card was added to a live page. No audio cue, sleep tracker, dream-report recorder, bottle-drop timer, countdown, lucidity score, image field, insight badge, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 115)
 
@@ -421,6 +425,7 @@ Queue was empty on 2026-09-30. Run 027 did **not** invent a Used row. Candidate 
 
 | run | date | family | slug | status |
 |---|---|---|---|---|
+| 116 | 2026-10-08 | private incubation log | local-shelf-not-solve | candidate, not used |
 | 115 | 2026-10-08 | sensory substitution | local-strip-not-sight | candidate, not used |
 | 114 | 2026-10-08 | interval timing | local-gate-not-rate | candidate, not used |
 | 113 | 2026-10-08 | attention/interoception | local-confidence-not-gauge | candidate, not used |
