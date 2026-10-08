@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 114. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 115. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 115)
+
+Queue was still empty on 2026-10-08. Run 115 did **not** invent a Used row and did **not** promote the run 027–114 candidates. Family: sensory substitution, reused only after the six-run cooldown (last family use was run 103, slug `local-carrier-budget`; earlier slugs `local-pair-not-language`, `local-encoding-not-scene`, `local-proxy-channel-card`, and `local-cross-sense-map` are not reused). Last six families were correlation-not-causation sync view (109), anomalous-event timeline (110), quiet-signal filter (111), non-lexical intent capture (112), attention/interoception (113), and interval timing (114). Candidate draft only: `local-strip-not-sight` in `drafts/115-local-strip-not-sight/`. One-line: Local strip-not-sight; a sealed strip class hashes to a sight-refusal id; the sight sentence is discarded and is not in the hash; a strip mark is not sight and not a recovered scene; unattested default. No hold-gate issue was opened. Live site copy was not changed. No strip card was added to a live page. No camera, getUserMedia, microphone, Web Audio oscillator, sonification playback, image-to-sound map, tongue array, implant-equivalence score, functional-vision badge, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 114)
 
@@ -417,6 +421,7 @@ Queue was empty on 2026-09-30. Run 027 did **not** invent a Used row. Candidate 
 
 | run | date | family | slug | status |
 |---|---|---|---|---|
+| 115 | 2026-10-08 | sensory substitution | local-strip-not-sight | candidate, not used |
 | 114 | 2026-10-08 | interval timing | local-gate-not-rate | candidate, not used |
 | 113 | 2026-10-08 | attention/interoception | local-confidence-not-gauge | candidate, not used |
 | 112 | 2026-10-08 | non-lexical intent capture | local-trace-not-lexeme | candidate, not used |
