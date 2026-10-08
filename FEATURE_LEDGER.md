@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 104. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 105. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 105)
+
+Queue was still empty on 2026-10-07. Run 105 did **not** invent a Used row and did **not** promote the run 027–104 candidates. Family: weak-signal hypothesis ledger, reused only after the six-run cooldown (last family use was run 093, slug `local-unpromoted-bin`; earlier slugs `local-bound-not-hit`, `local-null-first-strip`, and `local-weak-signal-ledger` are not reused). Last six families were quiet-signal filter (099), non-lexical intent capture (100), attention/interoception (101), interval timing (102), sensory substitution (103), and private incubation log (104). Candidate draft only: `local-repeat-not-weight` in `drafts/105-local-repeat-not-weight/`. One-line: Local repeat-not-weight; a sealed repeat class hashes to a weight-refusal id; the weight sentence and the tally are discarded and are not in the hash; a repeat mark is not a weight and not a detection; unattested default. No hold-gate issue was opened. Live site copy was not changed. No repeat card was added to a live page. No radio, microphone, FFT, SNR number, prior, posterior, tally store, promotion chip, beacon badge, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 104)
 
