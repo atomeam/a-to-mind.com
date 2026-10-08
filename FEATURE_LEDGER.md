@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 119. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 120. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 120)
+
+Queue was still empty on 2026-10-08. Run 120 did **not** invent a Used row and did **not** promote the run 027–119 candidates. Family: collective-memory miss board, reused only after the six-run cooldown (last family use was run 108, slug `local-miss-not-flip`; earlier slugs `local-schema-not-miss`, `local-shared-blank`, `local-pair-recall-gap`, `local-collective-miss-board`, and `local-quorum-not-edit` are not reused). Last six families were interval timing (114), sensory substitution (115), private incubation log (116), weak-signal hypothesis ledger (117), human-machine co-agency (118), and opt-in gesture or gaze as local input (119). Candidate draft only: `local-echo-not-record` in `drafts/120-local-echo-not-record/`. One-line: Local echo-not-record; a sealed echo class hashes to a record-refusal id; the record sentence is discarded and is not in the hash; an echo mark is not a record and not a shared canon; unattested default. No hold-gate issue was opened. Live site copy was not changed. No echo card was added to a live page. No poll, vote tally, crowd percentage, chorus badge, canon edit, shared-memory write, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 119)
 
