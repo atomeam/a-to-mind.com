@@ -247,6 +247,14 @@ Queue was still empty on 2026-10-02. Run 054 did **not** invent a Used row and d
 
 Queue was still empty on 2026-10-02. Run 053 did **not** invent a Used row and did **not** promote the run 027–052 candidates. Family: attention/interoception. Candidate draft only: `local-attention-schema-note` in `drafts/053-local-attention-schema-note/`. One-line: Local attention-schema note; self-report is a hashed hypothesis; no sensor, no accuracy score, unattested default. No hold-gate issue was opened. Live site copy was not changed. No attention probe was added to a live page. No camera, microphone, PPG, ECG, haptic actuator, heartbeat count, accuracy score, healing claim, contact claim, or aware badge was published.
 
+## Autopilot (2026-10-02)
+
+Owner instruction: stop waiting on interactive permission forms. Assimilation runs commit ledger and draft files directly. Autopilot does not set `emit: true`, does not write a human seal, and does not invent allowlist hrefs. Interactive hold-gate issues are no longer required for a draft commit.
+
+## Fringe engine (2026-10-02)
+
+Owner direction: Void grows from under-discussed abilities (attention, timing, sensory substitution, incubation logs, weak-signal hypotheses, co-agency, opt-in gesture, miss-board memory, correlation views, anomalous-event timelines). These are hypotheses, not sealed facts. Do not claim contact, healing, remote viewing, or extraterrestrial hardware as attested. Rotate family each run. Do not repeat a family from the last 6 runs, and do not keep emitting security-header or well-known-file variants. Autopilot still commits drafts only. `emit` stays false. No spend, no owner key.
+
 ## Halt (run 052)
 
 Queue was still empty on 2026-10-02. Run 052 did **not** invent a Used row and did **not** promote the run 027–051 candidates. Candidate draft only: `attested-print-contract` in `drafts/052-attested-print-contract/`. No hold-gate issue was opened. Live site copy was not changed. No print stylesheet was linked. No blanket `attr(href)` suffix, relative-origin expansion, `window.print()` on load, remote `@import`, or print-ready badge was published.
@@ -354,4 +362,47 @@ Queue was still empty on 2026-09-30. Run 028 did **not** invent a Used row and d
 
 Queue was empty on 2026-09-30. Run 027 did **not** invent a Used row. Candidate draft only: `default-deny-cookie-notice` in `drafts/027-default-deny-cookie-notice/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/27. A human must add the next slug to Queue before an assimilation run may pick it. Live site copy was not changed.
 
-Restoration note (2026-10-07): commit 214a147 replaced this file with the 8-byte placeholder SEE_DISK, and earlier placeholder writes (23b211e, 81162f0, 7bc854a) had dropped older Halt notes. Notes 102–099 were kept from the current file. Halt notes 098–083 were restored from commit 8e0f57e69614b86615be9423065397956186f7bf, 082–071 from dd6b22e, 070–059 from 41e2074, and 058–027 from 7a560d4, word for word. Every Halt note from run 102 down to run 027 now appears here exactly once, in descending order. No Used row was added or changed.
+## Fringe rotation
+
+| run | date | family | slug | status |
+|---|---|---|---|---|
+| 082 | 2026-10-06 | human-machine co-agency | local-abstain-seat | candidate, not used |
+| 081 | 2026-10-06 | weak-signal hypothesis ledger | local-bound-not-hit | candidate, not used |
+| 080 | 2026-10-06 | private incubation log | local-held-cue-stub | candidate, not used |
+| 079 | 2026-10-06 | sensory substitution | local-encoding-not-scene | candidate, not used |
+| 078 | 2026-10-06 | interval timing | local-scalar-tick-stub | candidate, not used |
+| 077 | 2026-10-06 | attention/interoception | local-notice-lag-bin | candidate, not used |
+| 076 | 2026-10-06 | non-lexical intent capture | local-empty-lexeme-slot | candidate, not used |
+| 075 | 2026-10-05 | quiet-signal filter | local-underfloor-stub | candidate, not used |
+| 074 | 2026-10-05 | anomalous-event timeline | local-unfilled-span | candidate, not used |
+| 073 | 2026-10-05 | correlation-not-causation sync view | local-bin-not-arrow | candidate, not used |
+| 072 | 2026-10-05 | collective-memory miss board | local-pair-recall-gap | candidate, not used |
+| 071 | 2026-10-05 | opt-in gesture or gaze as local input | local-region-token-slip | candidate, not used |
+| 070 | 2026-10-05 | human-machine co-agency | local-single-mover-card | candidate, not used |
+| 069 | 2026-10-05 | weak-signal hypothesis ledger | local-null-first-strip | candidate, not used |
+| 068 | 2026-10-04 | private incubation log | local-blanked-prompt-card | candidate, not used |
+| 067 | 2026-10-04 | sensory substitution | local-proxy-channel-card | candidate, not used |
+| 066 | 2026-10-04 | interval timing | local-two-clock-gap-card | candidate, not used |
+| 065 | 2026-10-04 | attention/interoception | local-felt-locus-card | candidate, not used |
+| 064 | 2026-10-04 | non-lexical intent capture | local-nonlexical-intent-note | candidate, not used |
+| 063 | 2026-10-04 | quiet-signal filter | local-quiet-signal-filter | candidate, not used |
+| 062 | 2026-10-03 | anomalous-event timeline | local-anomaly-timeline | candidate, not used |
+| 061 | 2026-10-03 | correlation-not-causation sync view | local-sync-not-cause-view | candidate, not used |
+| 060 | 2026-10-03 | collective-memory miss board | local-collective-miss-board | candidate, not used |
+| 059 | 2026-10-03 | opt-in gesture or gaze as local input | local-opt-in-gaze-note | candidate, not used |
+| 058 | 2026-10-03 | human-machine co-agency | local-co-agency-split | candidate, not used |
+| 057 | 2026-10-03 | weak-signal hypothesis ledger | local-weak-signal-ledger | candidate, not used |
+| 056 | 2026-10-03 | private incubation log | local-private-incubation-log | candidate, not used |
+| 055 | 2026-10-02 | sensory substitution | local-cross-sense-map | candidate, not used |
+| 054 | 2026-10-02 | interval timing | local-interval-timing-note | candidate, not used |
+| 053 | 2026-10-02 | attention/interoception | local-attention-schema-note | candidate, not used |
+
+Last 6 families before run 082 were weak-signal hypothesis ledger, private incubation log, sensory substitution, interval timing, attention/interoception, and non-lexical intent capture. Run 082 reused human-machine co-agency only after that cooldown, with a new slug. Do not repeat a family from the last 6 runs. Do not reuse `local-abstain-seat`, `local-single-mover-card`, or `local-co-agency-split`.
+
+RECOVERY NOTE: A bad write replaced this file with the word PLACEHOLDER. This commit restores the queue line and the run 059 halt. Prior halt notes 027-058 remain in git history at commit fd9acab8a966d161b6ca4f4ea84b6155564926cc and must be merged back by a human if this shorter file landed. The candidate draft is not a Used row. Run 060 appends a halt and a fringe row only.
+
+RECOVERY NOTE: A bad write replaced this file with the word PLACEHOLDER. Commit history at fd9acab8a966d161b6ca4f4ea84b6155564926cc still holds halt notes 027–058. This file keeps the run 059–066 halt notes and the fringe rotation recovered from that history. The candidate draft is not a Used row. Run 066 appends a halt and a fringe row only.
+
+RECOVERY NOTE: A bad write replaced this file with the word PLACEHOLDER. Commit history at fd9acab8a966d161b6ca4f4ea84b6155564926cc still holds halt notes 027–058. Commit 3ba4e8b061682ccabff0bd14342c5b230916bc5b held halt notes 059–071 before a later placeholder write at 81162f0a72516269c884bee68fecd1af543bee11. This restore keeps the Used table, the run 072 halt, and the fringe rotation. Halt notes 059–070 remain in that commit. The candidate draft is not a Used row.
+
+Restoration note (2026-10-07): commit 214a147 replaced this file with the 8-byte placeholder SEE_DISK, and earlier placeholder writes (23b211e, 81162f0, 7bc854a) had dropped older content. Notes 102–099 were kept from the current file. Halt notes 098–083 were restored from commit 8e0f57e69614b86615be9423065397956186f7bf, 082–071 from dd6b22e, 070–059 from 41e2074, and 058–027 from 7a560d4, word for word. Every Halt note from run 102 down to run 027 now appears here exactly once, in descending order. The Autopilot (2026-10-02) and Fringe engine (2026-10-02) sections were restored from 7a560d4 in their original place between runs 052 and 053. The Fringe rotation section was restored from dd6b22e (rows 053–082 only, so it does not list runs 083–102), and the earlier RECOVERY NOTE paragraphs from d64107c and 41e2074 were put back before the dd6b22e one. No Used row was added or changed.
