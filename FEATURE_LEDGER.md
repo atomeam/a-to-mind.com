@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 120. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 121. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 121)
+
+Queue was still empty on 2026-10-08. Run 121 did **not** invent a Used row and did **not** promote the run 027–120 candidates. Family: correlation-not-causation sync view, reused only after the six-run cooldown (last family use was run 109, slug `local-cooccur-not-cause`; earlier slugs `local-offset-not-message`, `local-residual-blank`, `local-bin-not-arrow`, and `local-sync-not-cause-view` are not reused). Last six families were sensory substitution (115), private incubation log (116), weak-signal hypothesis ledger (117), human-machine co-agency (118), opt-in gesture or gaze as local input (119), and collective-memory miss board (120). Candidate draft only: `local-beside-not-because` in `drafts/121-local-beside-not-because/`. One-line: Local beside-not-because; two sealed class seats and an empty confound seat hash to a because-refusal id; the because sentence is discarded and is not in the hash; a beside mark is not a because and not a synchronicity; unattested default. No hold-gate issue was opened. Live site copy was not changed. No beside card was added to a live page. No arrow, coefficient, r-value, significance score, lift badge, confounder name, synchronicity seal, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 120)
 
@@ -441,6 +445,7 @@ Queue was empty on 2026-09-30. Run 027 did **not** invent a Used row. Candidate 
 
 | run | date | family | slug | status |
 |---|---|---|---|---|
+| 121 | 2026-10-08 | correlation-not-causation sync view | local-beside-not-because | candidate, not used |
 | 116 | 2026-10-08 | private incubation log | local-shelf-not-solve | candidate, not used |
 | 115 | 2026-10-08 | sensory substitution | local-strip-not-sight | candidate, not used |
 | 114 | 2026-10-08 | interval timing | local-gate-not-rate | candidate, not used |
