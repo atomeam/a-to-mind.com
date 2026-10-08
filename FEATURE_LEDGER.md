@@ -127,5 +127,231 @@ Queue was still empty on 2026-10-07. Run 084 did **not** invent a Used row and d
 ## Halt (run 083)
 
 Queue was still empty on 2026-10-07. Run 083 did **not** invent a Used row and did **not** promote the run 027–082 candidates. Family: opt-in gesture or gaze as local input, reused only after the six-run cooldown (last family use was run 071, slug `local-region-token-slip`). Candidate draft only: `local-dwell-not-select` in `drafts/083-local-dwell-not-select/`. One-line: Local dwell-not-select; a sealed dwell class hashes to a refusal id; no clock is read and no target is activated; a completed look is not a click and not a decoded intention; unattested default. No hold-gate issue was opened. Live site copy was not changed. No dwell card was added to a live page. No camera, microphone, getUserMedia, WebGazer, MediaPipe, dwell timer, SELECT-on-over-floor, foveated-stream seal, gaze-verified badge, mind-read badge, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+## Halt (run 082)
 
-Restoration note (2026-10-07): commit 214a147 replaced this file with the 8-byte placeholder SEE_DISK. Halt notes 098–083 were restored into this file from commit 8e0f57e69614b86615be9423065397956186f7bf, and notes 102–099 were kept from the current file. Every Halt note from run 102 down to run 083 now appears here exactly once. No Used row was added or changed.
+Queue was still empty on 2026-10-06. Run 082 did **not** invent a Used row and did **not** promote the run 027–081 candidates. Family: human-machine co-agency, reused only after the six-run cooldown (last family use was run 070, slug `local-single-mover-card`). Candidate draft only: `local-abstain-seat` in `drafts/082-local-abstain-seat/`. One-line: Local abstain seat; a sealed abstain class hashes to a seat-refusal id; the instrument seat stays empty and is not in the hash; an abstain is not a partner and not a waiting agent; unattested default. No hold-gate issue was opened. Live site copy was not changed. No abstain card was added to a live page. No handoff, partner badge, waiting-agent chip, oversight-equilibrium seal, shared-mind badge, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 081)
+
+Queue was still empty on 2026-10-06. Run 081 did **not** invent a Used row and did **not** promote the run 027–080 candidates. Family: weak-signal hypothesis ledger, reused only after the six-run cooldown (last family use was run 069, slug `local-null-first-strip`). Candidate draft only: `local-bound-not-hit` in `drafts/081-local-bound-not-hit/`. One-line: Local bound-not-hit; a sealed search-bound label hashes to a stub id; the candidate text is discarded and is not in the hash; a published bound is not a detection and not an early warning; unattested default. No hold-gate issue was opened. Live site copy was not changed. No bound card was added to a live page. No amplitude, hit badge, early-warning seal, investment-edge score, technosignature detection, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 080)
+
+Queue was still empty on 2026-10-06. Run 080 did **not** invent a Used row and did **not** promote the run 027–079 candidates. Family: private incubation log, reused only after the six-run cooldown (last family use was run 068, slug `local-blanked-prompt-card`). Candidate draft only: `local-held-cue-stub` in `drafts/080-local-held-cue-stub/`. One-line: Local held-cue stub; a sealed cue class hashes to a stub id; the cue is not replayed; a later residue class stays a label; a held cue is not a dream and not a retrieved idea; unattested default. No hold-gate issue was opened. Live site copy was not changed. No cue stub was added to a live page. No audio drop, sleep-onset detector, countdown, diary line, incorporation score, dream-advertising cue, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 079)
+
+Queue was still empty on 2026-10-06. Run 079 did **not** invent a Used row and did **not** promote the run 027–078 candidates. Family: sensory substitution, reused only after the six-run cooldown (last family use was run 067, slug `local-proxy-channel-card`). Candidate draft only: `local-encoding-not-scene` in `drafts/079-local-encoding-not-scene/`. One-line: Local encoding-not-scene stub; a sealed encoding label hashes to a stub id; no frame is drawn; a simultaneous label is not a scene and not restored sight; unattested default. No hold-gate issue was opened. Live site copy was not changed. No encoding card was added to a live page. No camera, microphone, Web Audio, canvas scene, Hilbert curve, acuity score, sight-restored badge, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 078)
+
+Queue was still empty on 2026-10-06. Run 078 did **not** invent a Used row and did **not** promote the run 027–077 candidates. Family: interval timing, reused only after the six-run cooldown (last family use was run 066, slug `local-two-clock-gap-card`). Candidate draft only: `local-scalar-tick-stub` in `drafts/078-local-scalar-tick-stub/`. One-line: Local scalar tick stub; a sealed span label and a closed tick bin hash to a stub id; no clock is read; a tick bin is not a duration and not a pacemaker reading; unattested default. No hold-gate issue was opened. Live site copy was not changed. No tick stub was added to a live page. No millisecond field, pacemaker-reading badge, missing-time seal, audio oscillator, abduction chip, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 077)
+
+Queue was still empty on 2026-10-06. Run 077 did **not** invent a Used row and did **not** promote the run 027–076 candidates. Family: attention/interoception, reused only after the six-run cooldown (last family use was run 065, slug `local-felt-locus-card`). Candidate draft only: `local-notice-lag-bin` in `drafts/077-local-notice-lag-bin/`. One-line: Local notice-lag bin; a sealed lag label and a disconfirm line hash to a bin id; no clock is read; a late notice is not the raw present and not a sender; unattested default. No hold-gate issue was opened. Live site copy was not changed. No lag card was added to a live page. No millisecond, raw-present badge, body-signal chip, diagnosis, sender seal, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 076)
+
+Queue was still empty on 2026-10-06. Run 076 did **not** invent a Used row and did **not** promote the run 027–075 candidates. Family: non-lexical intent capture, reused only after the six-run cooldown (last family use was run 064, slug `local-nonlexical-intent-note`). Candidate draft only: `local-empty-lexeme-slot` in `drafts/076-local-empty-lexeme-slot/`. One-line: Local empty lexeme slot; a committed blank with a disconfirm line hashes to a slot-refusal id; letters stay out; an empty slot is not intent and not a decoded sentence; unattested default. No hold-gate issue was opened. Live site copy was not changed. No slot card was added to a live page. No filled word, decoded sentence, received-mind badge, telepathy chip, letter board, facilitator, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 075)
+
+Queue was still empty on 2026-10-05. Run 075 did **not** invent a Used row and did **not** promote the run 027–074 candidates. Family: quiet-signal filter, reused only after the six-run cooldown (last family use was run 063, slug `local-quiet-signal-filter`). Candidate draft only: `local-underfloor-stub` in `drafts/075-local-underfloor-stub/`. One-line: Local underfloor stub; a typed amplitude at or under a sealed floor hashes to a band-refusal id; the band stays empty; under the floor is not a message and not a decoded voice; unattested default. No hold-gate issue was opened. Live site copy was not changed. No stub card was added to a live page. No peak, decoded glyph, voice chip, detection badge, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 074)
+
+Queue was still empty on 2026-10-05. Run 074 did **not** invent a Used row and did **not** promote the run 027–073 candidates. Family: anomalous-event timeline, reused only after the six-run cooldown (last family use was run 062, slug `local-anomaly-timeline`). Candidate draft only: `local-unfilled-span` in `drafts/074-local-unfilled-span/`. One-line: Local unfilled span; two typed minute bounds hash to a span id; interior bins stay empty; a gap is not an event and not a missing-time seal; unattested default. No hold-gate issue was opened. Live site copy was not changed. No span card was added to a live page. No filled event, invented hour, missing-time seal, abduction chip, prophecy rail, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 073)
+
+Queue was still empty on 2026-10-05. Run 073 did **not** invent a Used row and did **not** promote the run 027–072 candidates. Family: correlation-not-causation sync view, reused only after the six-run cooldown (last family use was run 061, slug `local-sync-not-cause-view`). Candidate draft only: `local-bin-not-arrow` in `drafts/073-local-bin-not-arrow/`. One-line: Local bin-not-arrow; two typed minute stamps that fall in the same allowlisted bin hash to a bin id; the card draws a refusal instead of an arrow; a shared bin is not a cause and not an acausal principle; unattested default. No hold-gate issue was opened. Live site copy was not changed. No bin card was added to a live page. No arrow, meaningful chip, acausal-principle seal, cause seal, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 072)
+
+Queue was still empty on 2026-10-05. Run 072 did **not** invent a Used row and did **not** promote the run 027–071 candidates. Family: collective-memory miss board, reused only after the six-run cooldown (last family use was run 060, slug `local-collective-miss-board`). Candidate draft only: `local-pair-recall-gap` in `drafts/072-local-pair-recall-gap/`. One-line: Local pair-recall gap; two recalls typed before the sealed line is shown hash to a token gap between them; the gap is not a collective-memory seal and not a score against the fixture; unattested default. No hold-gate issue was opened. Live site copy was not changed. No pair-gap card was added to a live page. No match flag, vote count, shared-reality badge, timeline-verified badge, double claim, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 071)
+
+Queue was still empty on 2026-10-05. Run 071 did **not** invent a Used row and did **not** promote the run 027–070 candidates. Family: opt-in gesture or gaze as local input, reused only after the six-run cooldown (last family use was run 059, slug `local-opt-in-gaze-note`). Candidate draft only: `local-region-token-slip` in `drafts/071-local-region-token-slip/`. One-line: Local region-token slip; a sealed region id is a hashed hypothesis of a local mark; coordinates, path, and gaze stay discarded; the mark is not intent; unattested default. No hold-gate issue was opened. Live site copy was not changed. No region slip was added to a live page. No camera, microphone, getUserMedia, WebGazer, MediaPipe, landmark mesh, dwell timer, path store, gaze-verified badge, mind-read badge, pinch-to-click, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 070)
+
+Queue was still empty on 2026-10-05. Run 070 did **not** invent a Used row and did **not** promote the run 027–069 candidates. Family: human-machine co-agency, reused only after the six-run cooldown (last family use was run 058, slug `local-co-agency-split`). Candidate draft only: `local-single-mover-card` in `drafts/070-local-single-mover-card/`. One-line: Local single-mover card; a step hashes only after exactly one mover is sealed; joint agency stays denied; the seal is a hypothesis of attribution, not a handoff and not a shared mind; unattested default. No hold-gate issue was opened. Live site copy was not changed. No mover card was added to a live page. No handoff tool, agent loop, centaur badge, shared-mind badge, camera, microphone, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 069)
+
+Queue was still empty on 2026-10-05. Run 069 did **not** invent a Used row and did **not** promote the run 027–068 candidates. Family: weak-signal hypothesis ledger, reused only after the six-run cooldown (last family use was run 057, slug `local-weak-signal-ledger`). Candidate draft only: `local-null-first-strip` in `drafts/069-local-null-first-strip/`. One-line: Local null-first strip; an ordinary account must be typed before a remainder can be hashed; the remainder is a hypothesis of what that account does not cover, not an early warning; unattested default. No hold-gate issue was opened. Live site copy was not changed. No strip was added to a live page. No radar, intensity color, early-warning badge, centrality rank, triage score, prediction market, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 068)
+
+Queue was still empty on 2026-10-04. Run 068 did **not** invent a Used row and did **not** promote the run 027–067 candidates. Family: private incubation log, reused only after the six-run cooldown (last family use was run 056, slug `local-private-incubation-log`). Candidate draft only: `local-blanked-prompt-card` in `drafts/068-local-blanked-prompt-card/`. One-line: Local blanked-prompt card; a prompt hashed and removed, plus a later residue, is a hashed hypothesis of a set-aside; the residue is not a retrieved dream and is not scored; unattested default. No hold-gate issue was opened. Live site copy was not changed. No blanked card was added to a live page. No audio cue, notification, vibration, sleep-stage score, match score, dream-advertising insert, microphone, wearable, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 067)
+
+Queue was still empty on 2026-10-04. Run 067 did **not** invent a Used row and did **not** promote the run 027–066 candidates. Family: sensory substitution, reused only after the six-run cooldown (last family use was run 055, slug `local-cross-sense-map`). Candidate draft only: `local-proxy-channel-card` in `drafts/067-local-proxy-channel-card/`. One-line: Local proxy-channel card; a closed source/substitute pair plus a residue token is a hashed hypothesis of substitution; the pair is not a restored sense; unattested default. No hold-gate issue was opened. Live site copy was not changed. No proxy card was added to a live page. No camera, microphone, Web Audio, vibration, tongue array, stripe render, sight-restored badge, acuity score, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 066)
+
+Queue was still empty on 2026-10-04. Run 066 did **not** invent a Used row and did **not** promote the run 027–065 candidates. Family: interval timing, reused only after the six-run cooldown (last family use was run 054). Candidate draft only: `local-two-clock-gap-card` in `drafts/066-local-two-clock-gap-card/`. One-line: Local two-clock gap card; a typed pair of clock readings is a hashed hypothesis of disagreement; the minute gap is not missing time; unattested default. No hold-gate issue was opened. Live site copy was not changed. No gap card was added to a live page. No NTP call, performance.now phenomenon clock, missing-time badge, abduction marker, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 065)
+
+Queue was still empty on 2026-10-04. Run 065 did **not** invent a Used row and did **not** promote the run 027–064 candidates. Family: attention/interoception, reused only after the six-run cooldown (last family use was run 053). Candidate draft only: `local-felt-locus-card` in `drafts/065-local-felt-locus-card/`. One-line: Local felt-locus card; a sealed body region plus a closed quality is a hashed hypothesis of where attention was reported; the locus is not a sensor reading; unattested default. No hold-gate issue was opened. Live site copy was not changed. No locus card was added to a live page. No body diagram, MAIA score, calm-color map, heartbeat count, wearable, camera, microphone, gaze, shared-mind badge, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 064)
+
+Queue was still empty on 2026-10-04. Run 064 did **not** invent a Used row and did **not** promote the run 027–063 candidates. Family: non-lexical intent capture. Candidate draft only: `local-nonlexical-intent-note` in `drafts/064-local-nonlexical-intent-note/`. One-line: Local non-lexical intent note; a sealed mark plus an optional gloss is a hashed hypothesis of intent; the mark is not a received mind; unattested default. No hold-gate issue was opened. Live site copy was not changed. No intent note was added to a live page. No letter board, facilitator, neural decode, microphone, received-mind badge, telepathy badge, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 063)
+
+Queue was still empty on 2026-10-04. Run 063 did **not** invent a Used row and did **not** promote the run 027–062 candidates. Family: quiet-signal filter. Candidate draft only: `local-quiet-signal-filter` in `drafts/063-local-quiet-signal-filter/`. One-line: Local quiet-signal filter; a typed residue against a sealed floor is a hashed hypothesis; clearing the floor is not a signal; unattested default. No hold-gate issue was opened. Live site copy was not changed. No filter was added to a live page. No microphone, live analyser, detection chip, green-box seal, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 062)
+
+Queue was still empty on 2026-10-03. Run 062 did **not** invent a Used row and did **not** promote the run 027–061 candidates. Family: anomalous-event timeline. Candidate draft only: `local-anomaly-timeline` in `drafts/062-local-anomaly-timeline/`. One-line: Local anomaly timeline; a dated note is a hashed hypothesis against a sealed clock fixture; order is not a cause; unattested default. No hold-gate issue was opened. Live site copy was not changed. No timeline was added to a live page. No connecting line, invented sort day, wave bar, pattern chip, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 061)
+
+Queue was still empty on 2026-10-03. Run 061 did **not** invent a Used row and did **not** promote the run 027–060 candidates. Family: correlation-not-causation sync view. Candidate draft only: `local-sync-not-cause-view` in `drafts/061-local-sync-not-cause-view/`. One-line: Local sync-not-cause view; a co-timed note against a sealed clock fixture is a hashed hypothesis; the gap is not a cause; unattested default. No hold-gate issue was opened. Live site copy was not changed. No sync view was added to a live page. No cause arrow, meaningful badge, acausal-principle seal, bar aggregate, network fetch of posts, contact claim, healing claim, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 060)
+
+Queue was still empty on 2026-10-03. Run 060 did **not** invent a Used row and did **not** promote the run 027–059 candidates. Family: collective-memory miss board. Candidate draft only: `local-collective-miss-board` in `drafts/060-local-collective-miss-board/`. One-line: Local collective miss board; a recalled public wording is a hashed hypothesis against a sealed fixture; disagreement is data, not a timeline proof; unattested default. No hold-gate issue was opened. Live site copy was not changed. No miss probe was added to a live page. No timeline-verified badge, double claim, contact claim, healing claim, or collective-memory seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 059)
+
+Queue was still empty on 2026-10-03. Run 059 did **not** invent a Used row and did **not** promote the run 027–058 candidates. Family: opt-in gesture or gaze as local input. Candidate draft only: `local-opt-in-gaze-note` in `drafts/059-local-opt-in-gaze-note/`. One-line: Local opt-in gaze note; a dwell or chord is a hashed hypothesis of intent; camera stays denied, no mind-read badge, unattested default. No hold-gate issue was opened. Live site copy was not changed. No gaze probe was added to a live page. No camera, microphone, getUserMedia, WebGazer, MediaPipe, landmark mesh, accuracy score, mind-read badge, healing claim, contact claim, or gaze-verified badge was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 058)
+
+Queue was still empty on 2026-10-03. Run 058 did **not** invent a Used row and did **not** promote the run 027–057 candidates. Family: human-machine co-agency. Candidate draft only: `local-co-agency-split` in `drafts/058-local-co-agency-split/`. One-line: Local co-agency split; a human initiation beside a machine proposal is a hashed hypothesis; no handoff, no centaur badge, unattested default. No hold-gate issue was opened. Live site copy was not changed. No co-agency board was added to a live page. No agent loop, tool call, implant, camera, microphone, handoff endpoint, centaur badge, healing claim, contact claim, or shared-mind badge was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 057)
+
+Queue was still empty on 2026-10-03. Run 057 did **not** invent a Used row and did **not** promote the run 027–056 candidates. Family: weak-signal hypothesis ledger. Candidate draft only: `local-weak-signal-ledger` in `drafts/057-local-weak-signal-ledger/`. One-line: Local weak-signal ledger; a faint note plus a required disconfirm path is a hashed hypothesis; no intensity radar, no early-warning badge, unattested default. No hold-gate issue was opened. Live site copy was not changed. No signal radar was added to a live page. No sensor, prediction market, intensity score, early-warning badge, healing claim, contact claim, or conscious-access badge was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 056)
+
+Queue was still empty on 2026-10-03. Run 056 did **not** invent a Used row and did **not** promote the run 027–055 candidates. Family: private incubation log. Candidate draft only: `local-private-incubation-log` in `drafts/056-local-private-incubation-log/`. One-line: Local private incubation log; a set-aside and return note is a hashed hypothesis; no sleep-stage score, no insight badge, unattested default. No hold-gate issue was opened. Live site copy was not changed. No incubation probe was added to a live page. No microphone, EEG, wearable, audio drop, dream interpreter, insight score, healing claim, contact claim, or recall badge was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 055)
+
+Queue was still empty on 2026-10-02. Run 055 did **not** invent a Used row and did **not** promote the run 027–054 candidates. Family: sensory substitution. Candidate draft only: `local-cross-sense-map` in `drafts/055-local-cross-sense-map/`. One-line: Local cross-sense map; a closed glyph-to-tone label is a hashed hypothesis; no camera, no sight-restoration badge, unattested default. No hold-gate issue was opened. Live site copy was not changed. No substitution device was added to a live page. No camera, microphone, tongue array, skin electrode, implant, accuracy badge, healing claim, contact claim, or sight-restored badge was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 054)
+
+Queue was still empty on 2026-10-02. Run 054 did **not** invent a Used row and did **not** promote the run 027–053 candidates. Family: interval timing. Candidate draft only: `local-interval-timing-note` in `drafts/054-local-interval-timing-note/`. One-line: Local interval-timing note; clock span vs felt duration is a hashed hypothesis; no presentiment score, no accuracy badge, unattested default. No hold-gate issue was opened. Live site copy was not changed. No interval probe was added to a live page. No audio tone, random stimulus, physiology sensor, intentional-binding score, Weber-fraction badge, presentiment claim, healing claim, contact claim, or timed-future badge was published.
+
+## Halt (run 053)
+
+Queue was still empty on 2026-10-02. Run 053 did **not** invent a Used row and did **not** promote the run 027–052 candidates. Family: attention/interoception. Candidate draft only: `local-attention-schema-note` in `drafts/053-local-attention-schema-note/`. One-line: Local attention-schema note; self-report is a hashed hypothesis; no sensor, no accuracy score, unattested default. No hold-gate issue was opened. Live site copy was not changed. No attention probe was added to a live page. No camera, microphone, PPG, ECG, haptic actuator, heartbeat count, accuracy score, healing claim, contact claim, or aware badge was published.
+
+## Halt (run 052)
+
+Queue was still empty on 2026-10-02. Run 052 did **not** invent a Used row and did **not** promote the run 027–051 candidates. Candidate draft only: `attested-print-contract` in `drafts/052-attested-print-contract/`. No hold-gate issue was opened. Live site copy was not changed. No print stylesheet was linked. No blanket `attr(href)` suffix, relative-origin expansion, `window.print()` on load, remote `@import`, or print-ready badge was published.
+
+## Halt (run 051)
+
+Queue was still empty on 2026-10-01. Run 051 did **not** invent a Used row and did **not** promote the run 027–050 candidates. Candidate draft only: `attested-redirect-catalog` in `drafts/051-attested-redirect-catalog/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/51. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. No `_redirects` file was added. No `Location` header, meta refresh, splat, query forward, open-redirect parameter, retired-path fold, or links-preserved badge was published.
+
+## Halt (run 050)
+
+Queue was still empty on 2026-10-01. Run 050 did **not** invent a Used row and did **not** promote the run 027–049 candidates. Candidate draft only: `attested-canonical-identity` in `drafts/050-attested-canonical-identity/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/50. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. No `rel=canonical` element was added. No `hreflang` annotation, `x-default`, `Link` header, `?q=` fold onto `/`, retired-path revival, or index-ready badge was published.
+
+## Halt (run 049)
+
+Queue was still empty on 2026-10-01. Run 049 did **not** invent a Used row and did **not** promote the run 027–048 candidates. Candidate draft only: `attested-external-link-policy` in `drafts/049-attested-external-link-policy/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/49. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. No outbound link policy was added. No `target="_blank"`, `rel=opener`, external-link icon, affiliate wrapper, `utm_*`, click collector, leaving-site interstitial, destination fetch, or trust badge was published.
+
+
+## Halt (run 048)
+
+Queue was still empty on 2026-10-01. Run 048 did **not** invent a Used row and did **not** promote the run 027–047 candidates. Candidate draft only: `attested-breadcrumb-trail` in `drafts/048-attested-breadcrumb-trail/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/48. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. No breadcrumb `nav` was added. No BreadcrumbList JSON-LD, microdata, URL-inferred trail, house icon, ellipsis truncation, or rich-result badge was published.
+
+
+## Halt (run 047)
+
+Queue was still empty on 2026-10-01. Run 047 did **not** invent a Used row and did **not** promote the run 027–046 candidates. Candidate draft only: `attested-heading-permalinks` in `drafts/047-attested-heading-permalinks/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/47. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. No heading `id` was added. No permalink control, DOM-walking table of contents, hover-only hash icon, clipboard write, JSON-LD, or deep-link badge was published.
+
+
+## Halt (run 046)
+
+Queue was still empty on 2026-10-01. Run 046 did **not** invent a Used row and did **not** promote the run 027–045 candidates. Candidate draft only: `attested-cross-origin-isolation` in `drafts/046-attested-cross-origin-isolation/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/46. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. No `Cross-Origin-Opener-Policy`, `Cross-Origin-Embedder-Policy`, or `Cross-Origin-Resource-Policy` header was added. No `_headers` file, Cloudflare Transform Rule, `report-to` endpoint, SharedArrayBuffer demo, or isolated badge was published.
+
+## Halt (run 045)
+
+Queue was still empty on 2026-10-01. Run 045 did **not** invent a Used row and did **not** promote the run 027–044 candidates. Candidate draft only: `attested-strict-transport-security` in `drafts/045-attested-strict-transport-security/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/45. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. No `Strict-Transport-Security` header was added. No `_headers` line, Cloudflare Transform Rule, `includeSubDomains`, `preload` token, hstspreload.org submission, or SSL-grade badge was published.
+
+## Halt (run 044)
+
+Queue was still empty on 2026-10-01. Run 044 did **not** invent a Used row and did **not** promote the run 027–043 candidates. Candidate draft only: `attested-referrer-policy` in `drafts/044-attested-referrer-policy/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/44. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. No `Referrer-Policy` header was added. No referrer meta, comma chain, Cloudflare Transform Rule, `_headers` line, or privacy-grade badge was published.
+
+## Halt (run 043)
+
+Queue was still empty on 2026-10-01. Run 043 did **not** invent a Used row and did **not** promote the run 027–042 candidates. Candidate draft only: `attested-subprocessors` in `drafts/043-attested-subprocessors/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/43. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. `/subprocessors` was not added. No footer link, subscribe form, invented mailbox, vendor row, objection-window claim, or compliance badge was published.
+
+## Halt (run 042)
+
+Queue was still empty on 2026-10-01. Run 042 did **not** invent a Used row and did **not** promote the run 027–041 candidates. Candidate draft only: `attested-subresource-integrity` in `drafts/042-attested-subresource-integrity/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/42. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. No `integrity` attribute was added. No `Integrity-Policy` header, `Integrity-Policy-Report-Only` header, CDN hash fetch, report collector, or SRI badge was published.
+
+## Halt (run 041)
+
+Queue was still empty on 2026-10-01. Run 041 did **not** invent a Used row and did **not** promote the run 027–040 candidates. Candidate draft only: `attested-open-graph-cards` in `drafts/041-attested-open-graph-cards/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/41. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. No `og:*` or `twitter:*` tags were added. No `?v=` cache-bust URL, dynamic image generator, `article:published_time`, `fb:app_id`, or share-preview badge was published.
+
+## Halt (run 040)
+
+Queue was still empty on 2026-10-01. Run 040 did **not** invent a Used row and did **not** promote the run 027, 028, 029, 030, 031, 032, 033, 034, 035, 036, 037, 038, or 039 candidates. Candidate draft only: `attested-content-security-policy` in `drafts/040-attested-content-security-policy/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/40. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. No `Content-Security-Policy` header was added. No `Content-Security-Policy-Report-Only` header, `_headers` file, meta CSP, nonce, `unsafe-inline`, report collector, or A+ badge was published.
+
+## Halt (run 039)
+
+Queue was still empty on 2026-10-01. Run 039 did **not** invent a Used row and did **not** promote the run 027, 028, 029, 030, 031, 032, 033, 034, 035, 036, 037, or 038 candidates. Candidate draft only: `attested-permissions-policy` in `drafts/039-attested-permissions-policy/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/39. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. No `Permissions-Policy` header was added. No `_headers` file, `report-to` endpoint, iframe `allow` list, or opted-out badge was published.
+
+## Halt (run 038)
+
+Queue was still empty on 2026-10-01. Run 038 did **not** invent a Used row and did **not** promote the run 027, 028, 029, 030, 031, 032, 033, 034, 035, 036, or 037 candidates. Candidate draft only: `speculation-rules-default-deny` in `drafts/038-speculation-rules-default-deny/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/38. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. No `<script type="speculationrules">` was added. No `Speculation-Rules` header, prerender rule, document-wide `href_matches`, or instant-nav badge was published.
+
+## Halt (run 037)
+
+Queue was still empty on 2026-10-01. Run 037 did **not** invent a Used row and did **not** promote the run 027, 028, 029, 030, 031, 032, 033, 034, 035, or 036 candidates. Candidate draft only: `attested-api-catalog` in `drafts/037-attested-api-catalog/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/37. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. `/.well-known/api-catalog` was not added. No `rel=api-catalog` link, invented OpenAPI, MCP URL, llms.txt-as-service-desc, or agent-ready badge was published.
+
+## Halt (run 036)
+
+Queue was still empty on 2026-10-01. Run 036 did **not** invent a Used row and did **not** promote the run 027, 028, 029, 030, 031, 032, 033, 034, or 035 candidates. Candidate draft only: `attested-tdm-reservation` in `drafts/036-attested-tdm-reservation/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/36. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. `/.well-known/tdmrep.json` was not added. No Content-Signal rewrite of robots.txt, opted-out badge, ODRL policy URL, or crawler-honor claim was published.
+
+## Halt (run 035)
+
+Queue was still empty on 2026-10-01. Run 035 did **not** invent a Used row and did **not** promote the run 027, 028, 029, 030, 031, 032, 033, or 034 candidates. Candidate draft only: `attested-gpc-well-known` in `drafts/035-attested-gpc-well-known/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/35. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. `/.well-known/gpc.json` was not added. No CMP, consent cookie, `gpc: true` declaration, or honored badge was published.
+
+## Halt (run 034)
+
+Queue was still empty on 2026-09-30. Run 034 did **not** invent a Used row and did **not** promote the run 027, 028, 029, 030, 031, 032, or 033 candidates. Candidate draft only: `attested-atom-feed` in `drafts/034-attested-atom-feed/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/34. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. `/feed.atom` was not added. No `rel=alternate` head link, invented entries, deploy-bumped `updated`, tracking pixel, or email-subscribe enclosure was published.
+
+## Halt (run 033)
+
+Queue was still empty on 2026-09-30. Run 033 did **not** invent a Used row and did **not** promote the run 027, 028, 029, 030, 031, or 032 candidates. Candidate draft only: `attested-humans-txt` in `drafts/033-attested-humans-txt/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/33. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. `/humans.txt` was not added. No `rel=author` head link, invented TEAM names, jobs CTA, or ASCII-mascot credits theater was published.
+
+## Halt (run 032)
+
+Queue was still empty on 2026-09-30. Run 032 did **not** invent a Used row and did **not** promote the run 027, 028, 029, 030, or 031 candidates. Candidate draft only: `hashed-accessibility-statement` in `drafts/032-hashed-accessibility-statement/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/32. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. `/accessibility` was not added. No overlay widget, statement generator, WCAG 3 claim, conformant chip, invented feedback mailbox, or run 026 badge restatement was published.
+
+## Halt (run 031)
+
+Queue was still empty on 2026-09-30. Run 031 did **not** invent a Used row and did **not** promote the run 027, 028, 029, or 030 candidates. Candidate draft only: `hashed-terms-of-service` in `drafts/031-hashed-terms-of-service/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/31. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. `/terms` was not added. No generator embed, clickwrap checkbox, auto-renew clause theater, or invented governing-law address was published.
+
+## Halt (run 030)
+
+Queue was still empty on 2026-09-30. Run 030 did **not** invent a Used row and did **not** promote the run 027, 028, or 029 candidates. Candidate draft only: `attested-contact-channel` in `drafts/030-attested-contact-channel/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/30. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. `/contact` was not added. No form backend, Calendly embed, chatbot, or invented mailbox was published.
+
+## Halt (run 029)
+
+Queue was still empty on 2026-09-30. Run 029 did **not** invent a Used row and did **not** promote the run 027 or 028 candidates. Candidate draft only: `hashed-privacy-policy` in `drafts/029-hashed-privacy-policy/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/29. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. `/privacy` was not added.
+
+## Halt (run 028)
+
+Queue was still empty on 2026-09-30. Run 028 did **not** invent a Used row and did **not** promote the run 027 candidate. Candidate draft only: `attested-security-txt` in `drafts/028-attested-security-txt/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/28. A human must add a slug to Queue before an assimilation run may pick it. Live site copy was not changed. `/.well-known/security.txt` was not added.
+
+## Halt (run 027)
+
+Queue was empty on 2026-09-30. Run 027 did **not** invent a Used row. Candidate draft only: `default-deny-cookie-notice` in `drafts/027-default-deny-cookie-notice/`. Hold-gate issue: https://github.com/atomeam/a-to-mind.com/issues/27. A human must add the next slug to Queue before an assimilation run may pick it. Live site copy was not changed.
+
+Restoration note (2026-10-07): commit 214a147 replaced this file with the 8-byte placeholder SEE_DISK, and earlier placeholder writes (23b211e, 81162f0, 7bc854a) had dropped older Halt notes. Notes 102–099 were kept from the current file. Halt notes 098–083 were restored from commit 8e0f57e69614b86615be9423065397956186f7bf, 082–071 from dd6b22e, 070–059 from 41e2074, and 058–027 from 7a560d4, word for word. Every Halt note from run 102 down to run 027 now appears here exactly once, in descending order. No Used row was added or changed.
