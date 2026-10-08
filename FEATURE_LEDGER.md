@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 112. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 113. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 113)
+
+Queue was still empty on 2026-10-08. Run 113 did **not** invent a Used row and did **not** promote the run 027–112 candidates. Family: attention/interoception, reused only after the six-run cooldown (last family use was run 101, slug `local-attend-not-pulse`; earlier slugs `local-count-withheld`, `local-attention-schema-note`, `local-felt-locus-card`, and `local-notice-lag-bin` are not reused). Last six families were opt-in gesture or gaze as local input (107), collective-memory miss board (108), correlation-not-causation sync view (109), anomalous-event timeline (110), quiet-signal filter (111), and non-lexical intent capture (112). Candidate draft only: `local-confidence-not-gauge` in `drafts/113-local-confidence-not-gauge/`. One-line: Local confidence-not-gauge; a sealed confidence class hashes to a gauge-refusal id; the gauge sentence is discarded and is not in the hash; a confidence mark is not a gauge and not a body map; unattested default. No hold-gate issue was opened. Live site copy was not changed. No confidence card was added to a live page. No camera, microphone, PPG, Web Bluetooth, beat timer, BPM field, HRV score, quality score, calm/stressed gauge, body-map diagnosis, accuracy badge, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 112)
 
