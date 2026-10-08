@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 124. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 125. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 125)
+
+Queue was still empty on 2026-10-08. Run 125 did **not** invent a Used row and did **not** promote the run 027–124 candidates. Family: attention/interoception, reused only after the six-run cooldown (last family use was run 113, slug `local-confidence-not-gauge`; earlier slugs `local-attend-not-pulse`, `local-count-withheld`, `local-attention-schema-note`, `local-felt-locus-card`, and `local-notice-lag-bin` are not reused). Last six families were opt-in gesture or gaze as local input (119), collective-memory miss board (120), correlation-not-causation sync view (121), anomalous-event timeline (122), quiet-signal filter (123), and non-lexical intent capture (124). Candidate draft only: `local-split-not-sense` in `drafts/125-local-split-not-sense/`. One-line: Local split-not-sense; a sealed split class hashes to a sense-refusal id; the sense sentence is discarded and is not in the hash; a split mark is not a sense reading and not a body diagnosis; unattested default. No hold-gate issue was opened. Live site copy was not changed. No split card was added to a live page. No camera, microphone, PPG, ECG, Web Bluetooth, beat timer, BPM field, HRV score, accuracy badge, body-map diagnosis, organ name, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 124)
 
