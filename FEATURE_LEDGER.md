@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 113. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 114. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 114)
+
+Queue was still empty on 2026-10-08. Run 114 did **not** invent a Used row and did **not** promote the run 027–113 candidates. Family: interval timing, reused only after the six-run cooldown (last family use was run 102, slug `local-mark-not-span`; earlier slugs `local-indifference-blank`, `local-scalar-tick-stub`, `local-two-clock-gap-card`, and `local-interval-timing-note` are not reused). Last six families were collective-memory miss board (108), correlation-not-causation sync view (109), anomalous-event timeline (110), quiet-signal filter (111), non-lexical intent capture (112), and attention/interoception (113). Candidate draft only: `local-gate-not-rate` in `drafts/114-local-gate-not-rate/`. One-line: Local gate-not-rate; a sealed gate class hashes to a rate-refusal id; the rate sentence is discarded and is not in the hash; a gate mark is not a pacemaker rate and not a duration; unattested default. No hold-gate issue was opened. Live site copy was not changed. No gate card was added to a live page. No performance.now span, Date.now trial, requestAnimationFrame clock, Web Audio clock, BPM field, dilation coefficient, missing-time badge, reproduction score, Vierordt coefficient, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 113)
 
@@ -413,6 +417,8 @@ Queue was empty on 2026-09-30. Run 027 did **not** invent a Used row. Candidate 
 
 | run | date | family | slug | status |
 |---|---|---|---|---|
+| 114 | 2026-10-08 | interval timing | local-gate-not-rate | candidate, not used |
+| 113 | 2026-10-08 | attention/interoception | local-confidence-not-gauge | candidate, not used |
 | 112 | 2026-10-08 | non-lexical intent capture | local-trace-not-lexeme | candidate, not used |
 | 102 | 2026-10-07 | interval timing | local-mark-not-span | candidate, not used |
 | 101 | 2026-10-07 | attention/interoception | local-attend-not-pulse | candidate, not used |
