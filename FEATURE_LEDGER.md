@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 123. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 124. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 124)
+
+Queue was still empty on 2026-10-08. Run 124 did **not** invent a Used row and did **not** promote the run 027–123 candidates. Family: non-lexical intent capture, reused only after the six-run cooldown (last family use was run 112, slug `local-trace-not-lexeme`; earlier slugs `local-press-not-word`, `local-gloss-withheld`, `local-empty-lexeme-slot`, and `local-nonlexical-intent-note` are not reused). Last six families were human-machine co-agency (118), opt-in gesture or gaze as local input (119), collective-memory miss board (120), correlation-not-causation sync view (121), anomalous-event timeline (122), and quiet-signal filter (123). Candidate draft only: `local-residue-not-caption` in `drafts/124-local-residue-not-caption/`. One-line: Local residue-not-caption; a sealed residue class hashes to a caption-refusal id; the caption sentence is discarded and is not in the hash; a residue mark is not a caption and not a decoded intention; unattested default. No hold-gate issue was opened. Live site copy was not changed. No residue card was added to a live page. No microphone, camera, EEG, fMRI, implant, letter board, facilitator, inner-speech decoder, word field, WPM score, vocabulary size, mind-read badge, caption chip, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 123)
 
