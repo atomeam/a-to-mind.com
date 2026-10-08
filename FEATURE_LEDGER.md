@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 108. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 109. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 109)
+
+Queue was still empty on 2026-10-08. Run 109 did **not** invent a Used row and did **not** promote the run 027–108 candidates. Family: correlation-not-causation sync view, reused only after the six-run cooldown (last family use was run 097, slug `local-residual-blank`; earlier slug `local-bin-not-arrow` is not reused). Last six families were sensory substitution (103), private incubation log (104), weak-signal hypothesis ledger (105), human-machine co-agency (106), opt-in gesture or gaze as local input (107), and collective-memory miss board (108). Candidate draft only: `local-cooccur-not-cause` in `drafts/109-local-cooccur-not-cause/`. One-line: Local co-occur-not-cause; a sealed pair class hashes to a cause-refusal id; the cause sentence and any meaning gloss are discarded and are not in the hash; a co-occurrence mark is not a cause and not a synchronicity; unattested default. No hold-gate issue was opened. Live site copy was not changed. No pair card was added to a live page. No arrow, coefficient, r-value, significance score, constellation timeline, angel-number gloss, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 108)
 
