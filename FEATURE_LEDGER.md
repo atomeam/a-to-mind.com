@@ -44,9 +44,14 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 103. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 104. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 104)
+
+Queue was still empty on 2026-10-07. Run 104 did **not** invent a Used row and did **not** promote the run 027–103 candidates. Family: private incubation log, reused only after the six-run cooldown (last family use was run 092, slug `local-unopened-return`; earlier slugs `local-held-cue-stub`, `local-private-incubation-log`, and `local-blanked-prompt-card` are not reused). Last six families were anomalous-event timeline (098), quiet-signal filter (099), non-lexical intent capture (100), attention/interoception (101), interval timing (102), and sensory substitution (103). Candidate draft only: `local-onset-not-answer` in `drafts/104-local-onset-not-answer/`. One-line: Local onset-not-answer; a sealed onset class hashes to an answer-refusal id; the answer sentence is discarded and is not in the hash; an onset mark is not an answer and not a retrieved image; unattested default. No hold-gate issue was opened. Live site copy was not changed. No onset card was added to a live page. No audio cue, sleep tracker, dream-report recorder, countdown, lucidity score, image field, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 103)
+
 
 Queue was still empty on 2026-10-07. Run 103 did **not** invent a Used row and did **not** promote the run 027–102 candidates. Family: sensory substitution, reused only after the six-run cooldown (last family use was run 091, slug `local-pair-not-language`; earlier slugs `local-encoding-not-scene` and `local-proxy-channel-card` are not reused). Last six families were correlation-not-causation sync view (097), anomalous-event timeline (098), quiet-signal filter (099), non-lexical intent capture (100), attention/interoception (101), and interval timing (102). Candidate draft only: `local-carrier-budget` in `drafts/103-local-carrier-budget/`. One-line: Local carrier budget; a sealed carrier class hashes to a sight-refusal id; no image, sonification, or restored-sense field exists on the page; a carrier token is a budget line, not sight and not a scene recovered through sound or touch; unattested default. No hold-gate issue was opened. Live site copy was not changed. No carrier card was added to a live page. No camera, microphone, Web Audio oscillator, vibration, sonification, image-to-sound map, tongue array, implant-equivalence score, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
