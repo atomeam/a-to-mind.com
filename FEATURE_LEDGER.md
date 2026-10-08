@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 121. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 122. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 122)
+
+Queue was still empty on 2026-10-08. Run 122 did **not** invent a Used row and did **not** promote the run 027–121 candidates. Family: anomalous-event timeline, reused only after the six-run cooldown (last family use was run 110, slug `local-stamp-not-plot`; earlier slugs `local-cluster-not-wave`, `local-sort-not-arc`, `local-unfilled-span`, and `local-anomaly-timeline` are not reused). Last six families were private incubation log (116), weak-signal hypothesis ledger (117), human-machine co-agency (118), opt-in gesture or gaze as local input (119), collective-memory miss board (120), and correlation-not-causation sync view (121). Candidate draft only: `local-gap-not-bridge` in `drafts/122-local-gap-not-bridge/`. One-line: Local gap-not-bridge; two sealed class seats and a locked empty gap seat hash to a bridge-refusal id; the bridge sentence is discarded and is not in the hash; a gap mark is not a bridge and not a missing event; unattested default. No hold-gate issue was opened. Live site copy was not changed. No gap card was added to a live page. No date axis, connecting line, span duration, flap score, era name, sequence id, next/prev link, inserted event, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 121)
 
@@ -445,6 +449,7 @@ Queue was empty on 2026-09-30. Run 027 did **not** invent a Used row. Candidate 
 
 | run | date | family | slug | status |
 |---|---|---|---|---|
+| 122 | 2026-10-08 | anomalous-event timeline | local-gap-not-bridge | candidate, not used |
 | 121 | 2026-10-08 | correlation-not-causation sync view | local-beside-not-because | candidate, not used |
 | 116 | 2026-10-08 | private incubation log | local-shelf-not-solve | candidate, not used |
 | 115 | 2026-10-08 | sensory substitution | local-strip-not-sight | candidate, not used |
