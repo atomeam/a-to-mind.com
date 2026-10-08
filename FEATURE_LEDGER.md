@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 107. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 108. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 108)
+
+Queue was still empty on 2026-10-08. Run 108 did **not** invent a Used row and did **not** promote the run 027–107 candidates. Family: collective-memory miss board, reused only after the six-run cooldown (last family use was run 096, slug `local-shared-blank`; earlier slug `local-pair-recall-gap` is not reused). Last six families were interval timing (102), sensory substitution (103), private incubation log (104), weak-signal hypothesis ledger (105), human-machine co-agency (106), and opt-in gesture or gaze as local input (107). Candidate draft only: `local-miss-not-flip` in `drafts/108-local-miss-not-flip/`. One-line: Local miss-not-flip; a sealed miss class hashes to a flip-refusal id; the flip sentence and any crowd tally are discarded and are not in the hash; a miss mark is not a flip and not a shared canon; unattested default. No hold-gate issue was opened. Live site copy was not changed. No miss card was added to a live page. No poll, vote tally, crowd percentage, quiz score, timeline-shift badge, shared-canon seal, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 107)
 
