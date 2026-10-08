@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 110. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 111. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 111)
+
+Queue was still empty on 2026-10-08. Run 111 did **not** invent a Used row and did **not** promote the run 027–110 candidates. Family: quiet-signal filter, reused only after the six-run cooldown (last family use was run 099, slug `local-hush-not-speech`; earlier slugs `local-closed-gate`, `local-underfloor-stub`, and `local-quiet-signal-filter` are not reused). Last six families were weak-signal hypothesis ledger (105), human-machine co-agency (106), opt-in gesture or gaze as local input (107), collective-memory miss board (108), correlation-not-causation sync view (109), and anomalous-event timeline (110). Candidate draft only: `local-squelch-not-lift` in `drafts/111-local-squelch-not-lift/`. One-line: Local squelch-not-lift; a sealed squelch class hashes to a lift-refusal id; the lift sentence is discarded and is not in the hash; a squelch mark is not a lift and not a recovered channel; unattested default. No hold-gate issue was opened. Live site copy was not changed. No squelch card was added to a live page. No microphone, AudioContext, FFT, SNR number, open-gate control, lift badge, recovered-channel chip, notch control, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 110)
 
