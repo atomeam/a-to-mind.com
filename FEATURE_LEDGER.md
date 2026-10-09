@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 136. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 137. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 137)
+
+Queue was still empty on 2026-10-09. Run 137 did **not** invent a Used row and did **not** promote the run 027–136 candidates. Family: attention/interoception, reused only after the six-run cooldown (last family use was run 125, slug `local-split-not-sense`; earlier slugs `local-confidence-not-gauge`, `local-attend-not-pulse`, `local-count-withheld`, `local-attention-schema-note`, `local-felt-locus-card`, and `local-notice-lag-bin` are not reused). Last six families were opt-in gesture or gaze as local input (131), collective-memory miss board (132), correlation-not-causation sync view (133), anomalous-event timeline (134), quiet-signal filter (135), and non-lexical intent capture (136). Candidate draft only: `local-probe-not-wander` in `drafts/137-local-probe-not-wander/`. One-line: Local probe-not-wander; a sealed probe class hashes to a wander-refusal id; the wander sentence is discarded and is not in the hash; a probe mark is not a wander score and not a mind-wandering diagnosis; unattested default. No hold-gate issue was opened. Live site copy was not changed. No probe card was added to a live page. No camera, microphone, PPG, ECG, pupil tracker, EEG, experience-sampling percent, BPM field, HRV score, arousal gauge, body-map diagnosis, wander badge, promote control, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 136)
 
@@ -505,6 +509,7 @@ Queue was empty on 2026-09-30. Run 027 did **not** invent a Used row. Candidate 
 
 | run | date | family | slug | status |
 |---|---|---|---|---|
+| 137 | 2026-10-09 | attention/interoception | local-probe-not-wander | candidate, not used |
 | 134 | 2026-10-09 | anomalous-event timeline | local-pin-not-episode | candidate, not used |
 | 133 | 2026-10-09 | correlation-not-causation sync view | local-window-not-wire | candidate, not used |
 | 132 | 2026-10-09 | collective-memory miss board | local-sure-not-shift | candidate, not used |
