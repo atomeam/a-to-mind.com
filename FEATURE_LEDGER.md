@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 126. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 127. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 127)
+
+Queue was still empty on 2026-10-08. Run 127 did **not** invent a Used row and did **not** promote the run 027–126 candidates. Family: sensory substitution, reused only after the six-run cooldown (last family use was run 115, slug `local-strip-not-sight`; earlier slugs `local-carrier-budget`, `local-pair-not-language`, `local-encoding-not-scene`, `local-proxy-channel-card`, and `local-cross-sense-map` are not reused). Last six families were correlation-not-causation sync view (121), anomalous-event timeline (122), quiet-signal filter (123), non-lexical intent capture (124), attention/interoception (125), and interval timing (126). Candidate draft only: `local-band-not-object` in `drafts/127-local-band-not-object/`. One-line: Local band-not-object; a sealed band class hashes to an object-refusal id; the object sentence is discarded and is not in the hash; a band mark is not an object and not a recovered scene; unattested default. No hold-gate issue was opened. Live site copy was not changed. No band card was added to a live page. No camera, getUserMedia, microphone, Web Audio, sonification playback, tongue array, electrode count, acuity score, implant-equivalence badge, functional-vision badge, object name in the hash, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 126)
 
@@ -465,6 +469,7 @@ Queue was empty on 2026-09-30. Run 027 did **not** invent a Used row. Candidate 
 
 | run | date | family | slug | status |
 |---|---|---|---|---|
+| 127 | 2026-10-08 | sensory substitution | local-band-not-object | candidate, not used |
 | 122 | 2026-10-08 | anomalous-event timeline | local-gap-not-bridge | candidate, not used |
 | 121 | 2026-10-08 | correlation-not-causation sync view | local-beside-not-because | candidate, not used |
 | 116 | 2026-10-08 | private incubation log | local-shelf-not-solve | candidate, not used |
