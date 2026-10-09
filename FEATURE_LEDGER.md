@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 133. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 134. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 134)
+
+Queue was still empty on 2026-10-09. Run 134 did **not** invent a Used row and did **not** promote the run 027–133 candidates. Family: anomalous-event timeline, reused only after the six-run cooldown (last family use was run 122, slug `local-gap-not-bridge`; earlier slugs `local-stamp-not-plot`, `local-cluster-not-wave`, `local-sort-not-arc`, `local-unfilled-span`, and `local-anomaly-timeline` are not reused). Last six families were private incubation log (128), weak-signal hypothesis ledger (129), human-machine co-agency (130), opt-in gesture or gaze as local input (131), collective-memory miss board (132), and correlation-not-causation sync view (133). Candidate draft only: `local-pin-not-episode` in `drafts/134-local-pin-not-episode/`. One-line: Local pin-not-episode; a sealed pin class hashes to an episode-refusal id; the episode sentence is discarded and is not in the hash; a pin mark is not an episode and not a continuous anomalous event; unattested default. No hold-gate issue was opened. Live site copy was not changed. No pin card was added to a live page. No date axis, connecting line, next/prev control, flap score, era name, sequence id, episode badge, inserted event, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 133)
 
@@ -493,6 +497,8 @@ Queue was empty on 2026-09-30. Run 027 did **not** invent a Used row. Candidate 
 
 | run | date | family | slug | status |
 |---|---|---|---|---|
+| 134 | 2026-10-09 | anomalous-event timeline | local-pin-not-episode | candidate, not used |
+| 133 | 2026-10-09 | correlation-not-causation sync view | local-window-not-wire | candidate, not used |
 | 132 | 2026-10-09 | collective-memory miss board | local-sure-not-shift | candidate, not used |
 | 131 | 2026-10-09 | opt-in gesture or gaze as local input | local-glance-not-grant | candidate, not used |
 | 130 | 2026-10-09 | human-machine co-agency | local-veto-not-consent | candidate, not used |
