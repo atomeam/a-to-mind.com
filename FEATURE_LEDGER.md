@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 137. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 138. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 138)
+
+Queue was still empty on 2026-10-09. Run 138 did **not** invent a Used row and did **not** promote the run 027–137 candidates. Family: interval timing, reused only after the six-run cooldown (last family use was run 126, slug `local-lapse-not-stretch`; earlier slugs `local-gate-not-rate`, `local-mark-not-span`, `local-indifference-blank`, `local-scalar-tick-stub`, `local-two-clock-gap-card`, and `local-interval-timing-note` are not reused). Last six families were collective-memory miss board (132), correlation-not-causation sync view (133), anomalous-event timeline (134), quiet-signal filter (135), non-lexical intent capture (136), and attention/interoception (137). Candidate draft only: `local-before-not-long` in `drafts/138-local-before-not-long/`. One-line: Local before-not-long; a sealed before class hashes to a long-refusal id; the long sentence is discarded and is not in the hash; a before mark is not a long interval and not a clock reading; unattested default. No hold-gate issue was opened. Live site copy was not changed. No before card was added to a live page. No performance clock, Date duration, setTimeout measure, requestAnimationFrame span, millisecond field, Weber fraction, dilation score, chronostasis badge, missing-time claim, order-as-length badge, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 137)
 
