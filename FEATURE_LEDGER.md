@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 127. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 128. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 128)
+
+Queue was still empty on 2026-10-08. Run 128 did **not** invent a Used row and did **not** promote the run 027–127 candidates. Family: private incubation log, reused only after the six-run cooldown (last family use was run 116, slug `local-shelf-not-solve`; earlier slugs `local-onset-not-answer`, `local-unopened-return`, `local-held-cue-stub`, `local-private-incubation-log`, and `local-blanked-prompt-card` are not reused). Last six families were anomalous-event timeline (122), quiet-signal filter (123), non-lexical intent capture (124), attention/interoception (125), interval timing (126), and sensory substitution (127). Candidate draft only: `local-defer-not-dream` in `drafts/128-local-defer-not-dream/`. One-line: Local defer-not-dream; a sealed defer class hashes to a dream-refusal id; the dream sentence is discarded and is not in the hash; a defer mark is not a dream and not a hypnagogic scene; unattested default. No hold-gate issue was opened. Live site copy was not changed. No defer card was added to a live page. No audio cue, sleep tracker, dream-report recorder, Dormio link, countdown, bottle-drop timer, lucidity score, image field, insight badge, scene replay, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 127)
 
