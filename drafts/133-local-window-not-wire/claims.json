@@ -1,0 +1,18 @@
+{
+  "slug": "local-window-not-wire",
+  "run": 133,
+  "family": "correlation-not-causation sync view",
+  "status": "unattested",
+  "emit": false,
+  "seal": false,
+  "preimage": "window-not-wire|v1|<class>|wire-refusal|status=unattested",
+  "excluded": ["wire sentence", "disconfirm line", "post text", "timestamps", "coefficients"],
+  "classes": {
+    "withheld": "f38a586492ee037131b04645545414e299805cbe295589802624ac1822d851fa",
+    "same-window": "dab0e0a0a5321369256e1bdceff082d1228aa7a617faeacfffaf7a7c959d9a1f",
+    "shared-clock": "87fc2a429eef839b0bd4c455330d400901203605e7e54bf719b90273b8d874b8",
+    "separate-sources": "3c8554011c6d37b55dd24df92176d06e1ee5c892e3d48e520b4c5268cfd9a92b",
+    "abstain": "ac8a8dfc1e298bfc67326ba13f44e65b7f33404939f9cda090ec54ce382d2c99",
+    "local-only": "0c520ab800e49ddcfd0febc8b176e10e0d6a17f7a25be126d42c4879b8e41bf4"
+  }
+}

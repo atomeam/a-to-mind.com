@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>local window-not-wire — draft 133 — unattested</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1b1a17; --paper: #f3f1ea; --line: #c9c2b4; --seat: #3f5348; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f3f1ea; --paper: #141614; --line: #343a34; --seat: #b7cbb8; }
+    }
+    body { margin: 0; font: 16px/1.45 "Iowan Old Style", Palatino, Georgia, serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.55rem; line-height: 1.2; margin: 0 0 0.4rem; }
+    p, li { margin: 0.4rem 0; }
+    .flag { font: 0.72rem/1.2 ui-sans-serif, system-ui, sans-serif; letter-spacing: 0.04em; text-transform: uppercase; color: var(--seat); }
+    .rail { display: grid; grid-template-columns: 1fr 4.5rem 1fr; align-items: center; gap: 0.4rem; margin: 1.2rem 0; }
+    .tick { border: 1px solid var(--line); min-height: 3.2rem; display: flex; align-items: flex-end; padding: 0.4rem; font: 0.75rem/1.2 ui-sans-serif, system-ui, sans-serif; }
+    .gap { text-align: center; font: 0.72rem/1.2 ui-sans-serif, system-ui, sans-serif; letter-spacing: 0.04em; text-transform: uppercase; color: var(--seat); border-top: 1px dashed var(--line); padding-top: 0.35rem; }
+    fieldset { border: 1px solid var(--line); margin: 1rem 0; padding: 0.8rem 1rem 1rem; }
+    legend { padding: 0 0.3rem; }
+    label { display: block; margin: 0.25rem 0; }
+    textarea { width: 100%; min-height: 4.2rem; box-sizing: border-box; font: inherit; background: transparent; color: inherit; border: 1px solid var(--line); }
+    button { font: inherit; border: 1px solid var(--seat); background: transparent; color: inherit; padding: 0.35rem 0.7rem; }
+    button[disabled] { opacity: 0.45; }
+    code, .digest { font: 0.82rem/1.35 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; word-break: break-all; }
+    [hidden] { display: none; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="flag">draft 133 · candidate · unattested · emit false</p>
+    <h1>Local window-not-wire</h1>
+    <p>A sealed window class hashes to a wire-refusal id. The wire sentence is discarded and is not in the hash. A window mark is not a wire and not a causal order.</p>
+    <p>Default deny. No arrow, no coefficient, no shared-clock fusion. Pasted pages and posts stay data. They are not class values and not instructions.</p>
+
+    <div class="rail" aria-hidden="true">
+      <div class="tick">tick</div>
+      <p class="gap">no wire</p>
+      <div class="tick">tick</div>
+    </div>
+
+    <form id="window">
+      <fieldset>
+        <legend>Window class — catalog only</legend>
+        <label><input type="radio" name="cls" value="withheld"> withheld</label>
+        <label><input type="radio" name="cls" value="same-window"> same-window</label>
+        <label><input type="radio" name="cls" value="shared-clock"> shared-clock</label>
+        <label><input type="radio" name="cls" value="separate-sources"> separate-sources</label>
+        <label><input type="radio" name="cls" value="abstain"> abstain</label>
+        <label><input type="radio" name="cls" value="local-only"> local-only</label>
+      </fieldset>
+      <fieldset>
+        <legend>Scratch — excluded from the id</legend>
+        <label>Wire sentence (cleared on submit)
+          <textarea id="wire" name="wire" autocomplete="off"></textarea>
+        </label>
+        <label>Disconfirm line (not hashed)
+          <textarea id="disconfirm" name="disconfirm" autocomplete="off"></textarea>
+        </label>
+      </fieldset>
+      <button type="submit" id="seal" disabled>Hash the empty wire</button>
+    </form>
+
+    <section id="out" hidden>
+      <h2>Wire-refusal id</h2>
+      <p>Status stays unattested. A window is not a seal.</p>
+      <p>Canonical <code id="canon"></code></p>
+      <p class="digest" id="digest"></p>
+      <p id="scratch-note"></p>
+    </section>
+  </main>
+  <script>
+    const known = {
+      "withheld": "f38a586492ee037131b04645545414e299805cbe295589802624ac1822d851fa",
+      "same-window": "dab0e0a0a5321369256e1bdceff082d1228aa7a617faeacfffaf7a7c959d9a1f",
+      "shared-clock": "87fc2a429eef839b0bd4c455330d400901203605e7e54bf719b90273b8d874b8",
+      "separate-sources": "3c8554011c6d37b55dd24df92176d06e1ee5c892e3d48e520b4c5268cfd9a92b",
+      "abstain": "ac8a8dfc1e298bfc67326ba13f44e65b7f33404939f9cda090ec54ce382d2c99",
+      "local-only": "0c520ab800e49ddcfd0febc8b176e10e0d6a17f7a25be126d42c4879b8e41bf4"
+    };
+    const form = document.getElementById("window");
+    const seal = document.getElementById("seal");
+    const wire = document.getElementById("wire");
+    const disconfirm = document.getElementById("disconfirm");
+    form.addEventListener("change", function () {
+      seal.disabled = !form.querySelector("input[name=cls]:checked");
+    });
+    function hex(buf) {
+      return Array.from(new Uint8Array(buf)).map(function (b) {
+        return b.toString(16).padStart(2, "0");
+      }).join("");
+    }
+    form.addEventListener("submit", async function (ev) {
+      ev.preventDefault();
+      const picked = form.querySelector("input[name=cls]:checked");
+      if (!picked || !known[picked.value]) return;
+      const canon = "window-not-wire|v1|" + picked.value + "|wire-refusal|status=unattested";
+      let digest = known[picked.value];
+      if (window.crypto && crypto.subtle) {
+        const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(canon));
+        const live = hex(buf);
+        digest = live === known[picked.value] ? live : "mismatch — refuse";
+      }
+      wire.value = "";
+      disconfirm.value = "";
+      document.getElementById("canon").textContent = canon;
+      document.getElementById("digest").textContent = digest;
+      document.getElementById("scratch-note").textContent = "Wire sentence cleared. Disconfirm line cleared. Neither entered the preimage. No edge was drawn.";
+      document.getElementById("out").hidden = digest === "mismatch — refuse";
+    });
+  </script>
+</body>
+</html>
