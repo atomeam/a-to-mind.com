@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 130. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 131. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 131)
+
+Queue was still empty on 2026-10-09. Run 131 did **not** invent a Used row and did **not** promote the run 027–130 candidates. Family: opt-in gesture or gaze as local input, reused only after the six-run cooldown (last family use was run 119, slug `local-raw-not-aim`; earlier slugs `local-region-not-order`, `local-lift-not-confirm`, `local-dwell-not-select`, `local-opt-in-gaze-note`, and `local-region-token-slip` are not reused). Last six families were attention/interoception (125), interval timing (126), sensory substitution (127), private incubation log (128), weak-signal hypothesis ledger (129), and human-machine co-agency (130). Candidate draft only: `local-glance-not-grant` in `drafts/131-local-glance-not-grant/`. One-line: Local glance-not-grant; a sealed glance class hashes to a grant-refusal id; the grant sentence and any coordinate or device number are discarded and are not in the hash; a glance mark is not a grant and not a selection; unattested default. No hold-gate issue was opened. Live site copy was not changed. No glance card was added to a live page. No camera, getUserMedia, WebGazer, dwell timer, pointer lock, gaze trace, selection score, eye-tracking badge, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 130)
 
@@ -481,6 +485,7 @@ Queue was empty on 2026-09-30. Run 027 did **not** invent a Used row. Candidate 
 
 | run | date | family | slug | status |
 |---|---|---|---|---|
+| 131 | 2026-10-09 | opt-in gesture or gaze as local input | local-glance-not-grant | candidate, not used |
 | 130 | 2026-10-09 | human-machine co-agency | local-veto-not-consent | candidate, not used |
 | 127 | 2026-10-08 | sensory substitution | local-band-not-object | candidate, not used |
 | 122 | 2026-10-08 | anomalous-event timeline | local-gap-not-bridge | candidate, not used |
