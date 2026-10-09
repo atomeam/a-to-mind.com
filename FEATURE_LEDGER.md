@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 125. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 126. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 126)
+
+Queue was still empty on 2026-10-08. Run 126 did **not** invent a Used row and did **not** promote the run 027–125 candidates. Family: interval timing, reused only after the six-run cooldown (last family use was run 114, slug `local-gate-not-rate`; earlier slugs `local-mark-not-span`, `local-indifference-blank`, `local-scalar-tick-stub`, `local-two-clock-gap-card`, and `local-interval-timing-note` are not reused). Last six families were collective-memory miss board (120), correlation-not-causation sync view (121), anomalous-event timeline (122), quiet-signal filter (123), non-lexical intent capture (124), and attention/interoception (125). Candidate draft only: `local-lapse-not-stretch` in `drafts/126-local-lapse-not-stretch/`. One-line: Local lapse-not-stretch; a sealed lapse class hashes to a stretch-refusal id; the stretch sentence is discarded and is not in the hash; a lapse mark is not a stretch and not a clock reading; unattested default. No hold-gate issue was opened. Live site copy was not changed. No lapse card was added to a live page. No performance clock, Date duration, setTimeout measure, requestAnimationFrame span, saccade tracker, Weber fraction, millisecond field, dilation score, chronostasis badge, missing-time claim, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 125)
 
