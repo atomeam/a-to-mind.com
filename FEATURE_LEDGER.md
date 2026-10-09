@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 138. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 139. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 139)
+
+Queue was still empty on 2026-10-09. Run 139 did **not** invent a Used row and did **not** promote the run 027–138 candidates. Family: sensory substitution, reused only after the six-run cooldown (last family use was run 127, slug `local-band-not-object`; earlier slugs `local-strip-not-sight`, `local-carrier-budget`, `local-pair-not-language`, `local-encoding-not-scene`, `local-proxy-channel-card`, and `local-cross-sense-map` are not reused). Last six families were correlation-not-causation sync view (133), anomalous-event timeline (134), quiet-signal filter (135), non-lexical intent capture (136), attention/interoception (137), and interval timing (138). Candidate draft only: `local-grain-not-picture` in `drafts/139-local-grain-not-picture/`. One-line: Local grain-not-picture; a sealed grain class hashes to a picture-refusal id; the picture sentence is discarded and is not in the hash; a grain mark is not a picture and not a recovered scene; unattested default. No hold-gate issue was opened. Live site copy was not changed. No grain card was added to a live page. No camera, getUserMedia, microphone, Web Audio, sonification playback, tongue array, electrode count, acuity score, implant-equivalence badge, functional-vision badge, picture name in the hash, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 138)
 
@@ -513,6 +517,7 @@ Queue was empty on 2026-09-30. Run 027 did **not** invent a Used row. Candidate 
 
 | run | date | family | slug | status |
 |---|---|---|---|---|
+| 139 | 2026-10-09 | sensory substitution | local-grain-not-picture | candidate, not used |
 | 137 | 2026-10-09 | attention/interoception | local-probe-not-wander | candidate, not used |
 | 134 | 2026-10-09 | anomalous-event timeline | local-pin-not-episode | candidate, not used |
 | 133 | 2026-10-09 | correlation-not-causation sync view | local-window-not-wire | candidate, not used |
