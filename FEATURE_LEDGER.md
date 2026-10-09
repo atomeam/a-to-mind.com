@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 134. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 135. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 135)
+
+Queue was still empty on 2026-10-09. Run 135 did **not** invent a Used row and did **not** promote the run 027–134 candidates. Family: quiet-signal filter, reused only after the six-run cooldown (last family use was run 123, slug `local-bin-not-spike`; earlier slugs `local-squelch-not-lift`, `local-hush-not-speech`, `local-closed-gate`, `local-underfloor-stub`, and `local-quiet-signal-filter` are not reused). Last six families were weak-signal hypothesis ledger (129), human-machine co-agency (130), opt-in gesture or gaze as local input (131), collective-memory miss board (132), correlation-not-causation sync view (133), and anomalous-event timeline (134). Candidate draft only: `local-rest-not-tone` in `drafts/135-local-rest-not-tone/`. One-line: Local rest-not-tone; a sealed rest class hashes to a tone-refusal id; the tone sentence is discarded and is not in the hash; a rest mark is not a tone and not a carrier lock; unattested default. No hold-gate issue was opened. Live site copy was not changed. No rest card was added to a live page. No microphone, AudioContext, FFT, frequency field, SNR number, squelch-open control, carrier-lock badge, tone badge, promote control, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 134)
 
