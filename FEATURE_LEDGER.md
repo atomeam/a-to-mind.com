@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 135. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 136. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 136)
+
+Queue was still empty on 2026-10-09. Run 136 did **not** invent a Used row and did **not** promote the run 027–135 candidates. Family: non-lexical intent capture, reused only after the six-run cooldown (last family use was run 124, slug `local-residue-not-caption`; earlier slugs `local-trace-not-lexeme`, `local-press-not-word`, `local-gloss-withheld`, `local-empty-lexeme-slot`, and `local-nonlexical-intent-note` are not reused). Last six families were human-machine co-agency (130), opt-in gesture or gaze as local input (131), collective-memory miss board (132), correlation-not-causation sync view (133), anomalous-event timeline (134), and quiet-signal filter (135). Candidate draft only: `local-stroke-not-sentence` in `drafts/136-local-stroke-not-sentence/`. One-line: Local stroke-not-sentence; a sealed stroke class hashes to a sentence-refusal id; the sentence is discarded and is not in the hash; a stroke mark is not a sentence and not a decoded intention; unattested default. No hold-gate issue was opened. Live site copy was not changed. No stroke card was added to a live page. No microphone, camera, EEG, fMRI, implant, letter board, facilitator, inner-speech decoder, word field, password phrase, WPM score, vocabulary size, mind-read badge, caption chip, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 135)
 
