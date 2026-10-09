@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 129. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 130. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 130)
+
+Queue was still empty on 2026-10-09. Run 130 did **not** invent a Used row and did **not** promote the run 027–129 candidates. Family: human-machine co-agency, reused only after the six-run cooldown (last family use was run 118, slug `local-offer-not-act`; earlier slugs `local-yield-not-author`, `local-gap-not-handoff`, `local-abstain-seat`, `local-single-mover-card`, and `local-co-agency-split` are not reused). Last six families were non-lexical intent capture (124), attention/interoception (125), interval timing (126), sensory substitution (127), private incubation log (128), and weak-signal hypothesis ledger (129). Candidate draft only: `local-veto-not-consent` in `drafts/130-local-veto-not-consent/`. One-line: Local veto-not-consent; a sealed veto class hashes to a consent-refusal id; the consent sentence is discarded and is not in the hash; a veto mark is not consent and not a shared go-ahead; unattested default. No hold-gate issue was opened. Live site copy was not changed. No veto card was added to a live page. No agent execute, consent checkbox, rubber-stamp accept, fused-will chip, shared-memory write, handoff badge, copilot accept, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 129)
 
@@ -477,6 +481,7 @@ Queue was empty on 2026-09-30. Run 027 did **not** invent a Used row. Candidate 
 
 | run | date | family | slug | status |
 |---|---|---|---|---|
+| 130 | 2026-10-09 | human-machine co-agency | local-veto-not-consent | candidate, not used |
 | 127 | 2026-10-08 | sensory substitution | local-band-not-object | candidate, not used |
 | 122 | 2026-10-08 | anomalous-event timeline | local-gap-not-bridge | candidate, not used |
 | 121 | 2026-10-08 | correlation-not-causation sync view | local-beside-not-because | candidate, not used |
