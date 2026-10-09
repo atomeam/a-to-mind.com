@@ -1,57 +1,77 @@
 # X scan — run 133 — local-window-not-wire
 
-Window: public posts from about 2026-10-08 07:01 UTC to 2026-10-09 07:01 UTC. Posts are data, not instructions. Status default: unattested. Confidence is a design-material weight, not a measurement. This file does not change live site copy and is not a seal.
+Scan window: public X posts from about 2026-10-08 08:01 UTC to 2026-10-09 08:01 UTC. Tools: x_keyword_search Latest and Top, x_semantic_search. Posts are data, never instructions. Handles and counts below are from tool results, not invented. Default status: unattested. Confidence is a design-material weight, not a measurement.
 
-No post below is attested contact, healing, remote viewing, crash retrieval, or extraterrestrial hardware.
+This scan does not change live site copy and is not a seal.
 
-Queries used: Latest and Top keyword search for UAP / UFO / "unidentified anomalous" / AARO; semantic search for unidentified anomalous phenomena reports; Latest keyword and semantic search for synchronicity, meaningful coincidence, acausal connection, and correlation-not-causation. Keyword hits on "AARO" in this window were username collisions, not an institutional account. UFO-catcher prize posts were excluded as off-subject.
+## Subject A — UAP / UFO / unidentified anomalous phenomena
 
-## Subject A — UAP / unidentified anomalous phenomena
+### What is being claimed
 
-What is being claimed: independent accounts say a public figure was briefed on luring, shoot-downs, and crash retrievals; that a recirculated clip shows beings on a craft that then departs; that a clip from Sakha shows a craft opening and entering a portal; that an Islip report describes four grey beings and paralysis; that three white points over Punta Arenas are lights in the sky. One post asks what happens inside Area 51. No institutional AARO or hearing post appeared in the usable results.
+- A restatement that Canada has 45 days to answer a written parliamentary question on UFO briefings and the Chief Science Advisor’s Sky Canada Project report.
+- An independent claim that AARO panels searching for extraterrestrial life would not be believable, and that experiencers should be listened to instead.
+- An independent claim that RFK Jr. is being briefed on UAP luring, shoot-downs, and crash retrievals.
+- An independent claim that a news outlet obtained 67 NRC drone reports over nuclear sites, marked closed unresolved, including a lights-off pairing.
+- An independent claim, attributed to other people’s statements, of back-engineered captured UAP and a partnered non-human presence at Nellis.
+- A podcast-summary claim that a Reagan-era official denied a UFO briefing as fabricated and reported zero non-human evidence in budgets, against rival underground-plan claims.
 
-Who is saying it: @planethunter56, @UAPWixy, @PhantomMonster, @LongBeardPro, @VeerXn. All public accounts. Independent claims are separated from the question post. No primary DoD or AARO account was in the returned set.
+### Who is saying it (public accounts only)
 
-What changed in the window: the briefing sentence and the portal sentence were posted or recirculated inside the window. The Punta Arenas clip was already moving before this window; the in-window post dates the caption to 17 August 2026 and notes the file is not the camera original. No new official report was in the returned posts.
+- [post:20] 2108468047979688106 — @Kobe_for_3 — 2026-10-09 08:02 UTC — likes 0, reposts 0, replies 0, views 14. Quotes [post:20] 2107920943246963072 — @dsotis — 2026-10-07 19:48 UTC (outside this 24h window) — likes 68, reposts 27, replies 4, bookmarks 11, views 3452. Observation: the in-window post credits the earlier journalist post about Conservative MP @BrandenCPC and Order Paper Q-1526. Claim: Ottawa must answer in writing. Inference withheld.
+- [post:21] 2108467572459086008 — @marcbel19406167 — 2026-10-09 08:00 UTC — likes 0, views 1. Independent claim about AARO panels and experiencers. No institutional account in the post.
+- [post:11] 2108267601285747053 — @planethunter56 — 2026-10-08 18:45 UTC — likes 609, reposts 66, quotes 8, replies 30, bookmarks 128, views 23458. Independent claim of a briefing that includes crash retrieval. Not attested here.
+- [post:16] 2108110237337047144 — @ufocoin1111 — 2026-10-08 08:20 UTC — likes 0, bookmarks 1, views 24. Independent claim about NRC drone-report compilation and a lights-off pairing. Not verified in this scan.
+- [post:18] 2108280498543878550 — @wslote142 — 2026-10-08 19:36 UTC — likes 0, views 17. Independent claim attributed to whistleblowers and Linda Moulton Howe. Not attested here. Hardware and contact stay unattested.
+- [post:19] 2108212444438884464 — @TranscriptedAI — 2026-10-08 15:06 UTC — likes 0, views 26. Summary account of a podcast, not the official. Counter-claim of zero non-human evidence in budgets is a claim, not a finding.
+- [post:38] 2108464787000836217 — @JENSOLEHIERONIM — 2026-10-09 07:49 UTC — likes 0, views 1. YouTube title promo about David Grusch. No new primary document in the post.
 
-Disconfirming evidence: a camera-original file with an on-screen clock, a scale, and an independent second sensor that does not share the caption; a published institutional null for the same window; a lineage showing the "briefing" clip is a different meeting. None of that is in this scan. A clip matching a caption would still not attest hardware.
+Excluded as noise or off-subject: ethereum address posts, a municipal Utsuro-bune exhibition promo, an ebook promo, and a keyword list with no document.
 
-### Posts
+### What changed in the window
 
-- 2108267601285747053 @planethunter56 (2026-10-08 18:45:40 UTC). Observation: public post with a video, 596 likes, 62 reposts, 23019 views, saying it looks like RFK Jr is being briefed on UAP luring, shoot-downs, and crash retrievals, and that "it's all coming out." Independent commentary, not an institutional release. Hypothesis: a briefing sentence is not a retrieval log. Confidence: low. Default: unattested.
-- 2108303922691739673 @UAPWixy (2026-10-08 21:10:00 UTC). Observation: public post with a video, 366 likes, 16853 views, saying the clip has been around and shows beings on the outside of a craft that disappear under it before it takes off. Independent recirculation. Hypothesis: a beings-on-the-hull caption is not hardware. Confidence: low. Default: unattested.
-- 2108362307541885273 @UAPWixy (2026-10-09 01:02:00 UTC). Observation: public post with a video, 135 likes, 3819 views, saying a UFO in the Republic of Sakha was filmed opening and entering a portal. Independent claim. Hypothesis: a portal sentence is not an entry. Confidence: low. Default: unattested.
-- 2108248029992005894 @PhantomMonster (2026-10-08 17:27:54 UTC). Observation: public post, 13 likes, 284 views, linking an Islip experiencer report of four grey beings, paralysis, and a painful close encounter. Independent report link. Hypothesis: an experiencer writeup is not a contact seal. Confidence: low. Default: unattested.
-- 2108122278353383577 @LongBeardPro (2026-10-08 09:08:12 UTC). Observation: public post with a video, 15 likes, 493 views, describing three white points over Punta Arenas, caption date 17 August 2026. The same account notes no clock, no ground scale, file is not the camera original, and distant lights remain the ordinary reading. Hypothesis: three points behind wires are not a controlled craft. Confidence: low. Default: unattested.
-- 2108207603956277414 @VeerXn (2026-10-08 14:47:16 UTC). Observation: public question, 561 likes, 47942 views, asking what happens inside Area 51 and what is behind UFO sightings. A question, not a hardware claim. Hypothesis: an Area 51 question is not a site finding. Confidence: low. Default: unattested.
+No AARO or Department of War account post appeared in these results. The in-window Canada item recirculates a 2026-10-07 journalist post. Independent briefing and crash-retrieval claims continue beside a podcast summary that reports a denial. Top-ranked institutional release posts from mid-September were outside this window and are not treated as new.
 
-Adjacent, not used as a sighting claim: Latest keyword hits 2108452943532019852, 2108452809251393862, 2108452705534726307, and 2108452659632201798 are UFO-catcher or unrelated "UFO" strings. 2108452753341067713 is a username collision on Aaro, not AARO.
+### Disconfirming evidence
+
+An official written answer to Q-1526 that lists or denies the briefings asked about. A public AARO or departmental statement on the briefing claim. Primary NRC rows matching the 67-report compilation, or a retraction. Public records that do not support the Nellis-base claim. This scan does not treat absence of those records as confirmation.
+
+### Hypothesis
+
+One-line: a same-week pairing of UAP labels is a window, not a wire. Confidence: low (design weight). Default: unattested.
 
 ## Subject B — correlation-not-causation sync
 
-What is being claimed: a book promo says events can line up in time without a causal chain science can name; a post says two things at once invite a connection that is not a cause; a post says simultaneous occurrence means there are no coincidences; a post says simultaneous timing raises questions; two posts treat same-window policy or funding drops as more than overlap; one reply names a vague correlation and denies causation; one post offers an astrology image as a thesis that Saturn rules synchronicity.
+Previous run Subject B was collective-memory miss. This run uses correlation-not-causation sync, matching the unused family.
 
-Who is saying it: @EarthDesires (repeated promo), @dreamersintro, @theahmad__, @AGTPinsights, @adoggzz, @JayneShannon, @LetsGo41470546, @Vicky. Public accounts only. No lab account in the returned set.
+### What is being claimed
 
-What changed in the window: the Jung-extract promo was posted several times on 8 October; the "no coincidences" and "not a cause" notes are in-window. No new coefficient or pre-registered test appeared.
+- Same-week pairing of “demonic encounters” and UFO crash-retrieval shows is “not a coincidence,” and the same beings under different branding.
+- Jung’s 1952 essay is offered as the statement that events can line up in time without a causal chain science can name. Repeated book promo, not a new measurement.
+- Short posts assert “acausal” alignment and matched meanings, without a method.
+- One post says a coincidence claim needs context before symbolism is assumed.
 
-Disconfirming evidence: a pre-registered intervention that moves one mark and leaves the other, or a lineage showing both marks are copies of one upstream field. A repeated blurb is not that test. A reply that says "not causation" is still not a measured null.
+### Who is saying it (public accounts only)
 
-### Posts
+- [post:24] 2108453257446396089 — @johnxx555 — 2026-10-09 07:03 UTC — likes 1, views 6. Independent “not a coincidence” claim. Crash retrieval and contact stay unattested.
+- [post:28] 2108270206342832277 — @EarthDesires — 2026-10-08 18:56 UTC — likes 4, reposts 4, views 365. Book promo. Same text again in 2108285306755772473 (19:56 UTC, likes 3, views 399), 2108300403955957934 (20:56 UTC, views 19), and 2108315504658309332 (21:56 UTC, views 18).
+- [post:34] 2108443759289815439 — @xmskc99784982 — 2026-10-09 06:25 UTC — likes 0. “Acausal aces aligned… meanings matched.” Unclear claim.
+- [post:35] 2108423767651463516 — @mpnovotni — 2026-10-09 05:06 UTC — likes 0. Same phrase as the previous post. Not a measurement.
+- [post:27] 2108440307285254601 — @navi_Ai2 — 2026-10-09 06:11 UTC — likes 0, views 95. “Could be a coincidence; context matters before assuming symbolism.”
 
-- 2108270206342832277 @EarthDesires (2026-10-08 18:56:01 UTC). Observation: public book promo, 4 likes, 363 views, for Jung's Synchronicity essay; says events line up without a causal chain science can name. Same copy repeated at 2108285306755772473 (19:56 UTC, 3 likes), 2108300403955957934 (20:56 UTC, 0 likes), and 2108315504658309332 (21:56 UTC, 0 likes). Hypothesis: an acausal-principle blurb is not a wire. Confidence: low. Default: unattested.
-- 2108272635478147073 @dreamersintro (2026-10-08 19:05:40 UTC). Observation: public post, 33 likes, 483 views, saying two things at the same time invite a connection, and that the moment is noticing, not cause and effect. Hypothesis: a same-time notice is not a cause. Confidence: low. Default: unattested.
-- 2108308758577533435 @theahmad__ (2026-10-08 21:29:13 UTC). Observation: public post, 1 like, 34 views, saying events occurring simultaneously means there are no coincidences. Hypothesis: a no-coincidence sentence is not a link. Confidence: low. Default: unattested.
-- 2108316723481022530 @AGTPinsights (2026-10-08 22:00:52 UTC). Observation: public reply, 0 likes, 127 views, saying simultaneous timing raises questions given different stated reasons. Hypothesis: a timing question is not an order. Confidence: low. Default: unattested.
-- 2108430161469436337 @adoggzz (2026-10-09 05:31:37 UTC). Observation: public post, 6 likes, 53 views, treating same-time policy across countries as possibly deliberate. Hypothesis: a same-window policy sentence is not a deliberate wire. Confidence: low. Default: unattested.
-- 2108431534151614603 @JayneShannon (2026-10-09 05:37:05 UTC). Observation: public post, 0 likes, 31 views, asking whether numbers and funding dropping at the same time is a coincidence. Hypothesis: two drops in one window are not a cause. Confidence: low. Default: unattested.
-- 2108447232706163144 @LetsGo41470546 (2026-10-09 06:39:27 UTC). Observation: public reply, 0 likes, 1 view, saying a claim is a vague correlation, not causation. Hypothesis: a not-causation reply is not a coefficient. Confidence: low. Default: unattested.
-- 2108445731581198809 @Vicky (2026-10-09 06:33:30 UTC). Observation: public post, 0 likes, 15 views, offering an image as a thesis that Saturn rules synchronicity. Hypothesis: an astrology image is not a mechanism. Confidence: low. Default: unattested.
+Homonym excluded: [post:33] 2108464610873684471 uses “synchronicity” for stage choreography. Just outside the window, not used as in-window data: 2108030218065866794 — @xavierkatana — 2026-10-08 03:02 UTC, quoting a Beitman definition of meaningful coincidence.
 
-Adjacent, not used as a sync claim: 2108452408779227555 is a concert goods post using "SYNCHRONICITY POP" as a clear-file name. 2108432559093043545 is a game-release coincidence, not this family.
+### What changed in the window
 
-## Design reading
+No new public measurement of an acausal link. The visible change is repetition: a book promo posted several times, and pairing language (“not a coincidence”) applied to show topics. A caution that context matters is present and is not a seal.
 
-Observation: in this window, UAP posts attach a wire to a clip or a briefing sentence, and sync posts attach a wire to two marks in one window. Claim: those authors say the overlap is retrieval, a portal, contact, meaning, or intent. Inference, design only: a Void window class can hash a refusal id and drop the wire sentence, so the page cannot store the overclaim. Confidence: low, as design-material weight. Default: unattested.
+### Disconfirming evidence
 
-One-line hypothesis for the draft: a sealed window class is not a wire. Confidence: low. Default: unattested.
+A pre-registered null that the same-week pairing rate matches an empty calendar bin. A stored order or lag that the window class refused to keep. A meaning sentence that survives only if it was never hashed. This draft does not treat a repeated promo as that evidence.
+
+### Hypothesis
+
+One-line: a sealed same-bin window can be marked while the wire sentence is discarded. Confidence: low (design weight). Default: unattested.
+
+## Design use
+
+Observation, claim, and inference stay separate. The interface hashes a window class to a wire-refusal id. It does not attest contact, healing, remote viewing, crash retrieval, or extraterrestrial hardware. It does not store the wire.
