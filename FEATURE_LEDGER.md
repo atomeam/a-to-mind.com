@@ -44,7 +44,11 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 139. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 140. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 140)
+
+Queue was still empty on 2026-10-09. Run 140 did **not** invent a Used row and did **not** promote the run 027–139 candidates. Family: private incubation log, reused only after the six-run cooldown (last family use was run 128, slug `local-defer-not-dream`; earlier slugs `local-shelf-not-solve`, `local-onset-not-answer`, `local-unopened-return`, `local-held-cue-stub`, `local-private-incubation-log`, and `local-blanked-prompt-card` are not reused). Last six families were anomalous-event timeline (134), quiet-signal filter (135), non-lexical intent capture (136), attention/interoception (137), interval timing (138), and sensory substitution (139). Candidate draft only: `local-return-not-match` in `drafts/140-local-return-not-match/`. One-line: Local return-not-match; a sealed return class hashes to a match-refusal id; the match sentence is discarded and is not in the hash; a return mark is not a match and not a solved incubation; unattested default. No hold-gate issue was opened. Live site copy was not changed. No return card was added to a live page. No audio cue, sleep tracker, dream-report recorder, Dormio link, countdown, bottle-drop timer, lucidity score, image field, insight badge, match score, scene replay, morning-yield badge, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
 ## Halt (run 139)
 
