@@ -44,7 +44,7 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 143. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 144. Do not invent slugs in this file without a human adding them.)_
 
 ## Halt (run 141)
 
@@ -57,3 +57,7 @@ Queue was still empty on 2026-10-10. Run 142 did **not** invent a Used row and d
 ## Halt (run 143)
 
 Queue was still empty on 2026-10-10. Run 143 did **not** invent a Used row and did **not** promote prior candidates. Family: human-machine co-agency (unused in the prior six runs; last six were attention/interoception 137, interval timing 138, sensory substitution 139, private incubation log 140, collective-memory miss board 141, anomalous-event timeline 142). Candidate draft only: `local-propose-not-commit` in `drafts/143-local-propose-not-commit/`. One-line: Local propose-not-commit; a sealed human proposal class hashes to a machine-execution-refusal id; the execution sentence is discarded and is not in the hash; a proposal mark is not an execution and not a co-authored action; unattested default. No hold-gate issue was opened. Live site copy was not changed. No proposal card was added to a live page. No execution, co-authored action, shared-memory write, camera, microphone, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 144)
+
+Queue was still empty on 2026-10-10. Run 144 did **not** invent a Used row and did **not** promote prior candidates. Family: weak-signal hypothesis ledger (unused in the prior six runs; last six were interval timing 138, sensory substitution 139, private incubation log 140, collective-memory miss board 141, anomalous-event timeline 142, human-machine co-agency 143). Candidate draft only: `local-weak-not-attest` in `drafts/144-local-weak-not-attest/`. One-line: Local weak-not-attest; a client-side SHA-256 of a weak-signal observation + hypothesis + unattested flag marks the item as discardable ledger data; the hash is not an attestation, not a claim seal, and not a promotion to fact; unattested default. No hold-gate issue was opened. Live site copy was not changed. No weak-signal card was added to a live page. No promotion to claim, attestation, shared-memory write, camera, microphone, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
