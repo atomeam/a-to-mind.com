@@ -44,9 +44,12 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 141. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 142. Do not invent slugs in this file without a human adding them.)_
 
 ## Halt (run 141)
 
 Queue was still empty on 2026-10-10. Run 141 did **not** invent a Used row and did **not** promote the run 027–140 candidates. Family: collective-memory miss board, reused only after the six-run cooldown (last family use was run 132, slug `local-sure-not-shift`; earlier slugs `local-echo-not-record`, `local-miss-not-flip`, `local-schema-not-miss`, `local-shared-blank`, `local-pair-recall-gap`, `local-collective-miss-board`, and `local-quorum-not-edit` are not reused). Last six families were quiet-signal filter (135), non-lexical intent capture (136), attention/interoception (137), interval timing (138), sensory substitution (139), and private incubation log (140). Candidate draft only: `local-private-not-shared` in `drafts/141-local-private-not-shared/`. One-line: Local private-not-shared; a sealed private recall class hashes to a shared-refusal id; the shared sentence is discarded and is not in the hash; a private mark is not a shared memory and not a collective edit; unattested default. No hold-gate issue was opened. Live site copy was not changed. No private card was added to a live page. No poll, vote tally, crowd percentage, confidence score, timeline edit, canon write, shared-memory write, camera, microphone, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
 
+## Halt (run 142)
+
+Queue was still empty on 2026-10-10. Run 142 did **not** invent a Used row and did **not** promote prior candidates. Family: anomalous-event timeline (unused in the prior six runs). Candidate draft only: `local-stamp-not-seal` in `drafts/142-local-stamp-not-seal/`. One-line: Local stamp-not-seal; a client-side SHA-256 of a candidate event date + hypothesis + unattested flag marks the item as discardable data; the stamp is not a seal, not a shared timeline edit, and not an attestation; unattested default. No hold-gate issue was opened. Live site copy was not changed. No stamp was added to a live page. No timeline edit, canon write, shared-memory write, camera, microphone, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
