@@ -44,7 +44,7 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 152. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 153. Do not invent slugs in this file without a human adding them.)_
 
 ## Halt (run 141)
 
@@ -93,3 +93,7 @@ Queue was still empty on 2026-10-11. Run 151 did **not** invent a Used row and d
 ## Halt (run 152)
 
 Queue was still empty on 2026-10-11. Run 152 did **not** invent a Used row and did **not** promote prior candidates. Family: private incubation log (unused in the prior six runs; last six were correlation-not-causation sync view 146, quiet-signal filter 147, non-lexical intent capture 148, attention/interoception 149, interval timing 150, sensory substitution 151; prior use was run 140). Candidate draft only: `local-incubate-not-attest` in `drafts/152-local-incubate-not-attest/`. One-line: Local incubate-not-attest; a sealed local incubation observation class hashes to an attestation-refusal id; the claim sentence is discarded and is not in the hash; an incubation mark is not an attested experience and not a shared log; unattested default. No hold-gate issue was opened. Live site copy was not changed. No incubation card was added to a live page. No shared log, attestation, shared-memory write, camera, microphone, EEG, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 153)
+
+Queue was still empty on 2026-10-11. Run 153 did **not** invent a Used row and did **not** promote prior candidates. Family: weak-signal hypothesis ledger (unused in the prior six runs; last six were quiet-signal filter 147, non-lexical intent capture 148, attention/interoception 149, interval timing 150, sensory substitution 151, private incubation log 152; prior use was run 144, slug `local-weak-not-attest`). Candidate draft only: `local-faint-not-promote` in `drafts/153-local-faint-not-promote/`. One-line: Local faint-not-promote; a sealed local weak-signal observation class hashes to a promotion-refusal id; the promotion sentence is discarded and is not in the hash; a faint mark is not a promoted signal and not an attested hypothesis; unattested default. No hold-gate issue was opened. Live site copy was not changed. No faint card was added to a live page. No promotion, attestation, shared-memory write, camera, microphone, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
