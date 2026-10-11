@@ -44,7 +44,7 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 151. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 152. Do not invent slugs in this file without a human adding them.)_
 
 ## Halt (run 141)
 
@@ -89,3 +89,7 @@ Queue was still empty on 2026-10-11. Run 150 did **not** invent a Used row and d
 ## Halt (run 151)
 
 Queue was still empty on 2026-10-11. Run 151 did **not** invent a Used row and did **not** promote prior candidates. Family: sensory substitution (unused in the prior six runs; last six were opt-in gesture or gaze as local input 145, correlation-not-causation sync view 146, quiet-signal filter 147, non-lexical intent capture 148, attention/interoception 149, interval timing 150; prior use was run 139). Candidate draft only: `local-proxy-not-sense` in `drafts/151-local-proxy-not-sense/`. One-line: Local proxy-not-sense; a sealed local sensory-substitution class hashes to a native-sense-refusal id; the native-sense sentence is discarded and is not in the hash; a substitution mark is not a native sense and not an attested perception; unattested default. No hold-gate issue was opened. Live site copy was not changed. No substitution card was added to a live page. No camera, microphone, native-sense claim, attested perception, shared-memory write, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 152)
+
+Queue was still empty on 2026-10-11. Run 152 did **not** invent a Used row and did **not** promote prior candidates. Family: private incubation log (unused in the prior six runs; last six were correlation-not-causation sync view 146, quiet-signal filter 147, non-lexical intent capture 148, attention/interoception 149, interval timing 150, sensory substitution 151; prior use was run 140). Candidate draft only: `local-incubate-not-attest` in `drafts/152-local-incubate-not-attest/`. One-line: Local incubate-not-attest; a sealed local incubation observation class hashes to an attestation-refusal id; the claim sentence is discarded and is not in the hash; an incubation mark is not an attested experience and not a shared log; unattested default. No hold-gate issue was opened. Live site copy was not changed. No incubation card was added to a live page. No shared log, attestation, shared-memory write, camera, microphone, EEG, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
