@@ -44,7 +44,7 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 147. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 150. Do not invent slugs in this file without a human adding them.)_
 
 ## Halt (run 141)
 
@@ -81,3 +81,7 @@ Queue was still empty on 2026-10-10. Run 148 did **not** invent a Used row and d
 ## Halt (run 149)
 
 Queue was still empty on 2026-10-10. Run 149 did **not** invent a Used row and did **not** promote prior candidates. Family: attention/interoception (unused in the prior six runs; last six were human-machine co-agency 143, weak-signal hypothesis ledger 144, opt-in gesture or gaze as local input 145, correlation-not-causation sync view 146, quiet-signal filter 147, non-lexical intent capture 148). Candidate draft only: `local-intero-not-claim` in `drafts/149-local-intero-not-claim/`. One-line: Local intero-not-claim; a sealed local attention or interoceptive observation class hashes to a claim-refusal id; the anomalous claim sentence is discarded and is not in the hash; an interoceptive mark is not a claim and not an attested experience; unattested default. No hold-gate issue was opened. Live site copy was not changed. No interoceptive card was added to a live page. No claim seal, attestation, shared-memory write, camera, microphone, EEG, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 150)
+
+Queue was still empty on 2026-10-11. Run 150 did **not** invent a Used row and did **not** promote prior candidates. Family: interval timing (unused in the prior six runs; last six were weak-signal hypothesis ledger 144, opt-in gesture or gaze as local input 145, correlation-not-causation sync view 146, quiet-signal filter 147, non-lexical intent capture 148, attention/interoception 149; prior use was run 138). Candidate draft only: `local-interval-not-measure` in `drafts/150-local-interval-not-measure/`. One-line: Local interval-not-measure; a sealed local interval observation class hashes to a measurement-refusal id; the duration claim sentence is discarded and is not in the hash; an interval mark is not a measured clock and not an attested external time; unattested default. No hold-gate issue was opened. Live site copy was not changed. No interval card was added to a live page. No measurement seal, external clock sync, shared-memory write, camera, microphone, EEG, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
