@@ -44,7 +44,7 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 153. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 154. Do not invent slugs in this file without a human adding them.)_
 
 ## Halt (run 141)
 
@@ -97,3 +97,7 @@ Queue was still empty on 2026-10-11. Run 152 did **not** invent a Used row and d
 ## Halt (run 153)
 
 Queue was still empty on 2026-10-11. Run 153 did **not** invent a Used row and did **not** promote prior candidates. Family: weak-signal hypothesis ledger (unused in the prior six runs; last six were quiet-signal filter 147, non-lexical intent capture 148, attention/interoception 149, interval timing 150, sensory substitution 151, private incubation log 152; prior use was run 144, slug `local-weak-not-attest`). Candidate draft only: `local-faint-not-promote` in `drafts/153-local-faint-not-promote/`. One-line: Local faint-not-promote; a sealed local weak-signal observation class hashes to a promotion-refusal id; the promotion sentence is discarded and is not in the hash; a faint mark is not a promoted signal and not an attested hypothesis; unattested default. No hold-gate issue was opened. Live site copy was not changed. No faint card was added to a live page. No promotion, attestation, shared-memory write, camera, microphone, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 154)
+
+Queue was still empty on 2026-10-11. Run 154 did **not** invent a Used row and did **not** promote prior candidates. Family: human-machine co-agency (unused in the prior six runs; last six were non-lexical intent capture 148, attention/interoception 149, interval timing 150, sensory substitution 151, private incubation log 152, weak-signal hypothesis ledger 153; prior use was run 143, slug `local-propose-not-commit`). Candidate draft only: `local-boundary-not-merge` in `drafts/154-local-boundary-not-merge/`. One-line: Local boundary-not-merge; a sealed local human-boundary class hashes to a merge-refusal id; the co-agency merge sentence is discarded and is not in the hash; a boundary mark is not a merged action and not a shared execution; unattested default. No hold-gate issue was opened. Live site copy was not changed. No boundary card was added to a live page. No merge, shared execution, co-authored action, shared-memory write, camera, microphone, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
