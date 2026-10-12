@@ -44,7 +44,7 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 159. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 160. Do not invent slugs in this file without a human adding them.)_
 
 ## Halt (run 141)
 
@@ -65,3 +65,7 @@ Queue was still empty on 2026-10-12. Run 158 did **not** invent a Used row and d
 ## Halt (run 159)
 
 Queue was still empty on 2026-10-12. Run 159 did **not** invent a Used row and did **not** promote prior candidates. Family: attention/interoception (unused in the prior six runs; last six were weak-signal hypothesis ledger 153, human-machine co-agency 154, opt-in gesture or gaze as local input 155, correlation-not-causation sync view 156, anomalous-event timeline 157, quiet-signal filter 158; prior use was run 149, slug `local-intero-not-claim`). Candidate draft only: `local-sensation-not-claim` in `drafts/159-local-sensation-not-claim/`. One-line: Local sensation-not-claim; a sealed local sensation class hashes to an attestation-refusal id; the report sentence is discarded and is not in the hash; a felt mark is not a claim and not a signal; unattested default. No hold-gate issue was opened. Live site copy was not changed. No sensation card was added to a live page. No report seal, claim sentence, detection score, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 160)
+
+Queue was still empty on 2026-10-12. Run 160 did **not** invent a Used row and did **not** promote prior candidates. Family: interval timing (unused in the prior six runs; last six were human-machine co-agency 154, opt-in gesture or gaze as local input 155, correlation-not-causation sync view 156, anomalous-event timeline 157, quiet-signal filter 158, attention/interoception 159; prior use was run 150, slug `local-interval-not-measure`). Candidate draft only: `local-span-not-clock` in `drafts/160-local-span-not-clock/`. One-line: Local span-not-clock; a sealed local interval class hashes to a clock-refusal id; the measurement sentence is discarded and is not in the hash; a span mark is not a clock and not a duration measure; unattested default. No hold-gate issue was opened. Live site copy was not changed. No span card was added to a live page. No clock seal, duration number, measurement sentence, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
