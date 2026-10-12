@@ -44,7 +44,7 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 161. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 162. Do not invent slugs in this file without a human adding them.)_
 
 ## Halt (run 141)
 
@@ -73,3 +73,7 @@ Queue was still empty on 2026-10-12. Run 160 did **not** invent a Used row and d
 ## Halt (run 161)
 
 Queue was still empty on 2026-10-12. Run 161 did **not** invent a Used row and did **not** promote prior candidates. Family: sensory substitution (unused in the prior six runs; last six were opt-in gesture or gaze as local input 155, correlation-not-causation sync view 156, anomalous-event timeline 157, quiet-signal filter 158, attention/interoception 159, interval timing 160; prior use was run 151). Candidate draft only: `local-map-not-sense` in `drafts/161-local-map-not-sense/`. One-line: Local map-not-sense; a sealed local sensory-channel class hashes to a replacement-refusal id; the substitution sentence is discarded and is not in the hash; a channel mark is not a sense and not a replacement; unattested default. No hold-gate issue was opened. Live site copy was not changed. No map card was added to a live page. No substitution seal, replacement claim, sense restoration badge, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 162)
+
+Queue was still empty on 2026-10-12. Run 162 did **not** invent a Used row and did **not** promote prior candidates. Family: private incubation log (unused in the prior six runs; last six were correlation-not-causation sync view 156, anomalous-event timeline 157, quiet-signal filter 158, attention/interoception 159, interval timing 160, sensory substitution 161; prior use was run 152). Candidate draft only: `local-incubate-not-log` in `drafts/162-local-incubate-not-log/`. One-line: Local incubate-not-log; a sealed local incubation class hashes to a log-refusal id; the record sentence is discarded and is not in the hash; an incubation mark is not a log and not a recall; unattested default. No hold-gate issue was opened. Live site copy was not changed. No incubation card was added to a live page. No log seal, recall claim, dream-record badge, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
