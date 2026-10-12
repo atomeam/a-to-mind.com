@@ -44,7 +44,7 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 157. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 158. Do not invent slugs in this file without a human adding them.)_
 
 ## Halt (run 141)
 
@@ -57,3 +57,7 @@ Queue was still empty on 2026-10-11. Run 156 did **not** invent a Used row and d
 ## Halt (run 157)
 
 Queue was still empty on 2026-10-11. Run 157 did **not** invent a Used row and did **not** promote prior candidates. Family: anomalous-event timeline (unused in the prior six runs; last six were sensory substitution 151, private incubation log 152, weak-signal hypothesis ledger 153, human-machine co-agency 154, opt-in gesture or gaze as local input 155, correlation-not-causation sync view 156; prior use was run 122, slug `local-gap-not-bridge`). Candidate draft only: `local-isolated-not-sequence` in `drafts/157-local-isolated-not-sequence/`. One-line: Local isolated-not-sequence; a sealed event class hashes to a sequence-refusal id; the connecting or arc sentence is discarded and is not in the hash; an isolated mark is not a timeline and not a pattern; unattested default. No hold-gate issue was opened. Live site copy was not changed. No timeline card was added to a live page. No chronological arc, wave label, cluster badge, connecting line, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 158)
+
+Queue was still empty on 2026-10-12. Run 158 did **not** invent a Used row and did **not** promote prior candidates. Family: quiet-signal filter (unused in the prior six runs; last six were private incubation log 152, weak-signal hypothesis ledger 153, human-machine co-agency 154, opt-in gesture or gaze as local input 155, correlation-not-causation sync view 156, anomalous-event timeline 157; prior use was run 135). Candidate draft only: `local-filter-not-boost` in `drafts/158-local-filter-not-boost/`. One-line: Local filter-not-boost; a sealed quiet class hashes to a boost-refusal id; the amplify sentence is discarded and is not in the hash; a filter mark is not a boost and not a detection; unattested default. No hold-gate issue was opened. Live site copy was not changed. No filter card was added to a live page. No boost badge, detection score, amplify sentence, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
