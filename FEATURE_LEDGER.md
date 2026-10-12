@@ -44,7 +44,7 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 158. Do not invent slugs in this file without a human adding them.)_
+_(empty as of run 159. Do not invent slugs in this file without a human adding them.)_
 
 ## Halt (run 141)
 
@@ -61,3 +61,7 @@ Queue was still empty on 2026-10-11. Run 157 did **not** invent a Used row and d
 ## Halt (run 158)
 
 Queue was still empty on 2026-10-12. Run 158 did **not** invent a Used row and did **not** promote prior candidates. Family: quiet-signal filter (unused in the prior six runs; last six were private incubation log 152, weak-signal hypothesis ledger 153, human-machine co-agency 154, opt-in gesture or gaze as local input 155, correlation-not-causation sync view 156, anomalous-event timeline 157; prior use was run 135). Candidate draft only: `local-filter-not-boost` in `drafts/158-local-filter-not-boost/`. One-line: Local filter-not-boost; a sealed quiet class hashes to a boost-refusal id; the amplify sentence is discarded and is not in the hash; a filter mark is not a boost and not a detection; unattested default. No hold-gate issue was opened. Live site copy was not changed. No filter card was added to a live page. No boost badge, detection score, amplify sentence, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 159)
+
+Queue was still empty on 2026-10-12. Run 159 did **not** invent a Used row and did **not** promote prior candidates. Family: attention/interoception (unused in the prior six runs; last six were weak-signal hypothesis ledger 153, human-machine co-agency 154, opt-in gesture or gaze as local input 155, correlation-not-causation sync view 156, anomalous-event timeline 157, quiet-signal filter 158; prior use was run 149, slug `local-intero-not-claim`). Candidate draft only: `local-sensation-not-claim` in `drafts/159-local-sensation-not-claim/`. One-line: Local sensation-not-claim; a sealed local sensation class hashes to an attestation-refusal id; the report sentence is discarded and is not in the hash; a felt mark is not a claim and not a signal; unattested default. No hold-gate issue was opened. Live site copy was not changed. No sensation card was added to a live page. No report seal, claim sentence, detection score, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
