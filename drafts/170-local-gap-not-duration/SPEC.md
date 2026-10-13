@@ -1,0 +1,1 @@
+$(cat /tmp/drafts/170-local-gap-not-duration/SPEC.md)
