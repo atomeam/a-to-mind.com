@@ -2,5 +2,5 @@
 # Suggested-by: Void (run 118). Enable: git config core.hooksPath .githooks
 if git diff --cached --name-only | grep -qx FEATURE_LEDGER.md; then
   tmp=$(mktemp); git show :FEATURE_LEDGER.md > "$tmp"
-  bash tools/check-ledger.sh "$tmp" || { rm -f "$tmp"; exit 1; }; rm -f "$tmp"
+  prev=$(mktemp); git show HEAD:FEATURE_LEDGER.md > "$prev" 2>/dev/null || :; bash tools/check-ledger.sh "$tmp" "$prev" || { rm -f "$tmp"; exit 1; }; rm -f "$tmp"
 fi
