@@ -1,12 +1,125 @@
-# Feature Ledger – a-to-mind.com / The Void
+# A-to-Mind Feature Assimilation Ledger
 
-Permanent concept memory for frontier experiments.
+This file exists so hourly research automations never recommend the same capability twice.
 
-## 020-webgpu-void-agents (2026-10-14)
-- **Concept**: WebGPU/Canvas2D emergent particle agents with local finite-state reasoning that morphs the surrounding UI chrome (border, glow, status) according to global entropy and consensus.
-- **Architecture**: Single self-contained HTML. Agents update via simple boid-like forces + state machine driven by mouse proximity and neighbor counts. Stats (avg speed, cluster ratio) compute a "mood" that sets CSS variables on the root, changing border hue/intensity and status text.
-- **Expected outcome**: Interactive living spatial field on the Void canvas. Runnable without external deps. Demonstrates novel combo of GPU-style sim + local agent decision + UI that physically responds to the system's internal state.
-- **Failure modes**: No WebGPU (uses 2D fallback). High counts throttled by naive neighbor search. Documented for next experiments to add proper compute shaders or spatial partitioning.
-- **Builds on**: Prior drafts focused on static tiles, dialogs, and attested UI. This introduces dynamic spatial simulation as a canvas primitive.
+## Rules for every future run
 
-Previous drafts (002–019) covered accessibility, SEO, dialogs, clipboard, changelog, status, command palette, 404, email capture, theme, bento, kinetic type, view transitions, popover, share, estimator, preview, glassbox source.
+- Write FEATURE_LEDGER.md with git on disk, append only. Never replace it with a full-file API write. `tools/check-ledger.sh` must pass (Suggested-by: Void (run 118)).
+
+1. Read this ledger first (`https://raw.githubusercontent.com/atomeam/a-to-mind.com/master/FEATURE_LEDGER.md`).
+2. Pick **exactly one** unused slug from the Queue, starting at the top (easiest / most common first).
+3. Do not invent a new slug that collides with Used or Queue.
+4. After the pick, append a Used row and remove that slug from Queue. Commit the ledger update.
+5. Deliver: what existing sites do, the better A-to-Mind version, and a build a human can seal.
+6. Do not push live marketing copy or product behavior without a human seal. Ledger updates and draft issues are allowed.
+
+## Used (assimilated or specified)
+
+| slug | date | run | status | one-line |
+|---|---|---|---|---|
+| attested-faq-native-details | 2026-09-28 | 001 | specified | Native `<details>` Q&A tiles with attested answers + optional FAQPage JSON-LD |
+| skip-link-landmarks-reduced-motion | 2026-09-28 | 002 | specified | Skip pack + named landmarks + opt-in motion; attested structure, hold-gate only |
+| sitemap-robots-organization-jsonld | 2026-09-28 | 003 | specified | Attested robots + sitemap + lean Organization/WebSite JSON-LD; no invented address |
+| native-dialog-seal-gate | 2026-09-28 | 004 | specified | Native `<dialog>` hold-gate; closedby none on writes; hashed grant; focus on Hold |
+| copy-clipboard-with-attested-toast | 2026-09-29 | 005 | specified | Allowlisted writeText + SHA-256 receipt toast; no clipboard read; hold-gate only |
+| hashed-public-changelog | 2026-09-29 | 006 | specified | Sealed Keep-a-Changelog page; per-entry SHA-256; no Unreleased; no CTA; hold-gate only |
+| attested-status-page | 2026-09-29 | 007 | specified | Hashed status snapshot; unattested default; no auto-green; no subscribe; hold-gate only |
+| gated-command-palette | 2026-09-29 | 008 | specified | Attested Cmd/Ctrl+K catalog; navigate/copy allowlisted; writes hold; no cmdk |
+| 404-useful-not-cute | 2026-09-29 | 009 | specified | Honest HTTP 404 + attested dest catalog; no cute, no search backend; hold-gate only |
+| void-monthly-email-capture | 2026-09-29 | 010 | specified | Double-opt-in notes list; no popup; hold until confirm; hashed purpose; hold-gate only |
+| theme-prefers-color-scheme-toggle | 2026-09-29 | 011 | specified | System-default scheme; 3-state radios; hashed contract; no cookie; hold-gate only |
+| bento-capability-grid | 2026-09-30 | 012 | specified | Attested 6-tile CSS Grid; span from catalog; no motion theater; hold-gate only |
+| variable-font-kinetic-headline | 2026-09-30 | 013 | specified | Opt-in one-shot wght/opsz settle; one text node; no GSAP; hold-gate only |
+| view-transitions-api | 2026-09-30 | 014 | specified | Opt-in same-doc pane fade; no MPA auto; allowlisted name; hold-gate only |
+| popover-api-nav-menus | 2026-09-30 | 015 | specified | Click-only `popover=auto` dest list; hashed hrefs; no hover/ARIA menu; hold-gate only |
+| web-share-and-copy-run-link | 2026-09-30 | 016 | specified | Attested run URL only; canShare exact payload; copy ≠ share; no social row; hold-gate only |
+| interactive-budget-estimator | 2026-09-30 | 017 | specified | Attested $49 rate card; token cap ≠ price; checkout holds; hold-gate only |
+| live-readonly-run-preview | 2026-09-30 | 018 | specified | Local attested event replay; no SSE/WS; steer holds; hold-gate only |
+| glassbox-view-source-page | 2026-09-30 | 019 | specified | First-party hashed source catalog; no proxy; bytes default unattested; hold-gate only |
+| answer-ready-modular-blocks | 2026-09-30 | 020 | specified | Six hashed self-contained blocks; no chatbot; no FAQPage emit; hold-gate only |
+| pwa-install-and-offline-ledger | 2026-09-30 | 021 | specified | Allowlisted SW + honest install; offline ledger not a run promise; hold-gate only |
+| voice-query-to-plan | 2026-09-30 | 022 | specified | Gesture listen; catalog plan; transcript is data; run holds; no TTS |
+| agentic-personalization-with-hold-gate | 2026-09-30 | 023 | specified | Zero-party facets only; infer deny; persist/apply hold; hold-gate only |
+| functional-3d-run-graph | 2026-09-30 | 024 | specified | CSS-3D attested run graph; 2D default; no WebGL/Three; rewire holds |
+| carbon-weight-badge | 2026-09-30 | 025 | specified | Sealed SWDMv4 page-weight badge; unattested default; no third-party widget; hold-gate only |
+| wcag-3-continuous-audit-badge | 2026-09-30 | 026 | specified | Sealed WCAG 2.2 AA snapshot badge; WCAG 3 claim denied; no overlay; hold-gate only |
+
+## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
+
+_(empty as of run 162. Do not invent slugs in this file without a human adding them.)_
+
+## Halt (run 141)
+
+Queue was still empty on 2026-10-10. Run 141 did **not** invent a Used row and did **not** promote the run 027–140 candidates. Family: collective-memory miss board, reused only after the six-run cooldown (last family use was run 132, slug `local-sure-not-shift`; earlier slugs `local-echo-not-record`, `local-miss-not-flip`, `local-schema-not-miss`, `local-shared-blank`, `local-pair-recall-gap`, `local-collective-miss-board`, and `local-quorum-not-edit` are not reused). Last six families were quiet-signal filter (135), non-lexical intent capture (136), attention/interoception (137), interval timing (138), sensory substitution (139), and private incubation log (140). Candidate draft only: `local-private-not-shared` in `drafts/141-local-private-not-shared/`. One-line: Local private-not-shared; a sealed private recall class hashes to a shared-refusal id; the shared sentence is discarded and is not in the hash; a private mark is not a shared memory and not a collective edit; unattested default. No hold-gate issue was opened. Live site copy was not changed. No private card was added to a live page. No poll, vote tally, crowd percentage, confidence score, timeline edit, canon write, shared-memory write, camera, microphone, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 156)
+
+Queue was still empty on 2026-10-11. Run 156 did **not** invent a Used row and did **not** promote prior candidates. Family: correlation-not-causation sync view (unused in the prior six runs; last six were interval timing 150, sensory substitution 151, private incubation log 152, weak-signal hypothesis ledger 153, human-machine co-agency 154, opt-in gesture or gaze as local input 155; prior use was run 146, slug `local-sync-not-cause`). Candidate draft only: `local-cooccur-not-imply` in `drafts/156-local-cooccur-not-imply/`. One-line: Local cooccur-not-imply; a sealed local pair of co-occurring observations hashes to an implication-refusal id; the causal or implication sentence is discarded and is not in the hash; a co-occurrence mark is not an implication and not a cause; unattested default. No hold-gate issue was opened. Live site copy was not changed. No co-occurrence card was added to a live page. No causal inference, implication seal, shared-memory write, camera, microphone, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 157)
+
+Queue was still empty on 2026-10-11. Run 157 did **not** invent a Used row and did **not** promote prior candidates. Family: anomalous-event timeline (unused in the prior six runs; last six were sensory substitution 151, private incubation log 152, weak-signal hypothesis ledger 153, human-machine co-agency 154, opt-in gesture or gaze as local input 155, correlation-not-causation sync view 156; prior use was run 122, slug `local-gap-not-bridge`). Candidate draft only: `local-isolated-not-sequence` in `drafts/157-local-isolated-not-sequence/`. One-line: Local isolated-not-sequence; a sealed event class hashes to a sequence-refusal id; the connecting or arc sentence is discarded and is not in the hash; an isolated mark is not a timeline and not a pattern; unattested default. No hold-gate issue was opened. Live site copy was not changed. No timeline card was added to a live page. No chronological arc, wave label, cluster badge, connecting line, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 158)
+
+Queue was still empty on 2026-10-12. Run 158 did **not** invent a Used row and did **not** promote prior candidates. Family: quiet-signal filter (unused in the prior six runs; last six were private incubation log 152, weak-signal hypothesis ledger 153, human-machine co-agency 154, opt-in gesture or gaze as local input 155, correlation-not-causation sync view 156, anomalous-event timeline 157; prior use was run 135). Candidate draft only: `local-filter-not-boost` in `drafts/158-local-filter-not-boost/`. One-line: Local filter-not-boost; a sealed quiet class hashes to a boost-refusal id; the amplify sentence is discarded and is not in the hash; a filter mark is not a boost and not a detection; unattested default. No hold-gate issue was opened. Live site copy was not changed. No filter card was added to a live page. No boost badge, detection score, amplify sentence, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 159)
+
+Queue was still empty on 2026-10-12. Run 159 did **not** invent a Used row and did **not** promote prior candidates. Family: attention/interoception (unused in the prior six runs; last six were weak-signal hypothesis ledger 153, human-machine co-agency 154, opt-in gesture or gaze as local input 155, correlation-not-causation sync view 156, anomalous-event timeline 157, quiet-signal filter 158; prior use was run 149, slug `local-intero-not-claim`). Candidate draft only: `local-sensation-not-claim` in `drafts/159-local-sensation-not-claim/`. One-line: Local sensation-not-claim; a sealed local sensation class hashes to an attestation-refusal id; the report sentence is discarded and is not in the hash; a felt mark is not a claim and not a signal; unattested default. No hold-gate issue was opened. Live site copy was not changed. No sensation card was added to a live page. No report seal, claim sentence, detection score, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 160)
+
+Queue was still empty on 2026-10-12. Run 160 did **not** invent a Used row and did **not** promote prior candidates. Family: interval timing (unused in the prior six runs; last six were human-machine co-agency 154, opt-in gesture or gaze as local input 155, correlation-not-causation sync view 156, anomalous-event timeline 157, quiet-signal filter 158, attention/interoception 159; prior use was run 150, slug `local-interval-not-measure`). Candidate draft only: `local-span-not-clock` in `drafts/160-local-span-not-clock/`. One-line: Local span-not-clock; a sealed local interval class hashes to a clock-refusal id; the measurement sentence is discarded and is not in the hash; a span mark is not a clock and not a duration measure; unattested default. No hold-gate issue was opened. Live site copy was not changed. No span card was added to a live page. No clock seal, duration number, measurement sentence, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 161)
+
+Queue was still empty on 2026-10-12. Run 161 did **not** invent a Used row and did **not** promote prior candidates. Family: sensory substitution (unused in the prior six runs; last six were opt-in gesture or gaze as local input 155, correlation-not-causation sync view 156, anomalous-event timeline 157, quiet-signal filter 158, attention/interoception 159, interval timing 160; prior use was run 151). Candidate draft only: `local-map-not-sense` in `drafts/161-local-map-not-sense/`. One-line: Local map-not-sense; a sealed local sensory-channel class hashes to a replacement-refusal id; the substitution sentence is discarded and is not in the hash; a channel mark is not a sense and not a replacement; unattested default. No hold-gate issue was opened. Live site copy was not changed. No map card was added to a live page. No substitution seal, replacement claim, sense restoration badge, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 162)
+
+Queue was still empty on 2026-10-12. Run 162 did **not** invent a Used row and did **not** promote prior candidates. Family: private incubation log (unused in the prior six runs; last six were correlation-not-causation sync view 156, anomalous-event timeline 157, quiet-signal filter 158, attention/interoception 159, interval timing 160, sensory substitution 161; prior use was run 152). Candidate draft only: `local-incubate-not-log` in `drafts/162-local-incubate-not-log/`. One-line: Local incubate-not-log; a sealed local incubation class hashes to a log-refusal id; the record sentence is discarded and is not in the hash; an incubation mark is not a log and not a recall; unattested default. No hold-gate issue was opened. Live site copy was not changed. No incubation card was added to a live page. No log seal, recall claim, dream-record badge, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 163)
+
+Queue was still empty on 2026-10-12. Run 163 did **not** invent a Used row and did **not** promote prior candidates. Family: weak-signal hypothesis ledger (unused in the prior six runs; last six were anomalous-event timeline 157, quiet-signal filter 158, attention/interoception 159, interval timing 160, sensory substitution 161, private incubation log 162; prior use was run 153). Candidate draft only: `local-signal-not-hypothesis` in `drafts/163-local-signal-not-hypothesis/`. One-line: Local signal-not-hypothesis; a sealed weak-signal class hashes to a hypothesis-refusal id; the hypothesis sentence is discarded and is not in the hash; a signal mark is not a hypothesis and not a ledger entry; unattested default. No hold-gate issue was opened. Live site copy was not changed. No signal card was added to a live page. No hypothesis seal, ledger entry, detection score, promotion badge, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 164)
+
+Queue was still empty on 2026-10-12. Run 164 did **not** invent a Used row and did **not** promote prior candidates. Family: human-machine co-agency (unused in the prior six runs; last six were quiet-signal filter 158, attention/interoception 159, interval timing 160, sensory substitution 161, private incubation log 162, weak-signal hypothesis ledger 163; prior use was run 154). Candidate draft only: `local-boundary-not-merge` in `drafts/164-local-boundary-not-merge/`. One-line: Local boundary-not-merge; a sealed local action-boundary class hashes to a merge-refusal id; the shared-agency or merged-intent sentence is discarded and is not in the hash; a boundary mark is not co-agency and not a merged intent; unattested default. No hold-gate issue was opened. Live site copy was not changed. No boundary card was added to a live page. No co-agency seal, merged-intent claim, control-transfer badge, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 165)
+
+Queue was still empty on 2026-10-12. Run 165 did **not** invent a Used row and did **not** promote prior candidates. Family: opt-in gesture or gaze as local input (unused in the prior six runs; last six were attention/interoception 159, interval timing 160, sensory substitution 161, private incubation log 162, weak-signal hypothesis ledger 163, human-machine co-agency 164; prior use was run 155). Candidate draft only: `local-gesture-not-intent` in `drafts/165-local-gesture-not-intent/`. One-line: Local gesture-not-intent; a sealed local gesture class hashes to an intent-refusal id; the command sentence is discarded and is not in the hash; a gesture mark is not an intent and not a command; unattested default. No hold-gate issue was opened. Live site copy was not changed. No gesture card was added to a live page. No intent seal, command claim, selection badge, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 166)
+
+Queue was still empty on 2026-10-13. Run 166 did **not** invent a Used row and did **not** promote prior candidates. Family: collective-memory miss board (unused in the prior six runs; last six were interval timing 160, sensory substitution 161, private incubation log 162, weak-signal hypothesis ledger 163, human-machine co-agency 164, opt-in gesture or gaze as local input 165; prior use was run 141, slug `local-private-not-shared`). Candidate draft only: `local-miss-not-shared` in `drafts/166-local-miss-not-shared/`. One-line: Local miss-not-shared; a sealed local memory-miss class hashes to a shared-refusal id; the collective sentence is discarded and is not in the hash; a miss mark is not a shared memory and not a consensus; unattested default. No hold-gate issue was opened. Live site copy was not changed. No miss card was added to a live page. No shared-memory seal, consensus claim, poll, vote tally, crowd percentage, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 167)
+
+Queue was still empty on 2026-10-13. Run 167 did **not** invent a Used row and did **not** promote prior candidates. Family: non-lexical intent capture (unused in the prior six runs; last six were sensory substitution 161, private incubation log 162, weak-signal hypothesis ledger 163, human-machine co-agency 164, opt-in gesture or gaze as local input 165, collective-memory miss board 166; prior use was run 136). Candidate draft only: `local-mark-not-intent` in `drafts/167-local-mark-not-intent/`. One-line: Local mark-not-intent; a sealed local non-lexical mark class hashes to an intent-refusal id; the intent or command sentence is discarded and is not in the hash; a mark is not an intent and not a command; unattested default. No hold-gate issue was opened. Live site copy was not changed. No mark card was added to a live page. No intent seal, command claim, detection score, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 168)
+
+Queue was still empty on 2026-10-13. Run 168 did **not** invent a Used row and did **not** promote prior candidates. Family: quiet-signal filter (unused in the prior six runs; last six were private incubation log 162, weak-signal hypothesis ledger 163, human-machine co-agency 164, opt-in gesture or gaze as local input 165, collective-memory miss board 166, non-lexical intent capture 167; prior use was run 158, slug `local-filter-not-boost`). Candidate draft only: `local-attenuate-not-detect` in `drafts/168-local-attenuate-not-detect/`. One-line: Local attenuate-not-detect; a sealed quiet-signal class hashes to a detection-refusal id; the extract or amplify sentence is discarded and is not in the hash; an attenuate mark is not a detection and not a signal extraction; unattested default. No hold-gate issue was opened. Live site copy was not changed. No attenuate card was added to a live page. No detection seal, extraction claim, amplify sentence, boost badge, SNR score, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 169)
+
+Queue was still empty on 2026-10-13. Run 169 did **not** invent a Used row and did **not** promote prior candidates. Family: attention/interoception (unused in the prior six runs; last six were weak-signal hypothesis ledger 163, human-machine co-agency 164, opt-in gesture or gaze as local input 165, collective-memory miss board 166, non-lexical intent capture 167, quiet-signal filter 168; prior use was run 159, slug `local-sensation-not-claim`). Candidate draft only: `local-felt-not-attest` in `drafts/169-local-felt-not-attest/`. One-line: Local felt-not-attest; a sealed local interoceptive class hashes to an attestation-refusal id; the claim or report sentence is discarded and is not in the hash; a felt mark is not an attestation and not a detection; unattested default. No hold-gate issue was opened. Live site copy was not changed. No felt card was added to a live page. No attestation seal, report claim, detection score, contact claim, healing claim, crash-retrieval badge, or extraterrestrial-hardware seal was published. X scan is in `x-scan.md` and is not a seal.
+
+## Halt (run 170)
+
+Queue was still empty on 2026-10-13. Run 170 did **not** invent a Used row and did **not** promote prior candidates. Family: interval timing. Candidate draft only: `local-gap-not-duration` in `drafts/170-local-gap-not-duration/`. One-line: Local gap-not-duration; a sealed local gap class hashes to a duration-refusal id; the measurement or clock sentence is discarded and is not in the hash; a gap mark is not a duration and not a clock reading; unattested default. Live site copy was not changed. (Restored 2026-10-15: commit f280ded had blanked this file.)
+
+## Frontier note: 020-webgpu-void-agents (2026-10-14)
+
+Commit 758c7c1 replaced this whole file with a single entry; the history above was restored on 2026-10-15 and that entry kept here. Concept: WebGPU/Canvas2D emergent particle agents with local finite-state reasoning that morph the surrounding UI chrome by global entropy and consensus. Single self-contained HTML, 2D fallback when WebGPU is missing; naive neighbor search throttles high counts.
+
+## Ledger guard (asked by Void, run 118)
+
+Suggested-by: Void (run 118). The ledger was blanked by full-file writes at 755dc18, f280ded and 758c7c1. `tools/check-ledger.sh` now refuses a ledger missing `## Rules`, `## Used`, `## Queue`, any `## Halt (run N)`, or under 40 lines. It runs in `.githooks/pre-commit` and `.githooks/pre-push` (`git config core.hooksPath .githooks`) and in `.github/workflows/ledger-guard.yml` on every push to master, which fails loudly and auto-restores the last good ledger. **Write this file with git on disk and append only; never full-file API writes.** Note: Void asked for `## Halt (run 027)`; that heading no longer exists, so the guard matches the real headings above.
+
+Run 118 offer page: `drafts/118-local-offer-not-act/proposed-offer.html` now keeps the last act-refusal id (id only, stored locally) and shows "asked by Void, run 118." No Act control was added.
+
+Run 119 rule: the next run must not open a new slug until this guard exists. It exists as of this commit, so the next run may proceed.

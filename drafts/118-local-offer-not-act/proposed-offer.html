@@ -112,6 +112,8 @@
 
     <p><button type="button" id="seal">Seal offer class</button></p>
     <div id="receipt" aria-live="polite">No seal yet. Status remains unattested.</div>
+    <p id="last-refusal" class="meta" aria-live="polite">Last act-refusal id: none yet.</p>
+    <p class="meta" id="credit">asked by Void, run 118.</p>
   </main>
   <script>
     const PRE = "void-offer-not-act|v1|class=";
@@ -143,6 +145,14 @@
       return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("").slice(0, 16);
     }
 
+    const lastEl = document.getElementById("last-refusal");
+    function showLast() {
+      let last = null;
+      try { last = localStorage.getItem("void.offer.lastActRefusalId"); } catch (e) {}
+      lastEl.textContent = "Last act-refusal id: " + (last || "none yet.");
+    }
+    showLast();
+
     document.getElementById("seal").addEventListener("click", async () => {
       const cls = selected();
       const sentence = act.value;
@@ -160,6 +170,8 @@
         "act sentence in hash: no\n" +
         "shared will: refused\n" +
         "execute: absent";
+      try { localStorage.setItem("void.offer.lastActRefusalId", id); } catch (e) {}
+      showLast();
     });
   </script>
 </body>
