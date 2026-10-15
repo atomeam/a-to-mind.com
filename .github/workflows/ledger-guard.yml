@@ -3,7 +3,7 @@ name: ledger-guard
 on:
   push:
     branches: [master]
-    paths: [FEATURE_LEDGER.md, .github/workflows/ledger-guard.yml, tools/check-ledger.sh]
+    paths: [FEATURE_LEDGER.md, .github/workflows/ledger-guard.yml, tools/check-ledger.sh, .githooks/**]
 permissions:
   contents: write
 jobs:
@@ -15,7 +15,9 @@ jobs:
           fetch-depth: 50
       - name: Check ledger
         id: check
-        run: bash tools/check-ledger.sh
+        run: |
+          git show HEAD~1:FEATURE_LEDGER.md > /tmp/prev.md 2>/dev/null || : > /tmp/prev.md
+          bash tools/check-ledger.sh FEATURE_LEDGER.md /tmp/prev.md
         continue-on-error: true
       - name: Auto-restore last good ledger
         if: steps.check.outcome == 'failure'
