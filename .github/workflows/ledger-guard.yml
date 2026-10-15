@@ -3,7 +3,7 @@ name: ledger-guard
 on:
   push:
     branches: [master]
-    paths: [FEATURE_LEDGER.md]
+    paths: [FEATURE_LEDGER.md, .github/workflows/ledger-guard.yml, tools/check-ledger.sh]
 permissions:
   contents: write
 jobs:
@@ -11,7 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with: { fetch-depth: 50 }
+        with:
+          fetch-depth: 50
       - name: Check ledger
         id: check
         run: bash tools/check-ledger.sh
@@ -33,4 +34,6 @@ jobs:
           done
       - name: Fail loudly
         if: steps.check.outcome == 'failure'
-        run: { echo "::error::FEATURE_LEDGER.md was blanked or lost sections at $GITHUB_SHA (auto-restore attempted)"; exit 1; }
+        run: |
+          echo "::error::FEATURE_LEDGER.md was blanked or lost sections at $GITHUB_SHA (auto-restore attempted)"
+          exit 1
