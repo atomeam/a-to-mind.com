@@ -12,6 +12,8 @@ This file exists so hourly research automations never recommend the same capabil
 4. After the pick, append a Used row and remove that slug from Queue. Commit the ledger update.
 5. Deliver: what existing sites do, the better A-to-Mind version, and a build a human can seal.
 6. Do not push live marketing copy or product behavior without a human seal. Ledger updates and draft issues are allowed.
+7. This ledger now feeds V01D (owner, 2026-10-15: "all the projects are V01D"; "V01D should absorb and connect everything"). Every Queue slug is a piece of V01D: deliver its draft so a V01D builder can absorb it, and name where it would land in `atomeam/void-loop` (a skill under `void-live-deploy/skills/`, a tool under `tools/`, a page) and the test that would prove it.
+8. When the Queue is empty, do not halt and do not invent a fringe slug: take V01D's next open item instead. Read `https://raw.githubusercontent.com/atomeam/void-loop/main/domains/void.frontier.md` (the open items under "Folded in from the old lists", first unclaimed first, and the "Next:" step of each) and V01D's own asks at the top of `https://raw.githubusercontent.com/atomeam/void-loop/main/domains/void.voice.md` ("Void's current asks"); add that one as a Queue slug with its source in the row, then pick it. Never name, in anything public, a product V01D studies (the owner's rule, 2026-10-13).
 
 ## Used (assimilated or specified)
 
@@ -46,7 +48,22 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Queue (easiest / most common first — do not skip ahead unless a used item is blocked)
 
-_(empty as of run 162. Do not invent slugs in this file without a human adding them.)_
+_(empty from run 162 to run 170. Filled 2026-10-15 on the owner's instruction "V01D should absorb and connect everything": each slug below is a piece of V01D from the owner's other repos or V01D's own asks; source in the row.)_
+
+| slug | source | one-line |
+|---|---|---|
+| linked-notes-backlinks | the-void (`src/lib/wiki.ts`, `mind.ts`) | Notes with [[links]], backlinks, a daily note and open tasks gathered from every page; lands as a V01D skill |
+| what-am-i-missing-over-notes | the-void (`src/lib/deepen.ts`) | One observation, one missing link, one next action over your notes, through V01D's own answer path |
+| build-loop-guard | ALPHA (`archive/aether/ALPHA_HARDENING.md`, `packages/alpha-core/src/curator.ts`) | V01D's build loop never re-proposes a failed job, caps churn on one file, catches a revert of a revert |
+| verifiable-growth-ledger | glassbox (`in-flight/schema.json`) + this ledger's hashed-public-changelog | A hash per growth line and a root hash, an Atom feed and a "today" view for V01D's growth ledger |
+| approval-gate-as-tests | HomeBase- (`src/alpha/curator.ts` and its tests) | No repeats, a rollback, the owner's co-sign above low risk, cooldown, as tested functions behind V01D's approve card |
+| health-history-incidents | HomeBase- (`server.js`) | Repeated-failure detection, incidents that open and resolve themselves tagged with the deploy, for V01D's owner page |
+| deploy-workflow-skill | auto-deploy-action (`index.ts`) | "make me a deploy workflow for netlify" as a V01D card, plus fix pages for GitHub Actions errors |
+| review-bench-from-real-bugs | auto-deploy-action (`action.yml`, `index.ts`) | The action's real bugs as cases V01D's code reviewer must catch |
+| realtime-room-engine | one of the owner's private repos (engine only; no game data) | A fixed-tick room-to-room engine with an input queue and collision, for V01D's first real-time game world |
+| sprite-sheet-from-words | one of the owner's private repos (an MIT-licensed tool; licence kept) | Sprite sheets for V01D's figures and games from a description |
+| repo-classifier-into-ouroboros | one of the owner's private repos | The file classifier and dry-run migration plans folded into V01D's Ouroboros tools |
+| velocity-on-growth-card | V01D's own ask (3 times) | A velocity line on V01D's "change day over day" card: is skill-gaining speeding up or stalling |
 
 ## Halt (run 170)
 
