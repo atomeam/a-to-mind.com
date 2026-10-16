@@ -781,3 +781,22 @@ Ledger guard restored this file from 2364112 after 49185e1 broke it. Content tha
 ## Guard restore (2026-10-16)
 
 Ledger guard restored this file from d19e41e after 5bd39d9 broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+
+
+## Frontier note: F-025 WebGPU Boids RL Mind (2026-10-16)
+
+Ledger ID: **F-025** (frontier series; not a run number).
+
+Concept: Continuous boids/flocking substrate (Canvas2D agents with local neighborhood rules; WebGPU compute path noted) whose behavioral parameters are adapted by a local Web Worker evolutionary/RL mind under selection for interaction reward (pointer density) plus velocity variance. The mind's fitness morphs the surrounding UI chrome (hue-rotate, scale, filter, HUD transform) and drives Web Audio oscillators whose frequencies and gains track fitness and params. Pointer injects forces; optional DeviceOrientationEvent supplies velocity bias; Seal hashes current params+morph into IndexedDB.
+
+Architecture: single HTML; Worker via blob maintains pop of 6 parameter genomes, evaluates fitness, mutates, returns best; main steps O(N²) boids (N≈420), draws trails, applies CSS morph and audio. Not a variation of F-020 (discrete agents+FSM), F-021 (observer classifier), F-022 (fluid regime of fixed params), F-023 (evolutionary lattice rules), or F-024 (volumetric noise + evolutionary controller). Mind is reward-seeking toward user interaction on a continuous agent substrate.
+
+Expected outcome: Interactive spatial flock that learns to attract interaction, warps the page chromatically and spatially, and sings a generative drone; sealed genomes form local memory of successful policies. Runnable with graceful fallbacks (no Worker → fixed params; no audio until gesture; no orientation → ignore).
+
+Mechanics: 420 boids, neighborhoods 60/24, params align/coh/sep/maxSpeed/maxForce; mind ~1.25 Hz; morph 0–1 drives CSS; seal SHA-256 truncated + IndexedDB.
+
+Failure modes: CSP blocks blob Worker → static params; audio blocked until user gesture; low-end drops N; orientation requires HTTPS + permission.
+
+Building block for future: true WebGPU compute boids with spatial hash, WebXR head-tracked flock, multi-agent minds competing for interaction, sealed genome breeding across sessions.
+
+Lands in V01D as spatial stage skill (skills/mini/boids-mind.js); testable via tools/boids-mind.test.mjs for reward→morph mapping.
