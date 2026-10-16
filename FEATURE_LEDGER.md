@@ -756,3 +756,20 @@ Restored 2026-10-15: commits 755dc18, 8cf8719, 8c4b307, f280ded and 758c7c1 had 
 ## Guard restore (2026-10-15)
 
 Ledger guard restored this file from aff5616 after a9eac94 broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+
+## Frontier note: F-023 WebGPU/Canvas Evolutionary Lattice Mind (2026-10-16)
+
+Ledger ID: **F-023** (frontier series; not a run number).
+
+Concept: Continuous lattice substrate (Canvas2D grid, WebGPU compute path noted) whose local update rule is itself evolved by a local Web Worker population of genomes under selection for field entropy/diversity. The mind's fitness morphs the surrounding UI chrome (border, card transform, background) and drives Web Audio sonification of field activity. Pointer seeds energy; optional DeviceOrientationEvent supplies bias; Seal hashes current genome into IndexedDB.
+
+Architecture: single HTML; Worker via blob maintains pop of 8 parameter vectors, returns best; main applies to lattice step and CSS/audio. Not a variation of F-020 (discrete agents+FSM), F-021 (observer classifier on RD/orientation), or F-022 (fluid regime bias of fixed params). Mind is an evolutionary search over the substrate rules themselves.
+
+Expected outcome: Interactive spatial field that discovers new dynamics, warps the page, and sings; sealed rule genomes form a local memory. Runnable with graceful fallbacks (no Worker, no audio, no orientation).
+
+Mechanics: 64×64 float grid, logistic+diffusion rule parameterized by 4 floats; mind ~2–3 Hz; morph radius/hue/scale; seal stores hash+params.
+
+Failure modes: CSP blocks Worker → fixed rule; audio requires gesture; low-end drops resolution.
+
+Building block for future: WebGPU compute lattice, WebXR volume view of evolved field, multi-tile seeding from sealed genomes.
+
