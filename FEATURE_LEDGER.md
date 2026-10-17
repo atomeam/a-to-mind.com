@@ -884,3 +884,14 @@ Ledger guard restored this file from af1abb5 after 991109e broke it. Content tha
 ## Guard restore (2026-10-17)
 
 Ledger guard restored this file from e1c79f8 after 7700545 broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+
+## Frontier Engine F-038 (2026-10-17)
+
+**F038-living-spatial-cards-mind**  
+Novel combination: Canvas2D spatial field (parameterized RD/logistic) evolved by Web Worker GA; real DOM cards are spatial participants whose position/scale/hue/opacity are driven by regional field samples; dragging cards seeds energy and biases fitness toward co-location responsiveness; global chrome morphs with variance. Not a variation of prior pure-field, agent, NCA, voice, or vector experiments.  
+Architecture: single `index.html` + blob Worker; 80×50 grid; 5 living cards; seal to IndexedDB.  
+Expected: living document where cards and field co-evolve.  
+Mechanics: regional sampling → CSS transforms; drag injects seed; evolution ~0.5 Hz.  
+Failure modes: Worker CSP block → static params; small viewports overlap.  
+Building block: WebGPU multi-channel + WebXR floating cards.  
+Lands in V01D as spatial stage skill.
