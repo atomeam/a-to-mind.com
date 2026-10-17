@@ -993,3 +993,21 @@ Ledger guard restored this file from f3705c7 after 0b45c78 broke it. Content tha
 ## Guard restore (2026-10-17)
 
 Ledger guard restored this file from 501a51c after 77ce39f broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+
+## Frontier Engine F-047 (2026-10-17)
+
+**F047-causal-attention-lattice-mind**
+
+Novel combination: Canvas2D spatial lattice whose local update is driven by a causal (pointer-history-conditioned) attention kernel whose parameters are evolved by a Web Worker genetic algorithm. Attention residuals and gradients physically displace floating DOM "thought nodes" that the user can drag; drag reinforcement and node proximity bias the evolutionary fitness. Global chrome (hue) morphs with prediction confidence. Seal persists best genes to localStorage.
+
+Architecture: single index.html; blob Worker maintains population of 8 gene vectors (radius, decay, pointer weight, residual gain, node attract, energy threshold); main steps 64×36 field, renders ImageData upsample, moves 5 DOM nodes by attention gradients. Not a variation of F-020 (FSM agents), F-023/F-025 (evolved substrate/boids), F-038 (living cards), F-043 (velocity residual), or F-046 (volumetric injection). Mind is evolutionary search over the causal attention mechanism itself, embodied by movable nodes.
+
+Expected outcome: Interactive spatial field that attends to recent gesture, warps dynamics, moves thought nodes toward high-attention regions, and offers embodied drag feedback. Runnable offline with Worker fallback.
+
+Mechanics: causal local attention + pointer history bias; residual drives energy; node velocity from attn gradients; fitness includes node proximity; evolution ~1 Hz; hue morph via CSS.
+
+Failure modes: CSP blocks blob Worker → fixed genes; no pointer history → low conf; small screens crowd nodes.
+
+Building block: WebGPU compute multi-head attention lattice, sealed genome transfer, WebXR ray as causal input.
+
+Lands in V01D as spatial stage skill (skills/mini/causal-attention-lattice.js); testable via tools/causal-attention.test.mjs for residual→field and conf→node mapping.
