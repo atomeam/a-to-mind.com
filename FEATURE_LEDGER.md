@@ -951,3 +951,21 @@ Ledger guard restored this file from 81c0085 after 206c49d broke it. Content tha
 ## Guard restore (2026-10-17)
 
 Ledger guard restored this file from 1730dd9 after 479a8aa broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+
+## Frontier Engine F-043 (2026-10-17)
+
+**F043-predictive-residual-lattice**
+
+Novel combination: Canvas2D reaction-diffusion lattice whose diffusion and reaction rates are modulated in real time by the residual error of a local Web Worker evolutionary linear predictor of pointer velocity. Prediction confidence spawns and scales floating DOM anticipation portals that the user can click to reinforce the genome; residual drives field energy injection and Web-style chromatic morph. Seal stores best predictor genes + metrics into localStorage.
+
+Architecture: single index.html; blob Worker maintains population of 6 gene vectors (bias + velocity terms), returns best each ~1.25 Hz; main thread steps 80×50 field, renders via ImageData upsample, positions portals along predicted flow. Not a variation of F-020 (FSM agents), F-022 (fixed gravity wells), F-023/F-025 (evolved substrate or boids params), F-038 (card-field co-evolution without prediction residual), or later portal/audio attempts. Mind is a trajectory residual minimizer whose error is the spatial control signal.
+
+Expected outcome: Interactive spatial field that anticipates gesture, warps its own dynamics and the page hue, and offers clickable portals as embodied feedback. Runnable offline with graceful Worker fallback to static genes.
+
+Mechanics: residual computed from recent pointer delta vs predicted; conf = 1-residual; field step ~60 Hz; portals spawn ~0.45 Hz; morph via CSS filter.
+
+Failure modes: CSP blocks blob Worker → fixed genes; no pointer history → low conf; small screens crowd portals.
+
+Building block: true WebGPU compute residual field, multi-horizon predictors, sealed genome transfer across sessions, WebXR pointer ray prediction.
+
+Lands in V01D as spatial stage skill (skills/mini/predictive-residual.js); testable via tools/predictive-residual.test.mjs for residual→field-rate and conf→portal-scale mapping.
