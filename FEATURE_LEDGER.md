@@ -1043,3 +1043,21 @@ Ledger guard restored this file from fd5285f after 012eb13 broke it. Content tha
 ## Guard restore (2026-10-18)
 
 Ledger guard restored this file from 569a46f after f9fe596 broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+
+## Frontier Engine F-049 (2026-10-18)
+
+**F049-predictive-swarm-residual-mind**
+
+Novel combination: Canvas2D particle swarm whose cohesion/separation and hue are modulated in real time by the residual error of a local Web Worker evolutionary linear predictor of pointer velocity. Draggable DOM memory orbs act as spatial attractors that seed the swarm and bias interaction. Global chrome morphs with residual and confidence. Not a variation of F-020 (WebGPU FSM agents), F-021 (orientation density morph), F-043 (RD lattice residual), or F-047 (attention lattice).
+
+Mind is a trajectory residual minimizer whose error is the spatial control signal for the swarm and the page.
+
+Expected outcome: Interactive spatial swarm that anticipates gesture, warps its own dynamics and the page hue/glow, and offers draggable orbs as embodied feedback. Runnable offline with Worker fallback to static genes. Seal persists best genes.
+
+Mechanics: pointer history → residual; residual scales cohesion vs separation and particle hue; orbs attract within range; fitness rewards low residual + high coherence; evolution ~2 Hz.
+
+Failure modes: CSP blocks blob Worker → static genes; low motion → high residual/chaotic swarm; small screens crowd orbs; localStorage blocked → seal fails.
+
+Building block for future: WebGPU compute swarm with MLP residual, WebXR hand as causal input, multi-genome competition for orb proximity, sealed genome transfer.
+
+Lands in V01D as spatial stage skill (skills/mini/predictive-swarm-residual.js); testable via residual→cohesion and conf→morph mapping.
