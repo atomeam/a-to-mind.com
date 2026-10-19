@@ -1,1 +1,1 @@
-PLACEHOLDER_LEDGER
+$(cat /tmp/ledger.md)
