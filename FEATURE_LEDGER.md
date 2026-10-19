@@ -1117,3 +1117,17 @@ Ledger guard restored this file from a999a3d after 40eaac5 broke it. Content tha
 ## Guard restore (2026-10-19)
 
 Ledger guard restored this file from a6e05d3 after a724b7a broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+
+## Frontier Engine F-182 (2026-10-19)
+
+**F182-webgpu-spectral-nca-orientation-mind**
+
+Novel combination: WebGPU compute NCA / reaction-diffusion lattice whose local update is biased in real time by microphone spectral energy (AnalyserNode) and device orientation (beta/gamma tilt). Floating DOM thought nodes are positioned, scaled, and blended by global energy and orientation. Page hue morphs with energy + gamma. Not a variation of F-020 (FSM agents), F-021 (orientation density morph), F-049 (residual swarm), or prior NCA/spectral drafts: the spectral+orientation signals are injected as bias terms into the GPU compute rule itself, with DOM nodes as embodied field proxies.
+
+Expected outcome: Interactive spatial field that reacts to sound and device tilt, warps dynamics, moves thought nodes, and morphs chrome. WebGPU primary; notes fallback.
+
+Mechanics: FFT energy → uniform bias; orientation → tilt term in Laplacian update; nodes driven by energy; seal persists state to localStorage.
+
+Failure modes: no WebGPU, mic/orientation denied, CSP blocks.
+
+Building block for: WebXR immersion of the same lattice or Worker-evolved kernels.
