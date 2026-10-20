@@ -1151,3 +1151,17 @@ Ledger guard restored this file from 31f3f54 after 9db2938 broke it. Content tha
 ## Guard restore (2026-10-20)
 
 Ledger guard restored this file from 9b8e49b after b801d6c broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+
+## Frontier F186 (2026-10-19)
+
+### F186 Trajectory Attention Echo Mind
+
+Architecture: Coarse spatial memory grid (16×12 × 8-dim embeddings) written by pointer trajectories and word-seed injections. Pure-JS multi-head attention queries the grid from current pointer + device orientation. Top peaks drive generative echo phrases (lexicon + seed-biased templates) rendered on morphing DOM cards attracted to attention loci. Canvas2D heatmap + attention rays. IndexedDB seals grid + seeds.
+
+Expected outcome: User's path becomes readable memory; local attention focuses and generates living echo text on physically moving cards. Persistent offline mind. No WebGPU, no particle kernels, no pure RNNs.
+
+Mechanics: Trajectory stamps directional embeddings into cells; attention softmax over grid; cards lerp to peak world positions and update text; seal stores full field state.
+
+Failure modes: IndexedDB blocked (session only), no orientation (pointer proxy), sparse paths (weak contrast).
+
+Building blocks: Spatial trajectory memory, local multi-head attention over embeddings, attention-driven generative DOM echoes, hybrid canvas/DOM, IndexedDB field seal.
