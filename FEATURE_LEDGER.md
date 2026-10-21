@@ -1258,10 +1258,22 @@ V01D landing: spatial GPU skill; testable via thought→CSS mapping stability.
 
 Ledger guard restored this file from c7982e1 after 77c39cc broke it. Content that commit wrote is in its diff; re-add it with git on disk.
 
-## Guard restore (2026-10-21)
+## Frontier Engine F-196 (2026-10-21)
 
-Ledger guard restored this file from 20318a4 after 9909632 broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+**F196-webxr-causal-attention-lattice**
 
-## Guard restore (2026-10-21)
+Novel combination: Canvas2D (WebGPU path noted) causal energy lattice that receives pointer and optional XR-ray deposits. Local Web Worker samples the field and runs residual velocity prediction plus multi-sample attention to produce a continuous thought vector. Thought and residual continuously morph page chrome via CSS custom properties and drive floating DOM orbs that query local energy. Progressive WebXR session entry; field remains fully interactive in flat mode.
 
-Ledger guard restored this file from 158ed13 after cf52a4e broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+Not a variation of F-020 (FSM agents), F-021 (orientation density), F-190 (causal memory orbs), or F-195 (GPU attention swarm): the substrate is a diffusing causal deposit field whose residual prediction error and attention-weighted samples become the physical control signal for both DOM embodiment and chrome distortion, with progressive WebXR.
+
+Architecture: single index.html; main-thread grid diffusion + ImageData; blob Worker for residual+attention; CSS var morph; localStorage seal; optional XR session.
+
+Expected outcome: Interactive spatial field that remembers recent paths as glowing causal traces, anticipates gesture, and manifests local mind state as morphing chrome and floating probes. Runnable offline. XR when supported.
+
+Mechanics: deposit → diffusion/decay; worker residual + attention; orbs positioned by energy + mind; CSS vars map thought/residual/energy.
+
+Failure modes: no Worker (static), XR unsupported (flat ok), low performance (Canvas2D fine).
+
+Building blocks: causal spatial deposit, residual-attention mind, embodied DOM probes, progressive WebXR. Next: WebGPU compute kernel for the lattice + XR projection layer.
+
+V01D landing: spatial causal skill; testable via residual→CSS stability and orb query accuracy.
