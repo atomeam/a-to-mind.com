@@ -1,8 +1,8 @@
 const { chromium } = require(process.env.PW || 'playwright-core');
-const U = 'process.env.URL || 'http://localhost:8720/index.html'';
+const U = process.env.URL || 'http://localhost:8720/index.html';
 const L = [[0,0,500,380],[460,300,420,360],[840,0,420,340],[1220,260,400,400]];
 (async () => {
-  const b = await chromium.launch({ executablePath: '/usr/bin/google-chrome' });
+  const b = await chromium.launch({ executablePath: process.env.CHROME || '/usr/bin/google-chrome' });
   const ctx = await b.newContext({ viewport: { width: 640, height: 420 } }); const errs = []; const pages = [];
   for (const r of L) { const p = await ctx.newPage(); p.on('pageerror', e => errs.push(e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); }); await p.goto(U + '?rect=' + r.join(',')); pages.push(p); }
   await pages[0].waitForTimeout(25000);
