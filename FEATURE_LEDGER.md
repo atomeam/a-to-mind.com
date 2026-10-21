@@ -1205,3 +1205,19 @@ Ledger guard restored this file from 7180c71 after 461d55b broke it. Content tha
 ## Guard restore (2026-10-21)
 
 Ledger guard restored this file from 4b1656d after fb65d07 broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+
+
+## Frontier Engine F-190 (2026-10-21)
+
+**F190-webgpu-causal-memory-field-orbs**
+
+Novel combination: WebGPU compute (CPU fallback) causal memory field — pointer trajectories deposit decaying energy into a diffusing 2D grid. Local Web Worker runs residual velocity predictor + hill-climbing parameter adaptation on field samples. Morphing spatial DOM orbs are positioned, scaled, and filtered by local field queries and the worker predicted intent. Device orientation injects tilt bias. Page chrome morphs with energy and residual. Not a variation of F-020 (agents), F-021 (orientation density), F-182 (spectral NCA), or F-186 (attention echoes).
+
+Expected outcome: Interactive spatial field that remembers recent paths as glowing causal traces, anticipates gesture, and manifests memory as floating morphing orbs. Persistent adaptation via localStorage. Runnable offline.
+
+Mechanics: deposit → diffusion/decay/tilt on grid; worker residual + fitness; orbs lerp to peaks; CSS vars drive hue/contrast.
+
+Failure modes: no WebGPU (CPU ok), orientation denied, Worker blocked (static params).
+
+Building blocks: causal spatial memory, predictive parameter adaptation, embodied DOM field probes. Next: WebXR immersion of the field or GPU-resident worker kernels.
+
