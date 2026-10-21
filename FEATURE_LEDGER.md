@@ -1233,3 +1233,23 @@ Ledger guard restored this file from 5c69587 after f8f31ae broke it. Content tha
 ## Guard restore (2026-10-21)
 
 Ledger guard restored this file from b3d3b71 after 6f4cca6 broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+
+## Frontier Engine F-195 (2026-10-21)
+
+**F195-webgpu-attention-swarm-mind**
+
+Novel combination: WebGPU compute shader (with Canvas2D fallback) drives a resident swarm of GPU particles. Local Web Worker samples agent features and runs a tiny multi-head attention mind (matrix ops on sampled states) producing thought vectors. Thoughts continuously morph the page chrome via CSS custom properties (hue, contrast, blur, perspective, rotateX/Y, scale), drive Web Audio oscillators, and can feed parameters back into the field. Pointer and DeviceOrientationEvent bias the swarm. Seal persists attention weights to IndexedDB.
+
+Not a variation of prior field/lattice/boids/NCA/probe/gaze-RNN/causal-memory experiments: the substrate is GPU-resident agents whose inter-agent attention is computed in a worker, with the residual thought vectors physically distorting browser UI chrome and generating audio.
+
+Architecture: single index.html; WebGPU storage buffers + compute pipeline; blob Worker for attention; CSS var morph; AudioContext after gesture; IndexedDB seal.
+
+Expected outcome: Interactive GPU swarm forming clusters under spatial input; page warps and recolors with the local mind; generative tones pulse with coherence; sealed weights for continuity. Runnable offline in WebGPU browsers.
+
+Mechanics: particle update on GPU; sample 16 agents → 4-head attention → 8-dim thought; map to CSS and audio; light weight mutation.
+
+Failure modes: no WebGPU (2D fallback), Worker/CSP block (static), audio autoplay, orientation permission.
+
+Building blocks: GPU agent attention, thought-driven physical UI distortion, sealed local mind weights. Next: WebGPU attention kernels or WebXR gaze injection.
+
+V01D landing: spatial GPU skill; testable via thought→CSS mapping stability.
