@@ -1,0 +1,124 @@
+{
+ "duels": 60,
+ "seeds": 30,
+ "note": "regret = true max utility minus utility of the recommended design (utility peak about 1.0-1.4); lower is better; temp = how noisy the simulated taster answers",
+ "results": {
+  "taster_temp_0.08": {
+   "gp_trust_region_ucb": {
+    "10": {
+     "mean_regret": 0.859,
+     "median": 0.969
+    },
+    "20": {
+     "mean_regret": 0.722,
+     "median": 0.835
+    },
+    "40": {
+     "mean_regret": 0.51,
+     "median": 0.437
+    },
+    "60": {
+     "mean_regret": 0.42,
+     "median": 0.252
+    }
+   },
+   "hill_climb": {
+    "10": {
+     "mean_regret": 0.79,
+     "median": 0.782
+    },
+    "20": {
+     "mean_regret": 0.659,
+     "median": 0.733
+    },
+    "40": {
+     "mean_regret": 0.432,
+     "median": 0.388
+    },
+    "60": {
+     "mean_regret": 0.402,
+     "median": 0.305
+    }
+   },
+   "random_pairs": {
+    "10": {
+     "mean_regret": 1,
+     "median": 1.029
+    },
+    "20": {
+     "mean_regret": 1,
+     "median": 1.029
+    },
+    "40": {
+     "mean_regret": 1,
+     "median": 1.029
+    },
+    "60": {
+     "mean_regret": 1,
+     "median": 1.029
+    }
+   }
+  },
+  "taster_temp_0.25": {
+   "gp_trust_region_ucb": {
+    "10": {
+     "mean_regret": 1.033,
+     "median": 1.052
+    },
+    "20": {
+     "mean_regret": 1.03,
+     "median": 1.073
+    },
+    "40": {
+     "mean_regret": 1.066,
+     "median": 1.086
+    },
+    "60": {
+     "mean_regret": 1.071,
+     "median": 1.147
+    }
+   },
+   "hill_climb": {
+    "10": {
+     "mean_regret": 0.924,
+     "median": 0.983
+    },
+    "20": {
+     "mean_regret": 0.904,
+     "median": 0.935
+    },
+    "40": {
+     "mean_regret": 0.861,
+     "median": 0.873
+    },
+    "60": {
+     "mean_regret": 0.898,
+     "median": 0.872
+    }
+   },
+   "random_pairs": {
+    "10": {
+     "mean_regret": 1.048,
+     "median": 1.104
+    },
+    "20": {
+     "mean_regret": 1.048,
+     "median": 1.104
+    },
+    "40": {
+     "mean_regret": 1.048,
+     "median": 1.104
+    },
+    "60": {
+     "mean_regret": 1.048,
+     "median": 1.104
+    }
+   }
+  }
+ },
+ "timing_ms": {
+  "fit_after_60_duels": 5.51,
+  "predict_one_point": 0.0063,
+  "total_bench": 11237
+ }
+}
