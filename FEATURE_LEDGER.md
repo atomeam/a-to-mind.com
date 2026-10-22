@@ -1477,3 +1477,24 @@ Ledger guard restored this file from 0717fd6 after d4130d5 broke it. Content tha
 ## Guard restore (2026-10-22)
 
 Ledger guard restored this file from f445900 after 2907ff2 broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+
+## Frontier Engine F-239 (2026-10-22)
+
+**F239-webgpu-gesture-evolved-causal-swarm**
+
+Novel combination: Canvas2D (WebGPU probe + future compute) causal particle swarm driven by pointer/XR deposits. Local Web Worker GA evolves attract/repel/decay constants online by maximizing clustering fitness around recent gesture deposits. Fitness residual and generation morph page chrome via CSS custom properties and scale floating DOM probes that query deposits. Progressive WebXR session entry.
+
+Not a variation of F-196 (residual-attention lattice), F-238 (audio fluid lattice), or prior pure evolutionary Canvas experiments: the substrate is a force-based particle swarm whose physical parameters are directly evolved by a local genetic algorithm whose fitness is the clustering response to user causal deposits, closing a gesture→physics→evolution loop, with WebGPU/XR expansion hooks.
+
+Architecture: single index.html; CPU particle step + ImageData-style draw; blob Worker GA; CSS var morph; IndexedDB seal; optional XR request.
+
+Expected outcome: Interactive spatial swarm that learns better force laws from how well it clusters around your gestures. Chrome and probes respond. Runnable offline. XR when supported.
+
+Mechanics: deposits → particle forces; worker fitness + evolve; apply best constants; probes track; CSS maps fitness/evolv.
+
+Failure modes: no Worker (static params), no WebGPU (Canvas2D), XR unsupported (flat complete), low performance (reduce N).
+
+Building blocks: WebGPU compute kernel for swarm, full XR hand-pose deposits, density feedback into fitness. Next: pure WebGPU particle compute + XR projection.
+
+V01D landing: spatial evolved-swarm skill; testable via fitness rise under repeated gesture patterns.
+
