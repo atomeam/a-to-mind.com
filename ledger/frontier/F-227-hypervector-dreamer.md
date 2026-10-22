@@ -15,7 +15,7 @@ Grep of ledger and drafts before this run: hyperdimensional / vector symbolic 0 
 ## Measured outcome
 Node (`bench-node.json`, 5 procedural 24×24 samples, 150–164 true directed rules each):
 - Matching-pursuit decode, integer memory, no damage: precision 1.0 and recall 1.0 at D = 2048 and 8192; recall 0.88 (0.99 of rules seen at least twice) at D = 512.
-- The same memory read with one-shot thresholded scoring (`bench-oneshot-z4.json`) only reached recall 0.60 at D = 8192 and 0.17 at D = 512, because the very common same-tile pairs (deep next to deep, counts near 100) swamp rare pairs with crosstalk. Explaining away is what makes the memory readable: about 4× the recall at D = 512 for no extra storage.
+- The same memory read with one-shot thresholded scoring (`bench-oneshot-z4.json`) only reached recall 0.60 at D = 8192 and 0.17 at D = 512, because the very common same-tile pairs (deep next to deep, counts near 100) swamp rare pairs with crosstalk. Explaining away is what makes the memory readable: about 5× the recall at D = 512 (0.88 vs 0.17) for no extra storage.
 - 1-bit memory with pursuit: recall 0.62 at D = 8192 (binarising loses count information, so peeling leaves residue).
 - Damage (negating a fraction of dimensions), D = 8192 integer: 20% → recall 0.59, 35% → 0.24, 45% → 0.01. Precision stayed 1.0 at z = 4 across every setting; at z = 3 it drops to 0.93 under heavy damage.
 - WFC 40×40, 40 runs per rule source: exact rules, HDC D = 8192, HDC D = 512 and the 1-bit memory all finished with 0 failures and 0 rule violations against the true example. With 35% damage it still never failed (0.23 repairs per run) but produces simpler worlds, since fewer rules survive.
