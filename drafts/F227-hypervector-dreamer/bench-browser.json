@@ -1,0 +1,90 @@
+{
+ "fresh": {
+  "mode3d": true,
+  "recall": 1,
+  "precision": 1,
+  "rules": 150,
+  "truth": 150,
+  "peels": [
+   42,
+   50,
+   44,
+   50
+  ],
+  "decodeMs": 119,
+  "learnMs": 109,
+  "done": 2304,
+  "repairs": 0,
+  "failed": false,
+  "dreamMs": 8839,
+  "tilesUsed": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7
+  ]
+ },
+ "afterPaint": {
+  "mode3d": true,
+  "recall": 1,
+  "precision": 1,
+  "rules": 164,
+  "truth": 164,
+  "peels": [
+   42,
+   56,
+   46,
+   57
+  ],
+  "decodeMs": 4,
+  "learnMs": 121,
+  "done": 2304,
+  "repairs": 0,
+  "failed": false,
+  "dreamMs": 11463,
+  "tilesUsed": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7
+  ]
+ },
+ "damaged30": {
+  "mode3d": true,
+  "recall": 0.28,
+  "precision": 1,
+  "rules": 46,
+  "truth": 164,
+  "peels": [
+   10,
+   10,
+   11,
+   11
+  ],
+  "decodeMs": 55,
+  "learnMs": 121,
+  "done": 2304,
+  "repairs": 0,
+  "failed": false,
+  "dreamMs": 1735,
+  "tilesUsed": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ]
+ },
+ "stats": "renderer: WebGL2 instanced\nmemory: 8192 dims x 4 directions (integer), damage 30%\nrules recovered: 46 (true 164), recall 28%, precision 100%\npeels per direction: 10, 10, 11, 11 (decode 55 ms)\nworld: 2304/2304 cells decided, 0 local repairs, done in 1735 ms",
+ "errs": [
+  "Failed to load resource: the server responded with a status of 404 (File not found)"
+ ]
+}

@@ -1,0 +1,244 @@
+{
+ "sample": "24x24",
+ "recovery": [
+  {
+   "D": 512,
+   "mode": "acc",
+   "damage": 0,
+   "precision": 1,
+   "recall_all": 0.167,
+   "recall_seen2plus": 0.197
+  },
+  {
+   "D": 512,
+   "mode": "acc",
+   "damage": 0.2,
+   "precision": 1,
+   "recall_all": 0.079,
+   "recall_seen2plus": 0.094
+  },
+  {
+   "D": 512,
+   "mode": "acc",
+   "damage": 0.35,
+   "precision": 1,
+   "recall_all": 0.025,
+   "recall_seen2plus": 0.029
+  },
+  {
+   "D": 512,
+   "mode": "acc",
+   "damage": 0.45,
+   "precision": 0,
+   "recall_all": 0,
+   "recall_seen2plus": 0
+  },
+  {
+   "D": 512,
+   "mode": "bin",
+   "damage": 0,
+   "precision": 1,
+   "recall_all": 0.101,
+   "recall_seen2plus": 0.12
+  },
+  {
+   "D": 512,
+   "mode": "bin",
+   "damage": 0.2,
+   "precision": 1,
+   "recall_all": 0.06,
+   "recall_seen2plus": 0.071
+  },
+  {
+   "D": 512,
+   "mode": "bin",
+   "damage": 0.35,
+   "precision": 1,
+   "recall_all": 0.011,
+   "recall_seen2plus": 0.013
+  },
+  {
+   "D": 512,
+   "mode": "bin",
+   "damage": 0.45,
+   "precision": 0,
+   "recall_all": 0,
+   "recall_seen2plus": 0
+  },
+  {
+   "D": 2048,
+   "mode": "acc",
+   "damage": 0,
+   "precision": 1,
+   "recall_all": 0.425,
+   "recall_seen2plus": 0.502
+  },
+  {
+   "D": 2048,
+   "mode": "acc",
+   "damage": 0.2,
+   "precision": 1,
+   "recall_all": 0.241,
+   "recall_seen2plus": 0.285
+  },
+  {
+   "D": 2048,
+   "mode": "acc",
+   "damage": 0.35,
+   "precision": 1,
+   "recall_all": 0.085,
+   "recall_seen2plus": 0.1
+  },
+  {
+   "D": 2048,
+   "mode": "acc",
+   "damage": 0.45,
+   "precision": 0,
+   "recall_all": 0,
+   "recall_seen2plus": 0
+  },
+  {
+   "D": 2048,
+   "mode": "bin",
+   "damage": 0,
+   "precision": 1,
+   "recall_all": 0.277,
+   "recall_seen2plus": 0.327
+  },
+  {
+   "D": 2048,
+   "mode": "bin",
+   "damage": 0.2,
+   "precision": 1,
+   "recall_all": 0.14,
+   "recall_seen2plus": 0.165
+  },
+  {
+   "D": 2048,
+   "mode": "bin",
+   "damage": 0.35,
+   "precision": 1,
+   "recall_all": 0.058,
+   "recall_seen2plus": 0.068
+  },
+  {
+   "D": 2048,
+   "mode": "bin",
+   "damage": 0.45,
+   "precision": 0,
+   "recall_all": 0,
+   "recall_seen2plus": 0
+  },
+  {
+   "D": 8192,
+   "mode": "acc",
+   "damage": 0,
+   "precision": 1,
+   "recall_all": 0.595,
+   "recall_seen2plus": 0.702
+  },
+  {
+   "D": 8192,
+   "mode": "acc",
+   "damage": 0.2,
+   "precision": 1,
+   "recall_all": 0.479,
+   "recall_seen2plus": 0.566
+  },
+  {
+   "D": 8192,
+   "mode": "acc",
+   "damage": 0.35,
+   "precision": 1,
+   "recall_all": 0.181,
+   "recall_seen2plus": 0.214
+  },
+  {
+   "D": 8192,
+   "mode": "acc",
+   "damage": 0.45,
+   "precision": 1,
+   "recall_all": 0.008,
+   "recall_seen2plus": 0.01
+  },
+  {
+   "D": 8192,
+   "mode": "bin",
+   "damage": 0,
+   "precision": 1,
+   "recall_all": 0.485,
+   "recall_seen2plus": 0.573
+  },
+  {
+   "D": 8192,
+   "mode": "bin",
+   "damage": 0.2,
+   "precision": 1,
+   "recall_all": 0.326,
+   "recall_seen2plus": 0.385
+  },
+  {
+   "D": 8192,
+   "mode": "bin",
+   "damage": 0.35,
+   "precision": 1,
+   "recall_all": 0.123,
+   "recall_seen2plus": 0.146
+  },
+  {
+   "D": 8192,
+   "mode": "bin",
+   "damage": 0.45,
+   "precision": 1,
+   "recall_all": 0.008,
+   "recall_seen2plus": 0.01
+  }
+ ],
+ "wfc": [
+  {
+   "rules": "exact counted rules",
+   "runs": 40,
+   "failed": 0,
+   "repairs_per_run": 0,
+   "violation_rate_vs_exact": 0,
+   "ms_per_40x40": 102.3
+  },
+  {
+   "rules": "HDC acc D=8192",
+   "runs": 40,
+   "failed": 0,
+   "repairs_per_run": 0.03,
+   "violation_rate_vs_exact": 0,
+   "ms_per_40x40": 89.7
+  },
+  {
+   "rules": "HDC acc D=8192 35% damaged",
+   "runs": 40,
+   "failed": 0,
+   "repairs_per_run": 0.25,
+   "violation_rate_vs_exact": 0,
+   "ms_per_40x40": 14
+  },
+  {
+   "rules": "HDC bin D=8192",
+   "runs": 40,
+   "failed": 0,
+   "repairs_per_run": 0.05,
+   "violation_rate_vs_exact": 0,
+   "ms_per_40x40": 77.6
+  },
+  {
+   "rules": "HDC acc D=512",
+   "runs": 40,
+   "failed": 0,
+   "repairs_per_run": 0.28,
+   "violation_rate_vs_exact": 0,
+   "ms_per_40x40": 9.5
+  }
+ ],
+ "timing_ms": {
+  "learn_24x24_D8192": 94.8,
+  "rules_D8192": 10.6,
+  "one_cell_edit": 1.04
+ }
+}
