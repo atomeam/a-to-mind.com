@@ -18,7 +18,7 @@ Node (`bench-node.json`, 30 seed-paired tasters, 60 duels, regret = true peak ut
 - Noisy answers (temp 0.25): GP 1.03 → 1.07 (no progress), hill climb 0.92 → 0.90, random 1.05.
 - So in this 6-D setting the GP matched a hill climb at best (better median, slightly worse mean) and lost when answers were noisy. That is the honest result; it did not beat the simple baseline.
 - Timing: refit after 60 duels 5.5 ms, one prediction 0.006 ms, so the whole loop is instant in a page.
-Headless Chrome (`bench-browser.json`, SwiftShader WebGL2): WebGL2 present, 40 simulated choices recorded and the model held 41 designs, history survived a reload, no page errors (one favicon 404). Regret after those 40 browser choices was 0.13 on the first run and 0.59 on a later one (the page seeds its random choices from the clock, so runs differ).
+Headless Chrome (`bench-browser.json`, SwiftShader WebGL2): WebGL2 present, 40 simulated choices recorded and the model held 41 designs, history survived a reload, no page errors (one favicon 404). Regret after those 40 browser choices was 0.13, 0.59 and 0.64 on three runs (the saved JSON is the 0.64 run) (the page seeds its random choices from the clock, so runs differ).
 
 ## Failure modes / knowledge
 - Sweeps (ell 0.2–0.5, beta 0–2, pool 10–400) showed a bigger candidate pool made results worse: maximising mean + sd over 400 candidates picks the model's most over-extrapolated points. Small pools inside a trust region worked best (a GP-screened hill climb).
