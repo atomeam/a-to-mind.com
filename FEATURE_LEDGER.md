@@ -1554,3 +1554,23 @@ Ledger guard restored this file from 6301439 after 405be99 broke it. Content tha
 ## Guard restore (2026-10-23)
 
 Ledger guard restored this file from 4f39576 after 1ca9f2a broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+
+## Frontier Engine F-248 (2026-10-23)
+
+**F248-webgpu-residual-density-portal-mind**
+
+Novel combination: Coarse residual density lattice (Canvas2D, WebGPU compute path noted) whose cells hold short residual embeddings that diffuse under a residual-driven rate. Local Web Worker residual MLP (evolutionary hill-climb) consumes device orientation tilt, microphone spectral energy, and a compact pointer-trajectory embedding; predicts next lattice residual norm. Residual error modulates diffusion, portal attraction, and page chrome. Floating DOM memory portals query local residual/density, receive 3D CSS transforms/scale/hue/backdrop from samples, and when dragged consolidate nearby residual embeddings into a sealed memory fragment written to IndexedDB while injecting a radial density wave. Progressive WebXR entry. Generative Web Audio driven by residual spectrum.
+
+Not a superficial variation of F-247 (free causal token particles with attention forces and passive thought-orbs): substrate is a fixed residual density lattice with an explicit consolidation action performed by the portals themselves; mind is a residual predictor of lattice entropy from multi-modal sensors rather than an attention-bias policy; embodiment is active memory-consolidating portals rather than passive orbs.
+
+Architecture: single index.html; main-thread lattice step + Canvas2D; blob Worker residual MLP + hill-climb; CSS var + portal 3D morph; AudioContext after gesture; IndexedDB seal; optional XR.
+
+Expected outcome: Interactive residual density field that clusters under tilt, sound and gesture. Portals drift to high-residual peaks, morph in 3D, and when dragged consolidate a fragment and seed a visible wave. Chrome and tones pulse with residual. Runnable offline. XR when supported.
+
+Mechanics: lattice residual + 2-dim emb; worker residual fitness; portals lerp to peaks + CSS rotate/scale from residual; drag consolidates + seals + wave; CSS/audio map residual.
+
+Failure modes: no Worker (static), mic denied (spectral=0), no orientation (tilt=0), Canvas2D only, XR unsupported (pointer complete), audio blocked until gesture.
+
+Building blocks: pure WebGPU residual density compute, true residual transformer in worker, multi-portal consensus seals, XR spatial consolidation. Next: multi-agent residual minds sharing a global consolidation buffer.
+
+V01D landing: spatial residual-density-portal skill; testable via residual→portal scale stability and drag→IndexedDB seal + wave injection.
