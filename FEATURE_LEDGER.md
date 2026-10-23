@@ -1518,3 +1518,23 @@ Ledger guard restored this file from df1ba0a after 837848d broke it. Content tha
 ## Guard restore (2026-10-23)
 
 Ledger guard restored this file from e4c6ad7 after ebb3537 broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+
+## Frontier Engine F-245 (2026-10-23)
+
+**F245-webgpu-acoustic-softbody-webxr-mind**
+
+Novel combination: Softbody particle-spring lattice (CPU with WebGPU compute hook) whose stiffness, damping and rest-scale are continuously adapted by a local Web Worker evolutionary MLP. Multi-modal residual inputs: microphone spectral energy bins, device orientation tilt, and optional WebXR hand summary. Hybrid DOM anchors physically bound to vertices that morph (scale, hue, filter) with local strain. Residual prediction error drives CSS chrome morph (hue/blur/contrast) and generative Web Audio oscillators. Progressive WebXR; sealed policy to IndexedDB.
+
+Not a variation of F-244 (hand neural softbody control of fixed physics): here the physics parameters themselves are the evolved output of a residual-minimizing acoustic+orientation mind, closing an audio→physics→audio+DOM loop, with strain-driven embodiment.
+
+Architecture: single index.html; main-thread softbody step + Canvas2D; blob Worker MLP+hill-climb; CSS var morph; AudioContext after gesture; IndexedDB seal; optional XR.
+
+Expected outcome: Interactive softbody that stiffens/softens to ambient sound and tilt; pointer/hand sculpts it; floating DOM orbs stretch and recolor with deformation; page and tones pulse with residual. Runnable offline. XR when supported.
+
+Mechanics: springs with MLP-modulated k/d/rest; worker residual fitness on strain vs spectral alignment; anchors query particles; CSS and audio map residual/energy/strain.
+
+Failure modes: no Worker (static), mic denied (spectral=0), no WebGPU (Canvas2D), XR unsupported (pointer complete), audio blocked until gesture.
+
+Building blocks: WebGPU compute softbody, full XR joint-to-vertex binding, sealed genome transfer, density/spectral feedback into fitness. Next: pure GPU softbody + multi-agent acoustic minds.
+
+V01D landing: spatial acoustic-softbody skill; testable via residual→CSS stability and strain→anchor scale mapping.
