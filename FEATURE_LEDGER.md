@@ -1574,3 +1574,23 @@ Failure modes: no Worker (static), mic denied (spectral=0), no orientation (tilt
 Building blocks: pure WebGPU residual density compute, true residual transformer in worker, multi-portal consensus seals, XR spatial consolidation. Next: multi-agent residual minds sharing a global consolidation buffer.
 
 V01D landing: spatial residual-density-portal skill; testable via residual→portal scale stability and drag→IndexedDB seal + wave injection.
+
+## Frontier Engine F-250 (2026-10-23)
+
+**F250-webgpu-intent-flow-hypothesis-mind**
+
+Novel combination: Coarse intent-flow velocity field (Canvas2D advection-diffusion of a velocity grid; WebGPU compute path noted) sourced by a local Web Worker evolutionary residual agent that predicts a 2D intent vector from device orientation tilt, microphone spectral energy, and a compact pointer-velocity residual. Residual error modulates flow viscosity and page chrome. Floating DOM hypothesis orbs are passive tracers advected by local flow velocity and morph (scale, hue, CSS rotate, backdrop) according to local |intent| and residual. Explicit drag/click selects an orb, seals a short hypothesis fragment (intent sample + residual) to IndexedDB, and injects a temporary radial source that biases future flow. Progressive WebXR entry. Generative Web Audio driven by flow divergence and residual.
+
+Not a superficial variation of F-249 (recurrent agents competing in a constraint arena under orientation gravity with mutual springs): substrate is a dynamic velocity flow sourced by an intent predictor rather than fixed springs between autonomous agents; embodiment is passive tracers that become active only on deliberate selection/seal rather than always-on policy-driven cards; mind is an intent-vector residual minimizer rather than a recurrent policy. Leaves residual density lattices, consolidating portals, and multi-agent competition.
+
+Architecture: single index.html; main-thread fluid step + Canvas2D; blob Worker residual MLP + hill-climb; CSS var + orb morph; AudioContext after gesture; IndexedDB seal; optional XR.
+
+Expected outcome: Interactive intent flow that responds to tilt, sound and pointer. Orbs drift with the current, morph with velocity/residual, and when selected seal a fragment while injecting a visible redirection wave. Chrome and tones pulse with residual. Runnable offline. XR when supported.
+
+Mechanics: velocity grid + dens; worker residual fitness on intent prediction; orbs lerp via local velocity + CSS from mag/residual; drag seals + injects source; CSS/audio map residual.
+
+Failure modes: no Worker (static), mic denied (spectral=0), no orientation (tilt=0), Canvas2D only, XR unsupported (pointer complete), audio blocked until gesture, IndexedDB blocked (in-memory).
+
+Building blocks: pure WebGPU fluid compute, true residual transformer in worker, multi-orb consensus selection, XR hand hypothesis selection, shared flow across peers. Next: multi-agent intent minds with competing sources.
+
+V01D landing: spatial intent-flow-hypothesis skill; testable via residual→flow stability, drag→IndexedDB seal + visible injection, and orb advection matching local velocity samples.
