@@ -1610,3 +1610,23 @@ Ledger guard restored this file from d8fa888 after 4ef6228 broke it. Content tha
 ## Guard restore (2026-10-24)
 
 Ledger guard restored this file from 9f43277 after 8d5bdbb broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+
+## Frontier Engine F-253 (2026-10-24)
+
+**F253-webgpu-nca-spatial-audio-ui-mind**
+
+Novel combination: Coarse Neural Cellular Automata lattice (Canvas2D with WebGPU compute path noted) whose local update is a tiny residual MLP evolved by a local Web Worker genetic algorithm. Fitness maximises pattern diversity and responsiveness to causal deposits (pointer trajectory + device orientation tilt + optional mic spectral centroid). The emergent NCA activity field is projected into a generative Web Audio topology: oscillators whose frequency, gain and stereo pan are driven by sampled high-activity cells, creating a spatial soundscape. Floating DOM memory orbs are positioned, scaled, hue-shifted and filtered according to local NCA state; dragging an orb consolidates that local pattern fragment into a sealed genome written to IndexedDB and injects a persistent stimulus seed. Progressive WebXR entry. Page chrome morphs with residual and activity energy.
+
+Not a superficial variation of F-250 (intent-flow velocity tracers), F-252 (hand-MLP spring limbs competing for an orb), or prior acoustic softbodies: the substrate is an evolved neural cellular automata whose state directly generates a spatial audio graph, and embodiment is consolidating memory orbs that seal fragments rather than always-on physical limbs or passive tracers. Leaves pure particle arenas, fixed-spring constraint systems, and residual density portals.
+
+Architecture: single index.html; main-thread NCA step + Canvas2D ImageData; blob Worker residual MLP + hill-climb; CSS var + orb morph; AudioContext after gesture; IndexedDB seal; optional XR.
+
+Expected outcome: Interactive living lattice that grows complex patterns in response to pointer, tilt and sound. Orbs drift toward active regions and morph with local state. Dragging an orb seals a fragment and seeds a lasting motif. Spatial audio pulses and pans with the field. Chrome shifts with residual. Runnable offline. XR when supported.
+
+Mechanics: neighbourhood diffusion + residual MLP delta; worker fitness on entropy + deposit response; orbs query cells + CSS from state; drag seals + injects; oscillators bound to activity samples; CSS maps residual/energy.
+
+Failure modes: no Worker (static), mic denied (spectral=0), no orientation (tilt=0), Canvas2D only, XR unsupported (pointer complete), audio blocked until gesture, IndexedDB blocked (in-memory).
+
+Building blocks: pure WebGPU compute NCA kernel, true residual transformer in Worker, multi-orb consensus consolidation, XR hand deposit + seal, shared sealed genomes across peers. Next: multi-agent NCA minds competing for audio space.
+
+V01D landing: spatial NCA-spatial-audio skill; testable via residual→pattern stability, drag→IndexedDB seal + visible seed, and audio pan matching cell x-coordinate.
