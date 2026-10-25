@@ -1663,6 +1663,14 @@ Ledger guard restored this file from c2b915d after 26c76ad broke it. Content tha
 
 Ledger guard restored this file from b7bef91 after 2d7196a broke it. Content that commit wrote is in its diff; re-add it with git on disk.
 
-## Guard restore (2026-10-25)
+## F259 (2026-10-25) — orient-causal-webgpu-mlp-dom-physics
 
-Ledger guard restored this file from cf6b8a7 after 38ef22d broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+**Branch away from**: WebGPU attention/residual/volumetric/NCA lattices, spatial morph UI, WebXR hand/gaze arenas, sealed genome competitions (F251–F258 cluster).
+
+**Concept**: DeviceOrientation as causal force input into a softbody particle system. Tiny local MLP (4-4-2) emits stabilizer forces from orientation + velocity stats. Hybrid Canvas2D + draggable DOM orbs as physical embodiments. IndexedDB persists particles + MLP weights. WebGPU init optional; physics on CPU for reliability.
+
+**Files**: drafts/F259-orient-causal-webgpu-mlp-dom-physics/index.html, SPEC.md
+
+**Novelty**: pure DeviceOrientation causal physics + controller MLP + hybrid DOM embodiments + IDB, avoiding attention lattices, residual predictors, volumetric injection, pure NCA, spectral residuals.
+
+**Status**: prototype delivered, offline-capable, interactive.
