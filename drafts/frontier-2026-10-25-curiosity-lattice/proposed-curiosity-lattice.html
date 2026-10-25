@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Void Frontier: Curiosity Lattice</title>
+<style>
+body { margin:0; background:#0a0a12; color:#c8d0e0; font-family:system-ui,sans-serif; overflow:hidden; }
+canvas { display:block; width:100vw; height:100vh; }
+#ui { position:absolute; top:16px; left:16px; background:rgba(10,10,20,0.7); padding:12px 16px; border-radius:8px; border:1px solid #334; backdrop-filter:blur(8px); max-width:320px; }
+#status { font-size:13px; margin-top:8px; }
+button { background:#1a2a4a; color:#8af; border:1px solid #46a; padding:6px 12px; border-radius:4px; cursor:pointer; }
+button:hover { background:#2a3a5a; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <strong>Curiosity Lattice</strong>
+  <div id="status">WebGPU initializing…</div>
+  <button id="seed">Seed concept</button>
+  <button id="explore">Explore low-density</button>
+</div>
+<script>
+const canvas = document.getElementById('c');
+const statusEl = document.getElementById('status');
+const ctx = canvas.getContext('2d');
+let agents = [];
+let concepts = ['void','mind','lattice','drift','agent','entropy','cluster','seed','explore','local'];
+let frame = 0;
+let coherence = 0.5;
+
+function resize() {
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
+}
+addEventListener('resize', resize);
+resize();
+
+function initAgents(n=80) {
+  agents = [];
+  for (let i=0; i<n; i++) {
+    agents.push({
+      x: Math.random()*canvas.width,
+      y: Math.random()*canvas.height,
+      vx: (Math.random()-0.5)*1.5,
+      vy: (Math.random()-0.5)*1.5,
+      concept: concepts[Math.floor(Math.random()*concepts.length)],
+      life: 1
+    });
+  }
+}
+initAgents();
+
+function step() {
+  frame++;
+  const buckets = {};
+  agents.forEach(a => {
+    const k = Math.floor(a.x/100)+','+Math.floor(a.y/100);
+    buckets[k] = (buckets[k]||0)+1;
+  });
+  const densities = Object.values(buckets);
+  const avg = densities.reduce((s,v)=>s+v,0)/(densities.length||1);
+  const variance = densities.reduce((s,v)=>s+(v-avg)**2,0)/(densities.length||1);
+  coherence = Math.max(0, Math.min(1, 1 - variance/ (avg*avg+1) ));
+
+  agents.forEach(a => {
+    let dx = 0, dy = 0;
+    if (mouse.x) {
+      const dist = Math.hypot(a.x-mouse.x, a.y-mouse.y);
+      if (dist < 180) {
+        dx = (mouse.x - a.x) * 0.002;
+        dy = (mouse.y - a.y) * 0.002;
+      } else if (dist > 300) {
+        dx = (a.x - mouse.x) * 0.0005;
+        dy = (a.y - mouse.y) * 0.0005;
+      }
+    }
+    a.vx = a.vx*0.98 + dx + (Math.random()-0.5)*0.3;
+    a.vy = a.vy*0.98 + dy + (Math.random()-0.5)*0.3;
+    a.x += a.vx;
+    a.y += a.vy;
+    if (a.x < 0 || a.x > canvas.width) a.vx *= -1;
+    if (a.y < 0 || a.y > canvas.height) a.vy *= -1;
+    a.x = Math.max(0, Math.min(canvas.width, a.x));
+    a.y = Math.max(0, Math.min(canvas.height, a.y));
+  });
+
+  document.body.style.background = `hsl(${220 + coherence*40}, 30%, ${8 + coherence*6}%)`;
+  statusEl.textContent = `agents: ${agents.length} | coherence: ${coherence.toFixed(2)} | frame: ${frame}`;
+}
+
+function draw() {
+  ctx.fillStyle = 'rgba(10,10,18,0.25)';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  agents.forEach(a => {
+    ctx.fillStyle = `hsla(${180 + (a.concept.length*20)%180}, 60%, 60%, 0.7)`;
+    ctx.beginPath();
+    ctx.arc(a.x, a.y, 3 + coherence*2, 0, Math.PI*2);
+    ctx.fill();
+    if (frame % 60 === 0) {
+      ctx.fillStyle = '#aaccff';
+      ctx.font = '10px system-ui';
+      ctx.fillText(a.concept.slice(0,6), a.x+6, a.y);
+    }
+  });
+}
+
+let mouse = {x:0,y:0};
+canvas.addEventListener('mousemove', e => {
+  mouse.x = e.clientX;
+  mouse.y = e.clientY;
+});
+
+document.getElementById('seed').onclick = () => {
+  const word = concepts[Math.floor(Math.random()*concepts.length)] + '-' + Math.floor(Math.random()*9);
+  concepts.push(word);
+  for (let i=0; i<5; i++) {
+    agents.push({
+      x: canvas.width/2 + (Math.random()-0.5)*100,
+      y: canvas.height/2 + (Math.random()-0.5)*100,
+      vx: (Math.random()-0.5)*2,
+      vy: (Math.random()-0.5)*2,
+      concept: word,
+      life: 1
+    });
+  }
+};
+
+document.getElementById('explore').onclick = () => {
+  const low = [];
+  for (let i=0; i<10; i++) {
+    const x = Math.random()*canvas.width;
+    const y = Math.random()*canvas.height;
+    const near = agents.filter(a => Math.hypot(a.x-x, a.y-y)<80).length;
+    if (near < 3) low.push({x,y});
+  }
+  low.slice(0,4).forEach(p => {
+    agents.push({
+      x: p.x, y: p.y,
+      vx: (Math.random()-0.5)*1,
+      vy: (Math.random()-0.5)*1,
+      concept: 'explore-' + concepts[Math.floor(Math.random()*concepts.length)],
+      life: 1
+    });
+  });
+};
+
+function loop() {
+  step();
+  draw();
+  requestAnimationFrame(loop);
+}
+loop();
+statusEl.textContent = 'Curiosity Lattice running — move mouse, seed, explore';
+</script>
+</body>
+</html>
