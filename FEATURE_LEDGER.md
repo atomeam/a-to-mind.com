@@ -1695,6 +1695,16 @@ Ledger guard restored this file from 474cd8d after 940db16 broke it. Content tha
 
 Ledger guard restored this file from aa31bed after 3b39d8e broke it. Content that commit wrote is in its diff; re-add it with git on disk.
 
-## Guard restore (2026-10-26)
 
-Ledger guard restored this file from c7a9b50 after 75bcfec broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+## F260 (2026-10-26) — orient-query-attention-softbody
+
+**Branch away from**: WebGPU attention/residual/volumetric/NCA lattices, spatial morph UI, WebXR hand/gaze arenas, sealed genome competitions, DeviceOrientation direct physics + MLP (F251–F259 cluster).
+
+**Concept**: DeviceOrientation (or pointer) as the query vector into a local single-head attention mechanism over particle positions (keys). Attention weights become the soft-body attraction forces, producing orientation-causal clustering. Attention concentration morphs surrounding UI chrome (hue-rotate, scale, card transforms). IndexedDB seals the current query + morph + weight signature.
+
+**Files**: drafts/F260-orient-attention-softbody/index.html, SPEC.md
+
+**Novelty**: pure attention-as-force-law (not fixed physics, not residual predictor, not evolved rule, not MLP controller). Local AI is the Worker attention; spatial substrate and DOM respond to it.
+
+**Status**: prototype delivered, offline-capable, interactive. Canvas2D + Worker; WebGPU path noted.
+
