@@ -1725,6 +1725,30 @@ Ledger guard restored this file from e970cfe after d760ff1 broke it. Content tha
 
 Ledger guard restored this file from 2b7055c after eb95200 broke it. Content that commit wrote is in its diff; re-add it with git on disk.
 
-## Guard restore (2026-10-26)
+## F269 (2026-10-26) — webgpu-fluid-evolving-audio-mind
 
-Ledger guard restored this file from 0e9b895 after c7883ce broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+**Branch away from**: WebGPU softbody/attention/cloth/NCA/MLP residual lattices, WebXR gaze/hand arenas, sealed genome competitions, orientation-direct physics (F260–F268 cluster).
+
+**Concept**: Continuous 2D density/velocity fluid field (CPU diffusion with WebGPU compute path noted) whose energy and entropy statistics drive a local Web Worker evolutionary genome. The genome controls generative Web Audio (freq/filter/gain). Pointer and DeviceOrientation inject sources. Floating DOM orbs sample local density and morph. CSS chrome responds to field + mind mood. IndexedDB seals genomes. Progressive XR stub.
+
+**Files**: drafts/F269-webgpu-fluid-evolving-audio-mind/index.html, SPEC.md
+
+**Novelty**: fluid density substrate + evolutionary audio-mind fitness on field complexity + spatial DOM sampling. Not force-law physics, not residual predictor, not attention weights, not cloth constraints. Closes fluid→stats→evolved-synth→CSS loop.
+
+**Status**: prototype delivered, offline-capable, interactive. Canvas2D + Worker + Web Audio; WebGPU path noted.
+
+**V01D landing**: spatial fluid-audio skill; testable via entropy→mutation and density→orb scale.
+
+## F269 (2026-10-26) — webgpu-fluid-evolving-audio-mind
+
+**Branch away from**: WebGPU softbody/attention/cloth/NCA/MLP residual lattices, WebXR gaze/hand arenas, sealed genome competitions, orientation-direct physics (F260–F268 cluster).
+
+**Concept**: Continuous 2D density/velocity fluid field (CPU diffusion with WebGPU compute path noted) whose energy and entropy statistics drive a local Web Worker evolutionary genome. The genome controls generative Web Audio (freq/filter/gain). Pointer and DeviceOrientation inject sources. Floating DOM orbs sample local density and morph. CSS chrome responds to field + mind mood. IndexedDB seals genomes. Progressive XR stub.
+
+**Files**: drafts/F269-webgpu-fluid-evolving-audio-mind/index.html, SPEC.md
+
+**Novelty**: fluid density substrate + evolutionary audio-mind fitness on field complexity + spatial DOM sampling. Not force-law physics, not residual predictor, not attention weights, not cloth constraints. Closes fluid→stats→evolved-synth→CSS loop.
+
+**Status**: prototype delivered, offline-capable, interactive. Canvas2D + Worker + Web Audio; WebGPU path noted.
+
+**V01D landing**: spatial fluid-audio skill; testable via entropy→mutation and density→orb scale.
