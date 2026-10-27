@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F275 WebGPU Acoustic Residual Spatial Mind</title>
+<style>
+body { margin:0; background:#0a0a12; color:#ccc; font-family:system-ui,sans-serif; overflow:hidden; }
+canvas { display:block; width:100vw; height:100vh; }
+#ui { position:fixed; top:10px; left:10px; z-index:10; background:rgba(0,0,0,0.6); padding:8px 12px; border-radius:8px; font-size:13px; }
+button { margin:2px; padding:4px 8px; background:#222; color:#ddd; border:1px solid #444; border-radius:4px; cursor:pointer; }
+button:hover { background:#333; }
+.portal { position:absolute; width:48px; height:48px; border-radius:50%; background:rgba(100,180,255,0.4); border:2px solid #6cf; cursor:grab; display:flex; align-items:center; justify-content:center; font-size:10px; color:#fff; user-select:none; backdrop-filter:blur(2px); transition:transform 0.1s; }
+.portal:active { cursor:grabbing; }
+#status { position:fixed; bottom:10px; left:10px; font-size:12px; opacity:0.7; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <button id="seal">Seal Weights</button>
+  <button id="load">Load</button>
+  <button id="reset">Reset</button>
+  <span id="res">residual: --</span>
+</div>
+<div id="portals"></div>
+<div id="status">F275 Acoustic Residual Spatial Mind — tilt / move pointer · drag portals · click for audio</div>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const resEl = document.getElementById('res');
+let w, h, particles = [], residual = 0.5, pred = [0,0], listener = {x:0,y:0}, bias = [0,0];
+let audioCtx, oscillators = [], panners = [], gains = [];
+let worker, weights = null;
+const N = 180;
+const portals = [];
+
+function resize() {
+  w = canvas.width = innerWidth;
+  h = canvas.height = innerHeight;
+  listener = {x: w/2, y: h/2};
+}
+resize(); addEventListener('resize', resize);
+
+// Particles
+function initParticles() {
+  particles = [];
+  for (let i = 0; i < N; i++) {
+    particles.push({
+      x: Math.random()*w, y: Math.random()*h,
+      vx: (Math.random()-0.5)*2, vy: (Math.random()-0.5)*2,
+      hue: Math.random()*60 + 180
+    });
+  }
+}
+initParticles();
+
+// Portals
+function makePortals() {
+  const container = document.getElementById('portals');
+  for (let i = 0; i < 3; i++) {
+    const p = document.createElement('div');
+    p.className = 'portal';
+    p.textContent = 'L'+(i+1);
+    p.style.left = (100 + i*120) + 'px';
+    p.style.top = (80 + i*40) + 'px';
+    let dragging = false, ox=0, oy=0;
+    p.onpointerdown = e => { dragging=true; ox=e.offsetX; oy=e.offsetY; p.setPointerCapture(e.pointerId); };
+    p.onpointermove = e => {
+      if (!dragging) return;
+      const x = e.clientX - ox, y = e.clientY - oy;
+      p.style.left = x+'px'; p.style.top = y+'px';
+      listener = {x, y};
+      bias = [(x - w/2)/w, (y - h/2)/h];
+    };
+    p.onpointerup = () => dragging=false;
+    container.appendChild(p);
+    portals.push(p);
+  }
+}
+makePortals();
+
+// Worker residual predictor (simple LMS)
+const workerCode = `
+let W = new Float32Array(16); // 8 features * 2 outputs
+let lr = 0.015;
+self.onmessage = e => {
+  if (e.data.type === 'step') {
+    const feat = new Float32Array(e.data.feat); // 8-dim
+    // predict
+    let px=0, py=0;
+    for (let i=0;i<8;i++) { px += W[i]*feat[i]; py += W[i+8]*feat[i]; }
+    const ax = e.data.actual[0], ay = e.data.actual[1];
+    const ex = ax - px, ey = ay - py;
+    const res = Math.sqrt(ex*ex + ey*ey);
+    // LMS
+    for (let i=0;i<8;i++) {
+      W[i] += lr * ex * feat[i];
+      W[i+8] += lr * ey * feat[i];
+    }
+    self.postMessage({res, pred:[px,py], W: Array.from(W)});
+  } else if (e.data.type === 'load') {
+    W = new Float32Array(e.data.W);
+  } else if (e.data.type === 'reset') {
+    W.fill(0);
+  }
+};
+`;
+const blob = new Blob([workerCode], {type:'application/javascript'});
+worker = new Worker(URL.createObjectURL(blob));
+worker.onmessage = e => {
+  residual = Math.min(2, e.data.res || 0);
+  pred = e.data.pred || [0,0];
+  weights = e.data.W;
+  resEl.textContent = 'residual: ' + residual.toFixed(3);
+  document.documentElement.style.setProperty('--res', residual);
+};
+
+// Features and input
+let hist = new Array(8).fill(0);
+let lastPos = {x:0,y:0}, lastTime = performance.now();
+let orient = {b:0,g:0};
+addEventListener('pointermove', e => {
+  const now = performance.now();
+  const dt = Math.max(1, now - lastTime)/1000;
+  const vx = (e.clientX - lastPos.x)/dt;
+  const vy = (e.clientY - lastPos.y)/dt;
+  lastPos = {x:e.clientX, y:e.clientY};
+  lastTime = now;
+  updateFeatures(vx, vy);
+});
+if (window.DeviceOrientationEvent) {
+  addEventListener('deviceorientation', e => {
+    orient.b = (e.beta||0)/90;
+    orient.g = (e.gamma||0)/90;
+  });
+}
+function updateFeatures(vx, vy) {
+  const speed = Math.hypot(vx,vy)/200;
+  hist = [orient.b, orient.g, vx/300, vy/300, speed, hist[0], hist[1], hist[2]];
+  const feat = hist.map((v,i) => v + (i<2 ? bias[i%2]*0.3 : 0));
+  worker.postMessage({type:'step', feat, actual:[vx/300, vy/300]});
+}
+
+// Particle step (Canvas2D boids-ish)
+function stepParticles() {
+  const attr = 0.02 + residual * 0.08;
+  const sep = 0.03;
+  const align = 0.015;
+  for (let p of particles) {
+    let ax=0, ay=0, sx=0, sy=0, count=0, sCount=0;
+    for (let q of particles) {
+      if (p===q) continue;
+      const dx = q.x-p.x, dy = q.y-p.y, d2 = dx*dx+dy*dy;
+      if (d2 < 6400 && d2 > 1) { // cohesion/align
+        ax += q.vx; ay += q.vy; count++;
+        sx += dx; sy += dy;
+      }
+      if (d2 < 900 && d2 > 0.1) { // sep
+        sx -= dx/d2; sy -= dy/d2; sCount++;
+      }
+    }
+    if (count) { ax/=count; ay/=count; }
+    if (sCount) { sx/=sCount; sy/=sCount; }
+    // residual steers toward predicted
+    const steerX = pred[0]*40 * residual;
+    const steerY = pred[1]*40 * residual;
+    p.vx += ax*align + sx*sep + steerX*attr + (Math.random()-0.5)*0.2;
+    p.vy += ay*align + sy*sep + steerY*attr + (Math.random()-0.5)*0.2;
+    const sp = Math.hypot(p.vx,p.vy);
+    if (sp > 3) { p.vx *= 3/sp; p.vy *= 3/sp; }
+    p.x += p.vx; p.y += p.vy;
+    if (p.x<0||p.x>w) p.vx*=-1;
+    if (p.y<0||p.y>h) p.vy*=-1;
+    p.hue = 180 + residual*80 + Math.sin(p.x*0.01)*20;
+  }
+}
+
+// Clusters for audio (simple bins)
+function getClusters() {
+  const bins = [[0,0,0],[0,0,0],[0,0,0]];
+  for (let p of particles) {
+    const b = Math.min(2, Math.floor(p.x / (w/3)));
+    bins[b][0] += p.x; bins[b][1] += p.y; bins[b][2]++;
+  }
+  return bins.map(b => b[2] ? {x:b[0]/b[2], y:b[1]/b[2], n:b[2]} : null).filter(Boolean);
+}
+
+// Audio
+function initAudio() {
+  if (audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  for (let i=0; i<3; i++) {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    const panner = audioCtx.createPanner();
+    panner.panningModel = 'HRTF';
+    osc.type = 'sine';
+    osc.frequency.value = 220 + i*60;
+    gain.gain.value = 0.08;
+    osc.connect(gain); gain.connect(panner); panner.connect(audioCtx.destination);
+    osc.start();
+    oscillators.push(osc); gains.push(gain); panners.push(panner);
+  }
+}
+addEventListener('pointerdown', () => { if (!audioCtx) initAudio(); }, {once:true});
+
+function updateAudio() {
+  if (!audioCtx) return;
+  const clusters = getClusters();
+  clusters.forEach((cl, i) => {
+    if (i >= oscillators.length) return;
+    const freq = 180 + residual * 280 + (cl.n||0)*0.5;
+    oscillators[i].frequency.setTargetAtTime(freq, audioCtx.currentTime, 0.1);
+    // simple pan from cluster relative to listener
+    const dx = (cl.x - listener.x) / w;
+    const dy = (cl.y - listener.y) / h;
+    panners[i].positionX.setTargetAtTime(dx*2, audioCtx.currentTime, 0.1);
+    panners[i].positionY.setTargetAtTime(dy*2, audioCtx.currentTime, 0.1);
+    panners[i].positionZ.setTargetAtTime(0.5, audioCtx.currentTime, 0.1);
+    gains[i].gain.setTargetAtTime(0.04 + residual*0.06, audioCtx.currentTime, 0.1);
+  });
+}
+
+// Render
+function render() {
+  ctx.fillStyle = 'rgba(10,10,18,0.25)';
+  ctx.fillRect(0,0,w,h);
+  ctx.globalCompositeOperation = 'lighter';
+  for (let p of particles) {
+    ctx.fillStyle = `hsla(${p.hue},70%,60%,0.7)`;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 2 + residual, 0, Math.PI*2);
+    ctx.fill();
+  }
+  ctx.globalCompositeOperation = 'source-over';
+  // portals visual feedback
+  portals.forEach((p,i) => {
+    p.style.transform = `scale(${1 + residual*0.3})`;
+    p.style.boxShadow = `0 0 ${8+residual*12}px #6cf`;
+  });
+}
+
+function loop() {
+  stepParticles();
+  updateAudio();
+  render();
+  requestAnimationFrame(loop);
+}
+loop();
+
+// IndexedDB seal
+const DB = 'f275';
+function openDB() {
+  return new Promise((res, rej) => {
+    const r = indexedDB.open(DB, 1);
+    r.onupgradeneeded = () => r.result.createObjectStore('w');
+    r.onsuccess = () => res(r.result);
+    r.onerror = rej;
+  });
+}
+document.getElementById('seal').onclick = async () => {
+  if (!weights) return;
+  const db = await openDB();
+  const tx = db.transaction('w','readwrite');
+  tx.objectStore('w').put(weights, 'W');
+  document.getElementById('status').textContent = 'Sealed residual weights to IndexedDB';
+};
+document.getElementById('load').onclick = async () => {
+  const db = await openDB();
+  const tx = db.transaction('w');
+  const req = tx.objectStore('w').get('W');
+  req.onsuccess = () => {
+    if (req.result) {
+      worker.postMessage({type:'load', W: req.result});
+      document.getElementById('status').textContent = 'Loaded sealed weights';
+    }
+  };
+};
+document.getElementById('reset').onclick = () => {
+  worker.postMessage({type:'reset'});
+  initParticles();
+  residual = 0.5;
+  document.getElementById('status').textContent = 'Reset';
+};
+
+// WebGPU note: in a full build, replace particle step with compute shader dispatch reading residual uniform; current is Canvas2D for immediate runnability.
+</script>
+</body>
+</html>
