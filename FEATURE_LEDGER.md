@@ -1760,3 +1760,20 @@ Ledger guard restored this file from a7aa061 after 8631f29 broke it. Content tha
 ## Guard restore (2026-10-27)
 
 Ledger guard restored this file from 3af8036 after 120c720 broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+
+
+## F275 (2026-10-27) — webgpu-acoustic-residual-spatial-mind
+
+**Branch away from**: WebGPU softbody/attention/cloth/NCA/MLP residual lattices, WebXR gaze/hand arenas, sealed genome competitions, orientation-direct physics, fluid-evolving-audio, spectral trajectories, causal RNN memory field, reservoir gesture DOM chain (F260–F274 cluster).
+
+**Concept**: WebGPU (Canvas2D fallback) particle flock whose attraction/noise is modulated by the residual of a local Web Worker online linear predictor of DeviceOrientation + pointer velocity. Cluster centroids drive spatial Web Audio oscillators (PannerNode). Draggable DOM listener portals reposition the acoustic listener and inject bias into the predictor, closing the loop. CSS morphs with residual. IndexedDB seals weights.
+
+**Files**: drafts/F275-webgpu-acoustic-residual-spatial-mind/index.html, SPEC.md
+
+**Novelty**: residual-driven particle embodiment + spatial acoustic output from clusters + embodied listener portals. Not fluid density, not RNN deposit compression, not reservoir+spring chain, not evolutionary audio genomes, not softbody force laws. Closes residual-predict → flock-steer → spatial-sound → portal-bias loop.
+
+**Status**: prototype delivered, offline-capable, interactive. Canvas2D particles + blob Worker LMS + Web Audio spatial + IndexedDB. WebGPU compute path noted.
+
+**V01D landing**: spatial acoustic-forager skill under void-live-deploy/skills/mini/acoustic-residual-spatial.js; testable via residual→attraction and portal-drag→panner + bias.
+
+Building blocks: residual predictor, particle flock steered by error, spatial audio from statistics, draggable acoustic portals, sealed weights. Next: full WebGPU compute flock with spatial hash; multi-head residual.
