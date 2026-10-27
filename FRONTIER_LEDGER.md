@@ -69,3 +69,19 @@ Permanent record of frontier experiments for The Void canvas. Append only.
 **Builds on:** Prior NCA (F036), fluid/intent (F265), and attention lattice experiments by adding closed-loop local-agent rule mutation and physical UI response to emergent motifs.
 
 **Next building block:** Move NCA step to WebGPU compute shader; replace rule agent with small embedding or Transformers.js local model for richer steering.
+
+## 2026-10-27 — Spectral Trajectory Harmonic Particle Mind
+
+**Slug:** F271-spectral-trajectory-harmonic-mind
+
+**Architecture:** Ring-buffer of pointer velocities; lightweight DFT power spectrum on main thread; blob Worker evolves a population of harmonic genomes (freq/amp/phase) under residual fitness; Canvas2D particles spring toward projected harmonic targets; Web Audio oscillators sonify the same harmonics with spatial panning; CSS custom properties morph chrome from spectral entropy and fitness; IndexedDB seals best genome. WebGPU compute path noted. Optional DeviceOrientation bias.
+
+**Expected outcome:** User motion style becomes a living spectral signature. Particles cluster and orbit according to evolved harmonics; generative audio tracks the model; page warps and recolors with prediction quality. Offline, interactive, persistent.
+
+**Mechanics:** Velocity history → DFT spectrum → worker mutation of harmonics → particle targets + audio freqs → entropy/fitness → CSS vars. Seal stores genome.
+
+**Failure modes:** Worker/CSP blocks → static harmonics; audio needs gesture; DFT is approximate; particle count may need reduction on low-end.
+
+**Builds on:** Prior predictive residual, audio, and morphing-chrome experiments by making the user's trajectory spectrum the primary mind substrate rather than spatial density or attention weights.
+
+**Next building block:** WebGPU particle + spectrum compute; WebXR trajectory channel; local model over spectral tokens.
