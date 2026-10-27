@@ -53,3 +53,19 @@ Permanent record of frontier experiments for The Void canvas. Append only.
 **Builds on:** Prior WebGPU agents and orientation physics by adding predictive intent loop and consolidating orbs.
 
 **Next building block:** Lift particle step to WebGPU compute shader; larger RNN or small local model for better intent.
+
+## 2026-10-26 — WebGPU NCA LLM-Steered Morph
+
+**Slug:** F270-webgpu-nca-llm-steered-morph
+
+**Architecture:** Canvas2D (WebGPU path stub) Neural Cellular Automata grid whose update parameters (feed/kill) are live-mutated by a Web Worker local agent that observes field entropy/active density and recent pointer motion; agent emits labels. Floating DOM cards and CSS HSL morph in response to entropy and activity.
+
+**Expected outcome:** User paints seeds into the NCA; patterns grow/decay under Gray-Scott-like dynamics. Local agent periodically steers rules toward coherence or turbulence and labels the state. UI cards drift and scale with field entropy; page hue shifts. Fully self-contained runnable prototype.
+
+**Mechanics:** CPU NCA step with clamped diffusion; worker applies simple online rule blending of stats + motion; main renders scaled ImageData and interpolates cards; CSS vars driven by entropy.
+
+**Failure modes:** CPU step limits resolution; agent may drive params to extremes (clamped); card count capped to avoid clutter. WebGPU compute not implemented in this version.
+
+**Builds on:** Prior NCA (F036), fluid/intent (F265), and attention lattice experiments by adding closed-loop local-agent rule mutation and physical UI response to emergent motifs.
+
+**Next building block:** Move NCA step to WebGPU compute shader; replace rule agent with small embedding or Transformers.js local model for richer steering.

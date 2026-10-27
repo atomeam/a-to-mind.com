@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F270 — WebGPU NCA LLM-Steered Morph</title>
+<style>
+  :root {
+    --hue: 220;
+    --scale: 1;
+    --entropy: 0.5;
+  }
+  body {
+    margin: 0;
+    background: hsl(var(--hue), 40%, 8%);
+    color: #e0e0e0;
+    font-family: system-ui, sans-serif;
+    overflow: hidden;
+    transition: background 0.6s ease;
+  }
+  canvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    cursor: crosshair;
+  }
+  #status {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    background: rgba(0,0,0,0.55);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    z-index: 10;
+    backdrop-filter: blur(4px);
+  }
+  .card {
+    position: absolute;
+    background: rgba(20,20,30,0.75);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 10px;
+    padding: 6px 10px;
+    font-size: 12px;
+    pointer-events: none;
+    transition: transform 0.4s ease, opacity 0.4s;
+    max-width: 180px;
+    z-index: 5;
+  }
+  button {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    background: #222;
+    color: #fff;
+    border: 1px solid #444;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    z-index: 10;
+  }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="status">F270 NCA-Mind initializing…</div>
+<button id="reset">Reset Field</button>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const status = document.getElementById('status');
+let W, H, gridW = 160, gridH = 90;
+let cells, next;
+let params = { feed: 0.055, kill: 0.062, diffA: 1.0, diffB: 0.5 };
+let entropy = 0.4;
+const cards = [];
+const maxCards = 6;
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+  gridW = Math.min(200, Math.floor(W / 6));
+  gridH = Math.min(120, Math.floor(H / 6));
+  initGrid();
+}
+function initGrid() {
+  cells = new Float32Array(gridW * gridH * 2);
+  next = new Float32Array(gridW * gridH * 2);
+  for (let i = 0; i < gridW * gridH; i++) {
+    cells[i*2] = 1;
+    cells[i*2+1] = 0;
+  }
+  // seed center
+  const cx = gridW>>1, cy = gridH>>1;
+  for (let y = -5; y <= 5; y++) for (let x = -5; x <= 5; x++) {
+    const i = ((cy+y)*gridW + (cx+x)) * 2;
+    if (i >= 0 && i < cells.length) {
+      cells[i] = 0.5;
+      cells[i+1] = 0.25;
+    }
+  }
+}
+function idx(x, y) { return ((y % gridH + gridH) % gridH * gridW + (x % gridW + gridW) % gridW) * 2; }
+
+function stepNCA() {
+  const { feed, kill, diffA, diffB } = params;
+  for (let y = 0; y < gridH; y++) {
+    for (let x = 0; x < gridW; x++) {
+      const i = idx(x, y);
+      const a = cells[i], b = cells[i+1];
+      // laplacian approx
+      let lapA = -a, lapB = -b;
+      lapA += cells[idx(x-1,y)] + cells[idx(x+1,y)] + cells[idx(x,y-1)] + cells[idx(x,y+1)];
+      lapB += cells[idx(x-1,y)+1] + cells[idx(x+1,y)+1] + cells[idx(x,y-1)+1] + cells[idx(x,y+1)+1];
+      const ab2 = a * b * b;
+      next[i]   = a + (diffA * lapA - ab2 + feed * (1 - a));
+      next[i+1] = b + (diffB * lapB + ab2 - (kill + feed) * b);
+      next[i]   = Math.max(0, Math.min(1, next[i]));
+      next[i+1] = Math.max(0, Math.min(1, next[i+1]));
+    }
+  }
+  [cells, next] = [next, cells];
+}
+
+function computeStats() {
+  let sumB = 0, sumB2 = 0, active = 0;
+  for (let i = 1; i < cells.length; i += 2) {
+    const b = cells[i];
+    sumB += b;
+    sumB2 += b * b;
+    if (b > 0.3) active++;
+  }
+  const n = gridW * gridH;
+  const mean = sumB / n;
+  const variance = sumB2 / n - mean * mean;
+  entropy = Math.min(1, Math.max(0, variance * 8 + active / n));
+  return { entropy, active: active / n, mean };
+}
+
+function render() {
+  const img = ctx.createImageData(gridW, gridH);
+  for (let i = 0, p = 0; i < cells.length; i += 2, p += 4) {
+    const b = cells[i+1];
+    const v = Math.floor(b * 255);
+    img.data[p]   = v * 0.4;
+    img.data[p+1] = v * 0.7;
+    img.data[p+2] = v;
+    img.data[p+3] = 255;
+  }
+  // scale up
+  const off = document.createElement('canvas');
+  off.width = gridW; off.height = gridH;
+  off.getContext('2d').putImageData(img, 0, 0);
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(off, 0, 0, W, H);
+}
+
+// Worker for local AI agent
+const workerCode = `
+self.onmessage = function(e) {
+  const { stats, motion, params } = e.data;
+  // tiny "reasoning": blend stats + motion into rule mutation
+  const e = stats.entropy || 0.4;
+  const m = Math.hypot(motion.dx || 0, motion.dy || 0);
+  let newFeed = params.feed + (e - 0.5) * 0.01 + m * 0.002;
+  let newKill = params.kill + (0.5 - e) * 0.008 - m * 0.001;
+  newFeed = Math.max(0.01, Math.min(0.1, newFeed));
+  newKill = Math.max(0.01, Math.min(0.1, newKill));
+  const labels = ['coherent', 'turbulent', 'sparse', 'clustered', 'exploring', 'settling'];
+  const label = labels[Math.floor(e * (labels.length - 1))] || 'mind';
+  self.postMessage({ feed: newFeed, kill: newKill, label, entropy: e });
+};
+`;
+const blob = new Blob([workerCode], { type: 'application/javascript' });
+const worker = new Worker(URL.createObjectURL(blob));
+let lastMotion = { dx: 0, dy: 0 };
+worker.onmessage = (e) => {
+  const { feed, kill, label, entropy: e } = e.data;
+  params.feed = feed;
+  params.kill = kill;
+  document.documentElement.style.setProperty('--hue', Math.floor(180 + e * 140));
+  document.documentElement.style.setProperty('--entropy', e.toFixed(2));
+  status.textContent = `Agent: ${label} · entropy ${e.toFixed(2)} · feed ${feed.toFixed(3)}`;
+  // spawn or update a card
+  if (cards.length < maxCards && Math.random() < 0.4) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.textContent = label;
+    card.style.left = (Math.random() * 0.8 * W) + 'px';
+    card.style.top = (Math.random() * 0.8 * H) + 'px';
+    document.body.appendChild(card);
+    cards.push({ el: card, tx: Math.random() * W, ty: Math.random() * H });
+  }
+};
+
+let mouse = { x: 0, y: 0, down: false };
+canvas.addEventListener('pointermove', (ev) => {
+  const dx = ev.clientX - mouse.x, dy = ev.clientY - mouse.y;
+  lastMotion = { dx, dy };
+  mouse.x = ev.clientX; mouse.y = ev.clientY;
+  if (ev.buttons) seedAt(ev.clientX, ev.clientY);
+});
+canvas.addEventListener('pointerdown', (ev) => seedAt(ev.clientX, ev.clientY));
+
+function seedAt(px, py) {
+  const gx = Math.floor(px / W * gridW), gy = Math.floor(py / H * gridH);
+  for (let y = -3; y <= 3; y++) for (let x = -3; x <= 3; x++) {
+    const i = idx(gx + x, gy + y);
+    cells[i] = 0.4;
+    cells[i+1] = 0.6;
+  }
+}
+
+document.getElementById('reset').onclick = () => { initGrid(); cards.forEach(c => c.el.remove()); cards.length = 0; };
+
+function loop() {
+  stepNCA();
+  render();
+  const stats = computeStats();
+  // query agent occasionally
+  if (Math.random() < 0.05) {
+    worker.postMessage({ stats, motion: lastMotion, params });
+  }
+  // morph cards toward hotspots (simple)
+  cards.forEach(c => {
+    c.tx += (Math.random() - 0.5) * 4;
+    c.ty += (Math.random() - 0.5) * 4;
+    c.el.style.transform = `translate(${c.tx - parseFloat(c.el.style.left||0)}px, ${c.ty - parseFloat(c.el.style.top||0)}px) scale(${0.8 + stats.entropy * 0.4})`;
+    c.el.style.opacity = 0.6 + stats.entropy * 0.4;
+  });
+  requestAnimationFrame(loop);
+}
+
+window.addEventListener('resize', resize);
+resize();
+loop();
+status.textContent = 'F270 ready — paint to seed the NCA; agent steers rules';
+</script>
+</body>
+</html>
