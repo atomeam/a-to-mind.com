@@ -23,3 +23,19 @@ This file exists so hourly research automations never recommend the same capabil
 **V01D landing**: spatial memory skill under void-live-deploy/skills/mini/causal-rnn-field.js; testable via residual→portal-scale mapping and latent reconstruction proxy.
 
 Building blocks: causal deposit substrate, local recurrent encoder, residual-driven embodied DOM, sealed latent. Next: WebGPU compute diffusion + multi-layer RNN or transformer over memory tokens.
+
+## F274 (2026-10-27) — reservoir-gesture-dom-chain
+
+**Branch away from**: WebGPU softbody/attention/cloth/NCA/MLP residual lattices, WebXR gaze/hand genome arenas, sealed competitions, orientation-direct physics, fluid-evolving-audio, spectral trajectories (F260–F272), and F273’s trained RNN memory residual portals.
+
+**Concept**: Fixed-random Echo State Network (reservoir computing) in a Web Worker ingests DeviceOrientation + pointer velocity stream. Online LMS trains only the linear readout to predict next gesture delta. Reservoir state energy and prediction residual modulate spring stiffness and target offsets of a chain of 7 floating DOM anchors with simple spring-mass integration. Canvas2D background visualizes input trail. Dragging anchors biases the input stream. IndexedDB seals readout weights. Hybrid DOM+canvas embodiment.
+
+**Files**: drafts/F274-reservoir-gesture-dom-chain/index.html, SPEC.md
+
+**Novelty**: under-explored reservoir (fixed recurrent dynamics + trained readout) driving a spring-connected physical DOM chain via gesture prediction residual. Not force-law lattices, not evolutionary genomes, not attention weights, not pure residual predictors, not diffused deposit fields, not trained RNNs. Closes input-stream → reservoir → residual → stiffness/chain-morph → drag-bias loop.
+
+**Status**: prototype delivered, offline-capable, interactive. Canvas2D + blob Worker ESN + IndexedDB + CSS/JS spring DOM chain.
+
+**V01D landing**: spatial forager skill under void-live-deploy/skills/mini/reservoir-gesture-chain.js; testable via residual→stiffness mapping and readout seal/load.
+
+Building blocks: reservoir computing substrate, online readout for causal prediction, residual-driven spring DOM chain, hybrid canvas+DOM embodiment, sealed weights. Next: WebGPU compute for larger reservoir or multi-reservoir hierarchies; WebRTC shared reservoir state.
