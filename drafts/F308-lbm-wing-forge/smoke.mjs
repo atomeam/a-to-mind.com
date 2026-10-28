@@ -1,0 +1,21 @@
+import { chromium } from '/workspace/void-wt-lists6/node_modules/playwright-core/index.mjs';
+import http from 'http'; import fs from 'fs'; import path from 'path';
+const dir = path.dirname(new URL(import.meta.url).pathname);
+const srv = http.createServer((q, s) => { const p = q.url.split('?')[0].split('#')[0]; const f = path.join(dir, p === '/' ? 'index.html' : p); fs.readFile(f, (e, b) => { if (e) { s.writeHead(404); s.end(); return; } s.writeHead(200, { 'content-type': f.endsWith('.html') ? 'text/html' : 'text/javascript' }); s.end(b); }); }).listen(8738);
+const br = await chromium.launch({ executablePath: '/usr/bin/google-chrome', args: ['--no-sandbox'] });
+const pg = await br.newPage({ viewport: { width: 1280, height: 720 } }); const errs = [];
+pg.on('pageerror', e => errs.push(String(e))); pg.on('console', m => m.type() === 'error' && errs.push(m.text()));
+await pg.goto('http://localhost:8738/?gens=3'); await pg.waitForTimeout(4000);
+const fps = await pg.evaluate(() => new Promise(r => { let n = 0; const t0 = performance.now(); const f = () => { n++; if (performance.now() - t0 < 2000) requestAnimationFrame(f); else r(n / 2); }; requestAnimationFrame(f); }));
+const before = await pg.evaluate(() => ({ cl: __f308.cl, cd: __f308.cd }));
+// paint a rock wall downstream-below the wing via real pointer drags
+const box = await pg.$eval('canvas', c => { const r = c.getBoundingClientRect(); return { x: r.left, y: r.top, w: r.width, h: r.height }; });
+await pg.mouse.move(box.x + box.w * 0.62, box.y + box.h * 0.75); await pg.mouse.down();
+await pg.mouse.move(box.x + box.w * 0.78, box.y + box.h * 0.62, { steps: 12 }); await pg.mouse.up();
+const rockCells = await pg.evaluate(() => __f308.rocks.reduce((a, b) => a + b, 0));
+await pg.click('#evolve');
+await pg.waitForFunction(() => window.__f308done !== undefined, null, { timeout: 180000 });
+await pg.waitForTimeout(6000);
+const after = await pg.evaluate(() => ({ cl: __f308.cl, cd: __f308.cd, genome: __f308.genome, log: document.getElementById('log').textContent, tilt: document.getElementById('panel').style.transform }));
+await pg.screenshot({ path: path.join(dir, 'smoke.png') });
+console.log(JSON.stringify({ fps, before, rockCells, after, errs })); await br.close(); srv.close();
