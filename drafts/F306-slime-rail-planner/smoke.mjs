@@ -1,0 +1,14 @@
+import { chromium } from '/workspace/void-wt-lists6/node_modules/playwright-core/index.mjs';
+import http from 'http'; import fs from 'fs'; import path from 'path';
+const dir = path.dirname(new URL(import.meta.url).pathname);
+const srv = http.createServer((q, s) => { const f = path.join(dir, q.url.split('?')[0].split('#')[0] === '/' ? 'index.html' : q.url.split('?')[0]); fs.readFile(f, (e, b) => { if (e) { s.writeHead(404); s.end(); return; } s.writeHead(200, { 'content-type': f.endsWith('.html') ? 'text/html' : 'text/javascript' }); s.end(b); }); }).listen(8736);
+const br = await chromium.launch({ executablePath: '/usr/bin/google-chrome', args: ['--no-sandbox'] });
+const pg = await br.newPage({ viewport: { width: 1100, height: 800 } }); const errs = [];
+pg.on('pageerror', e => errs.push(String(e))); pg.on('console', m => m.type() === 'error' && errs.push(m.text()));
+await pg.goto('http://localhost:8736/'); await pg.waitForTimeout(25000);
+const r1 = await pg.evaluate(() => ({ gen: document.getElementById('mGen').textContent, conn: document.getElementById('mConn').textContent, cost: document.getElementById('mCost').textContent, cities: document.querySelectorAll('.city').length }));
+await pg.click('#bRoute'); const bs = await pg.$$('.city'); await bs[0].click(); await bs[1].click(); await pg.waitForTimeout(1500);
+const msg = await pg.textContent('#msg');
+await pg.mouse.click(560, 400); await pg.waitForTimeout(500); const after = await pg.$$eval('.city', a => a.length);
+await pg.screenshot({ path: path.join(dir, 'smoke.png') });
+console.log(JSON.stringify({ r1, routeMsg: msg, citiesAfterAdd: after, errs })); await br.close(); srv.close();
