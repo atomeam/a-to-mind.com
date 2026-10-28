@@ -1,0 +1,38 @@
+{
+ "gens": 8,
+ "pop": 12,
+ "esCurveRun1": [
+  2.56,
+  3.778,
+  3.778,
+  3.778,
+  4.171,
+  10.797,
+  10.797,
+  10.797
+ ],
+ "esUnseen": [
+  10.189,
+  7.194
+ ],
+ "randomUnseen": [
+  13.149,
+  -0.911
+ ],
+ "esMeanUnseen": 8.692,
+ "randomMeanUnseen": 6.119,
+ "bestParams": {
+  "mu": 0.2404,
+  "sigma": 0.0396,
+  "dt": 0.1316,
+  "b2": 0.3064,
+  "b3": 0.4195,
+  "shift": 0.2896
+ },
+ "steerTransfer": {
+  "alive": false,
+  "massRatio": 2.5,
+  "cellsTravelledTowardTarget": 61.8
+ },
+ "seconds": 162.518
+}
