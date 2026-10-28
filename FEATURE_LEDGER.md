@@ -1885,6 +1885,19 @@ Ledger guard restored this file from a0e2a4d after 57d15de broke it. Content tha
 
 Ledger guard restored this file from 8cf94dd after b46ba06 broke it. Content that commit wrote is in its diff; re-add it with git on disk.
 
-## Guard restore (2026-10-28)
 
-Ledger guard restored this file from 4f83a99 after 3481256 broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+## F285 (2026-10-28) — webxr-hand-genome-competition
+
+**Branch away from**: residual predictors (F284 trajectory residual, F275 acoustic residual), spectral/audio minds (F269 fluid audio, F282 speech-rnn portals), orientation softbodies (F259/F260), attention lattices, pure NCA, pointer-history fields.
+
+**Concept**: True WebXR hand-tracked (wrist joint projection, mouse proxy fallback) multi-agent competition arena. Six agents with tiny local MLP genomes (4-input → 2-force) compete for a central energy orb. Hands physically push/grab agents. Seal best genome to localStorage; load transfers mutated genome into a random agent. Hybrid DOM labels as embodiments. Canvas2D physics, fully offline-capable.
+
+**Files**: drafts/F285-webxr-hand-genome-competition/index.html, SPEC.md
+
+**Novelty**: WebXR hand causal input into competing genome-driven agents with sealed transfer loop. Leaves residual density, spectral diffusion, speech portals, and single-mind softbodies.
+
+**Status**: prototype delivered, offline-capable, interactive. Canvas2D + WebXR session + hybrid DOM + localStorage seals.
+
+**V01D landing**: spatial hand-genome skill under void-live-deploy/skills/mini/webxr-hand-genome.js; testable via hand→agent force, seal/load restores genome fitness bias.
+
+Building blocks: WebXR hand pose proxy, local MLP genome, competitive energy fitness, sealed transfer via storage, hybrid DOM labels. Next: full joint tracking + WebGPU particle kernel + WebRTC multi-user genome broadcast.
