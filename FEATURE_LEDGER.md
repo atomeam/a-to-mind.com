@@ -1805,3 +1805,19 @@ Ledger guard restored this file from 46143d5 after cca3371 broke it. Content tha
 ## Guard restore (2026-10-28)
 
 Ledger guard restored this file from 64e4833 after c12ea6e broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+
+## F282 (2026-10-28) — speech-rnn-causal-portal-mind
+
+**Branch away from**: WebXR hand neural cloth (F281), spectral causal portals (F280), orientation-RNN physical UI arena (F279), acoustic residual spatial (F275), and prior residual/spectral/sealed-genome/WebGPU lattice clusters.
+
+**Concept**: Continuous local speech recognition (Web Speech API) as primary causal input. Words embed to compact vector + pointer residual, fed to Web Worker tiny Elman RNN. Hidden state modulates Canvas2D particle field forces/hue (WebGPU path prepared). Field energy spawns bidirectional DOM concept portals showing recent phrases; dragging a portal injects force impulse back into the field and seals genome (RNN state + phrase) to IndexedDB. Optional residual-modulated audio.
+
+**Files**: drafts/F282-speech-rnn-causal-portal-mind/index.html, SPEC.md
+
+**Novelty**: local speech causal stream driving predictive RNN that co-evolves spatial particle field and embodied language portals with closed-loop impulse. Not hand-tracking cloth, not spectral diffusion portals, not pure orientation physics agents, not residual acoustic flock.
+
+**Status**: prototype delivered, offline-capable, interactive. Canvas2D particles + blob Worker RNN + SpeechRecognition (with demo fallback) + hybrid DOM portals + IndexedDB.
+
+**V01D landing**: spatial speech-portal skill under void-live-deploy/skills/mini/speech-rnn-portal.js; testable via phrase→field bias and drag→impulse + seal.
+
+Building blocks: speech causal input, Worker Elman residual, modulated particle field, language portals, sealed genome. Next: WebGPU compute kernel; multi-user sealed transfer.
