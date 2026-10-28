@@ -1778,10 +1778,18 @@ Ledger guard restored this file from 3af8036 after 120c720 broke it. Content tha
 
 Building blocks: residual predictor, particle flock steered by error, spatial audio from statistics, draggable acoustic portals, sealed weights. Next: full WebGPU compute flock with spatial hash; multi-head residual.
 
-## Guard restore (2026-10-28)
+## F277 (2026-10-27) — predictive-force-injection-mind
 
-Ledger guard restored this file from 4014e70 after 5f06d8b broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+**Branch away from**: acoustic residual spatial, spatial concept graph, causal RNN memory, reservoir gesture DOM, fluid evolving audio, orientation cloth, sealed MLP arenas, WebXR hand/gaze, spectral trajectories (F260–F276 cluster).
 
-## Guard restore (2026-10-28)
+**Concept**: WebGPU (Canvas2D fallback) particle field continuously steered by force injection of a local Web Worker online linear predictor of pointer trajectory. Predicted next point becomes a dynamic attractor; residual and coherence morph Void chrome (border width, hue, seal pill). Click seals a temporary ghost attractor.
 
-Ledger guard restored this file from 0327b8a after c4c0c05 broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+**Files**: drafts/F277-predictive-force-injection-mind/index.html, SPEC.md
+
+**Novelty**: closed anticipatory loop of online local predictor → force injection into spatial particle sim → residual-driven UI morph. Not residual-only flock, not pure trajectory memory, not RNN deposit compression, not causal attention cards. Embodies prediction as visible force.
+
+**Status**: prototype delivered, offline-capable, interactive. Canvas2D particles + blob Worker LMS-style predictor + CSS morph. WebGPU compute path noted for later.
+
+**V01D landing**: anticipatory spatial skill under void-live-deploy/skills/mini/predictive-force-injection.js; testable via pointer→prediction residual and click→temporary seal attractor.
+
+Building blocks: online trajectory predictor, force-injected particle field, residual-to-chrome morph, temporary seal ghost. Next: multi-step rollout or WebGPU spatial hash for larger N.
