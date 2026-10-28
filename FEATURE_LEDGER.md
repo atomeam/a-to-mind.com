@@ -1902,6 +1902,19 @@ Ledger guard restored this file from 8cf94dd after b46ba06 broke it. Content tha
 
 Building blocks: WebXR hand pose proxy, local MLP genome, competitive energy fitness, sealed transfer via storage, hybrid DOM labels. Next: full joint tracking + WebGPU particle kernel + WebRTC multi-user genome broadcast.
 
-## Guard restore (2026-10-28)
 
-Ledger guard restored this file from 2cf7fae after 93fe83d broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+## F286 (2026-10-28) — webgpu-online-learning-spatial-agent
+
+**Branch away from**: WebXR hand genome competition (F285), speech-rnn causal portals (F282), residual predictors, spectral NCA, evolutionary lattices, pure attention fields.
+
+**Concept**: Spatial particle field (Canvas2D, WebGPU compute path prepared) whose attract/diffuse/noise parameters are continuously adapted by a local online-learning agent (tiny linear policy + gradient descent in Web Worker). Pointer density samples and user actions (click/move) serve as supervisory signals. Prediction error morphs page chrome (opacity/scale/hue) and influences hybrid DOM probe orbs that query the field and inject force impulses on drag. Optional WebXR session for spatial control.
+
+**Files**: drafts/F286-webgpu-online-learning-spatial-agent/index.html, SPEC.md
+
+**Novelty**: Online gradient-based local AI adapting the substrate rules themselves from user behavior, with embodied probes and error-driven chrome. Not genome competition, not speech portals, not residual density or spectral bias.
+
+**Status**: prototype delivered, offline-capable, interactive. Canvas2D particles + blob Worker online GD + hybrid DOM probes + chrome morph + WebXR stub.
+
+**V01D landing**: spatial online-learning skill under void-live-deploy/skills/mini/online-spatial-agent.js; testable via interaction→param adaptation and error→UI morph + probe impulse.
+
+Building blocks: online GD worker, adaptable particle forces, density sampling, DOM probes with closed-loop, error chrome. Next: full WebGPU compute kernel for field; multi-probe attention weighting.
