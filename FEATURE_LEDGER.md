@@ -1837,3 +1837,18 @@ Ledger guard restored this file from a0c4f6a after dd7532f broke it. Content tha
 ## Guard restore (2026-10-28)
 
 Ledger guard restored this file from 0af2f2d after 3f4a8fa broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+## F284 (2026-10-28) — predictive-trajectory-residual-morph
+
+**Branch away from**: WebXR gaze MLP WebGPU swarm (F283), speech RNN causal portals (F282), trajectory lattices (F026/F030), residual acoustic fields, sealed pure-DOM arenas, and prior NCA/fluid/attention clusters.
+
+**Concept**: Pointer trajectory sequence (positions + velocities) as primary causal input to a local predictive residual model (tiny RNN/MLP in main or Worker). Prediction error (residual/surprise) modulates Canvas2D/WebGPU particle field forces and hue. High residual spawns/morphs floating DOM memory cards that physically rearrange via density sampling. Dragging a card injects correction impulse and can seal corrected trajectory + model weights to IndexedDB. Optional residual audio. Progressive WebXR gaze-as-trajectory stub.
+
+**Files**: drafts/F284-predictive-trajectory-residual-morph/index.html, SPEC.md
+
+**Novelty**: sequential trajectory predictive residual driving hybrid spatial particle morph + embodied correction cards with sealed genome loop. Not gaze competition swarm, not speech portals, not single-position lattice, not pure residual acoustic.
+
+**Status**: prototype delivered, offline-capable, interactive. Canvas2D particles + residual predictor + hybrid DOM cards + IndexedDB. WebGPU path noted.
+
+**V01D landing**: spatial trajectory-residual skill under void-live-deploy/skills/mini/trajectory-residual-morph.js; testable via trajectory→residual, residual→card spawn/move, seal/load restores weights.
+
+Building blocks: trajectory sequence causal stream, local predictive residual model, residual-modulated particle field, hybrid morphing DOM cards with correction, sealed genome. Next: WebGPU residual kernel; multi-user residual broadcast.
