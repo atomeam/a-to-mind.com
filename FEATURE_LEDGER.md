@@ -2044,3 +2044,23 @@ Ledger guard restored this file from 4d18f82 after 445eff2 broke it. Content tha
 ## Guard restore (2026-10-28)
 
 Ledger guard restored this file from 60aa982 after 136a91a broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+
+
+## Frontier Engine F-313 (2026-10-28)
+
+**F313-webgpu-nca-spatial-memory-mind**
+
+Novel combination: WebGPU compute-shader Neural Cellular Automata (NCA) on a 128×128 float grid with neighbor diffusion and sinusoidal reaction. A local Web Worker hill-climbs a reaction bias from field energy and interaction statistics. Pointer deposits seeds that propagate; DeviceOrientation biases hue. Field energy morphs page chrome via CSS custom properties. Floating DOM probes sample deposits and can seal a pattern fragment to IndexedDB. Progressive Canvas2D fallback. Not a variation of F-020 (FSM agents), F-021 (orientation+density+morph), F-312 (attention-wave sonifier), residual lattices, particle life, or prior graph/attention minds: core is GPU-resident NCA kernel adapted by worker residual-style hill-climb with explicit spatial memory seals and probe embodiment.
+
+Architecture: single index.html; WebGPU compute (8×8 workgroups), double-buffered storage buffers; blob Worker ~1 Hz; CSS vars; IndexedDB seal; pointer + orientation.
+
+Expected outcome: Interactive spatial NCA field that grows, decays, and reorganizes under gesture and tilt. Page chrome warps with energy. Probes appear at deposits and seal. Runnable offline; WebGPU preferred.
+
+Mechanics: seed deposit → diffusion + reaction (worker bias) → energy → CSS morph + probe spawn → optional IndexedDB seal.
+
+Failure modes: no WebGPU (Canvas2D clear), Worker blocked (static bias), no orientation (no tilt), IDB unavailable (status only).
+
+Building blocks: true WebGPU NCA with learned MLP kernels, multi-layer residual state, WebXR plane projection of grid texture, sealed pattern replay as seed texture.
+
+Lands in V01D as spatial NCA skill (skills/mini/nca-spatial-memory); testable via energy→CSS stability and pointer→IndexedDB seal + probe spawn.
+
