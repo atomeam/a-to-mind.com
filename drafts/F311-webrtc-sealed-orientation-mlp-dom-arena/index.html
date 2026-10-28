@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F311 — WebRTC Sealed Orientation-MLP DOM Arena</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<style>
+:root { --bg:#0a0a12; --fg:#e8e8f0; --accent:#7af; --orb:#f7a; }
+* { box-sizing:border-box; }
+html,body { margin:0; height:100%; background:var(--bg); color:var(--fg); font:14px/1.4 system-ui,sans-serif; overflow:hidden; }
+#stage { position:relative; width:100vw; height:100vh; }
+canvas#density { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+.orb { position:absolute; width:36px; height:36px; border-radius:50%; background:radial-gradient(circle at 30% 30%, #fff, var(--orb)); border:2px solid #fff8; transform:translate(-50%,-50%); pointer-events:none; transition:background .3s; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:#000; text-shadow:0 0 2px #fff; }
+.orb.champ { box-shadow:0 0 16px var(--accent); border-color:var(--accent); }
+#hud { position:absolute; top:8px; left:8px; right:8px; z-index:10; background:rgba(0,0,0,.65); padding:8px 12px; border-radius:8px; display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+button,textarea { background:#222; color:var(--fg); border:1px solid #444; border-radius:4px; padding:4px 8px; font:inherit; }
+button:hover { background:#333; }
+#log { position:absolute; bottom:8px; left:8px; right:8px; max-height:80px; overflow:auto; font-size:12px; background:rgba(0,0,0,.5); padding:4px 8px; border-radius:4px; z-index:10; }
+.resource { position:absolute; width:12px; height:12px; border-radius:50%; background:#7f7; pointer-events:none; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="density"></canvas>
+  <div id="hud">
+    <button id="orientBtn">Enable Orientation</button>
+    <button id="evolveBtn">Evolve</button>
+    <button id="sealBtn">Seal Champ</button>
+    <button id="loadBtn">Load Sealed</button>
+    <button id="rtcBtn">Start WebRTC</button>
+    <span id="status">local · fitness 0</span>
+    <span id="hash" style="font-size:11px;opacity:.7"></span>
+  </div>
+  <div id="rtcBox" style="display:none; position:absolute; top:60px; left:8px; z-index:11; background:#111; padding:8px; border-radius:6px; max-width:420px;">
+    <div>Offer/Answer (copy-paste between tabs):</div>
+    <textarea id="sdp" rows="6" style="width:100%; font-size:11px;"></textarea>
+    <button id="setRemote">Set Remote</button>
+    <button id="sendGenome">Send Sealed Genome</button>
+    <button id="closeRtc">Close</button>
+  </div>
+  <div id="log"></div>
+</div>
+<script>
+const STAGE = document.getElementById('stage');
+const DENSITY = document.getElementById('density');
+const CTX = DENSITY.getContext('2d');
+const LOG = document.getElementById('log');
+const STATUS = document.getElementById('status');
+const HASH = document.getElementById('hash');
+const N_AGENTS = 6;
+const N_RES = 12;
+const MLP_IN = 5, MLP_H = 6, MLP_OUT = 2;
+const GENOME_LEN = MLP_IN*MLP_H + MLP_H*MLP_OUT + MLP_H + MLP_OUT; // ~40
+
+function log(msg) { LOG.innerHTML = `<div>${new Date().toLocaleTimeString()} ${msg}</div>` + LOG.innerHTML; }
+
+// ---- MLP ----
+function randomGenome() {
+  const g = new Float32Array(GENOME_LEN);
+  for (let i=0;i<g.length;i++) g[i] = (Math.random()*2-1)*0.5;
+  return g;
+}
+function forward(genome, input) {
+  // W1: IN x H, b1: H, W2: H x OUT, b2: OUT
+  const W1 = GENOME_LEN; // just compute offsets
+  let o = 0;
+  const h = new Float32Array(MLP_H);
+  for (let j=0;j<MLP_H;j++) {
+    let s = genome[o++]; // bias
+    for (let i=0;i<MLP_IN;i++) s += input[i] * genome[o++];
+    h[j] = Math.tanh(s);
+  }
+  const out = new Float32Array(MLP_OUT);
+  for (let k=0;k<MLP_OUT;k++) {
+    let s = genome[o++];
+    for (let j=0;j<MLP_H;j++) s += h[j] * genome[o++];
+    out[k] = Math.tanh(s);
+  }
+  return out;
+}
+function mutate(g, rate=0.15) {
+  const n = new Float32Array(g);
+  for (let i=0;i<n.length;i++) if (Math.random()<rate) n[i] += (Math.random()*2-1)*0.3;
+  return n;
+}
+
+// ---- Agents & Resources ----
+const agents = [];
+const resources = [];
+let orient = {beta:0, gamma:0};
+let pointerTilt = {x:0, y:0};
+let champIdx = 0;
+let totalFitness = 0;
+
+function makeAgent(genome, id) {
+  const el = document.createElement('div');
+  el.className = 'orb';
+  el.textContent = id;
+  STAGE.appendChild(el);
+  return {id, el, genome, x: Math.random()*window.innerWidth, y: Math.random()*window.innerHeight, vx:0, vy:0, fitness:0, age:0};
+}
+
+function init() {
+  for (let i=0;i<N_AGENTS;i++) agents.push(makeAgent(randomGenome(), i));
+  for (let i=0;i<N_RES;i++) resources.push({x:Math.random()*window.innerWidth, y:Math.random()*window.innerHeight, el:null});
+  resources.forEach(r => {
+    const el = document.createElement('div');
+    el.className = 'resource';
+    STAGE.appendChild(el);
+    r.el = el;
+  });
+  resize();
+  requestAnimationFrame(loop);
+  log('Arena ready. Tilt or move pointer. Enable Orientation for device tilt.');
+}
+
+function resize() {
+  DENSITY.width = window.innerWidth;
+  DENSITY.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+
+// ---- Orientation / Pointer ----
+let orientEnabled = false;
+document.getElementById('orientBtn').onclick = async () => {
+  if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+    try {
+      const p = await DeviceOrientationEvent.requestPermission();
+      if (p === 'granted') startOrient();
+      else log('Orientation permission denied');
+    } catch(e) { log('Orientation request failed'); }
+  } else {
+    startOrient();
+  }
+};
+function startOrient() {
+  orientEnabled = true;
+  window.addEventListener('deviceorientation', e => {
+    orient.beta = e.beta || 0;
+    orient.gamma = e.gamma || 0;
+  });
+  log('DeviceOrientation enabled');
+}
+STAGE.addEventListener('pointermove', e => {
+  pointerTilt.x = (e.clientX / window.innerWidth - 0.5) * 2;
+  pointerTilt.y = (e.clientY / window.innerHeight - 0.5) * 2;
+});
+
+// ---- Simulation ----
+function nearestRes(ax, ay) {
+  let best = null, bd = 1e9;
+  for (const r of resources) {
+    const dx = r.x - ax, dy = r.y - ay, d = dx*dx+dy*dy;
+    if (d < bd) { bd = d; best = r; }
+  }
+  return best;
+}
+function peerDensity(ax, ay, self) {
+  let c = 0;
+  for (const a of agents) if (a !== self) {
+    const dx = a.x-ax, dy=a.y-ay;
+    if (dx*dx+dy*dy < 120*120) c++;
+  }
+  return c / N_AGENTS;
+}
+
+function loop() {
+  const W = window.innerWidth, H = window.innerHeight;
+  const tiltX = orientEnabled ? (orient.gamma / 45) : pointerTilt.x;
+  const tiltY = orientEnabled ? (orient.beta / 45) : pointerTilt.y;
+
+  // agents
+  agents.forEach(a => {
+    const res = nearestRes(a.x, a.y);
+    const dx = res ? (res.x - a.x)/W : 0;
+    const dy = res ? (res.y - a.y)/H : 0;
+    const dens = peerDensity(a.x, a.y, a);
+    const input = [tiltX, tiltY, dx, dy, dens];
+    const out = forward(a.genome, input);
+    a.vx = a.vx*0.92 + out[0]*1.8;
+    a.vy = a.vy*0.92 + out[1]*1.8;
+    const sp = Math.hypot(a.vx, a.vy);
+    if (sp > 6) { a.vx *= 6/sp; a.vy *= 6/sp; }
+    a.x += a.vx; a.y += a.vy;
+    if (a.x < 20) { a.x = 20; a.vx *= -0.5; }
+    if (a.x > W-20) { a.x = W-20; a.vx *= -0.5; }
+    if (a.y < 20) { a.y = 20; a.vy *= -0.5; }
+    if (a.y > H-20) { a.y = H-20; a.vy *= -0.5; }
+    a.el.style.left = a.x + 'px';
+    a.el.style.top = a.y + 'px';
+    a.age++;
+    // collect
+    if (res && Math.hypot(a.x-res.x, a.y-res.y) < 22) {
+      a.fitness += 1;
+      totalFitness++;
+      res.x = Math.random()*W; res.y = Math.random()*H;
+    }
+    // proximity fitness trickle
+    if (res && Math.hypot(a.x-res.x, a.y-res.y) < 80) a.fitness += 0.002;
+  });
+
+  // champ highlight
+  agents.forEach(a => a.el.classList.remove('champ'));
+  champIdx = agents.reduce((b,a,i) => a.fitness > agents[b].fitness ? i : b, 0);
+  agents[champIdx].el.classList.add('champ');
+  STATUS.textContent = `agents ${N_AGENTS} · champ#${champIdx} fit ${agents[champIdx].fitness.toFixed(1)} · total ${totalFitness}`;
+
+  // resources DOM
+  resources.forEach(r => {
+    r.el.style.left = r.x + 'px';
+    r.el.style.top = r.y + 'px';
+  });
+
+  // density canvas
+  CTX.fillStyle = 'rgba(10,10,18,0.15)';
+  CTX.fillRect(0,0,W,H);
+  CTX.fillStyle = 'rgba(120,255,120,0.4)';
+  resources.forEach(r => CTX.fillRect(r.x-4, r.y-4, 8, 8));
+  CTX.fillStyle = 'rgba(255,100,160,0.25)';
+  agents.forEach(a => CTX.beginPath(), CTX.arc(a.x,a.y,18,0,6.28), CTX.fill());
+
+  requestAnimationFrame(loop);
+}
+
+// ---- Evolution / Seal ----
+document.getElementById('evolveBtn').onclick = () => {
+  const champ = agents[champIdx];
+  for (let i=0;i<agents.length;i++) if (i !== champIdx) {
+    agents[i].genome = mutate(champ.genome);
+    agents[i].fitness *= 0.7;
+  }
+  log('Evolved: non-champs mutated from champ');
+};
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+let db;
+async function openDB() {
+  return new Promise((res,rej) => {
+    const r = indexedDB.open('void-f311', 1);
+    r.onupgradeneeded = () => r.result.createObjectStore('seals', {keyPath:'hash'});
+    r.onsuccess = () => res(r.result);
+    r.onerror = rej;
+  });
+}
+document.getElementById('sealBtn').onclick = async () => {
+  if (!db) db = await openDB().catch(()=>null);
+  const champ = agents[champIdx];
+  const flat = Array.from(champ.genome).map(v=>v.toFixed(5)).join(',');
+  const payload = {genome: flat, fitness: champ.fitness, ts: Date.now()};
+  const hash = await sha256(JSON.stringify(payload));
+  HASH.textContent = 'sealed ' + hash.slice(0,12) + '…';
+  if (db) {
+    const tx = db.transaction('seals','readwrite');
+    tx.objectStore('seals').put({hash, ...payload});
+  }
+  log(`Sealed champ genome ${hash.slice(0,16)} fit=${champ.fitness.toFixed(1)}`);
+  window._lastSeal = {hash, ...payload};
+};
+
+document.getElementById('loadBtn').onclick = async () => {
+  if (!db) db = await openDB().catch(()=>null);
+  if (!db) { log('No IDB'); return; }
+  const tx = db.transaction('seals','readonly');
+  const store = tx.objectStore('seals');
+  const req = store.getAll();
+  req.onsuccess = () => {
+    const seals = req.result;
+    if (!seals.length) { log('No seals'); return; }
+    const best = seals.sort((a,b)=>b.fitness-a.fitness)[0];
+    const g = new Float32Array(best.genome.split(',').map(Number));
+    agents[champIdx].genome = g;
+    agents[champIdx].fitness = best.fitness;
+    HASH.textContent = 'loaded ' + best.hash.slice(0,12) + '…';
+    log(`Loaded seal ${best.hash.slice(0,16)}`);
+  };
+};
+
+// ---- WebRTC ----
+let pc, dc;
+document.getElementById('rtcBtn').onclick = async () => {
+  document.getElementById('rtcBox').style.display = 'block';
+  pc = new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'}]});
+  dc = pc.createDataChannel('genome');
+  dc.onmessage = onGenomeMessage;
+  pc.ondatachannel = e => { dc = e.channel; dc.onmessage = onGenomeMessage; };
+  pc.onicecandidate = e => { if (e.candidate) document.getElementById('sdp').value = JSON.stringify(pc.localDescription); };
+  const offer = await pc.createOffer();
+  await pc.setLocalDescription(offer);
+  document.getElementById('sdp').value = JSON.stringify(offer);
+  log('WebRTC offer created. Copy SDP to peer.');
+};
+document.getElementById('setRemote').onclick = async () => {
+  try {
+    const desc = JSON.parse(document.getElementById('sdp').value);
+    if (!pc) {
+      pc = new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'}]});
+      pc.ondatachannel = e => { dc = e.channel; dc.onmessage = onGenomeMessage; };
+      pc.onicecandidate = e => { if (e.candidate) document.getElementById('sdp').value = JSON.stringify(pc.localDescription); };
+    }
+    await pc.setRemoteDescription(desc);
+    if (desc.type === 'offer') {
+      const answer = await pc.createAnswer();
+      await pc.setLocalDescription(answer);
+      document.getElementById('sdp').value = JSON.stringify(answer);
+      log('Answer created. Copy back to initiator.');
+    } else {
+      log('Remote set. Channel should open.');
+    }
+  } catch(e) { log('SDP error: ' + e.message); }
+};
+document.getElementById('sendGenome').onclick = () => {
+  if (!dc || dc.readyState !== 'open') { log('No open datachannel'); return; }
+  if (!window._lastSeal) { log('Seal a genome first'); return; }
+  dc.send(JSON.stringify(window._lastSeal));
+  log('Sent sealed genome');
+};
+document.getElementById('closeRtc').onclick = () => {
+  document.getElementById('rtcBox').style.display = 'none';
+  if (pc) pc.close();
+};
+function onGenomeMessage(ev) {
+  try {
+    const seal = JSON.parse(ev.data);
+    const g = new Float32Array(seal.genome.split(',').map(Number));
+    // inject: replace lowest fitness agent
+    let worst = 0;
+    agents.forEach((a,i) => { if (a.fitness < agents[worst].fitness) worst = i; });
+    agents[worst].genome = g;
+    agents[worst].fitness = seal.fitness * 0.5;
+    log(`Injected remote genome ${seal.hash.slice(0,12)} into agent ${worst}`);
+  } catch(e) { log('Bad genome msg'); }
+}
+
+init();
+</script>
+</body>
+</html>
