@@ -81,3 +81,19 @@ Permanent record of frontier experiments for The Void canvas. Append only.
 **Builds on:** Prior spatial fields and local minds by using wave interference substrate + reservoir computing instead of residual, attention, decision-tree, or particle forces.
 
 **Next building block:** WebGPU wave kernel; multi-source reservoir; Web Audio field sonification; WebXR hand injectors.
+
+## 2026-10-28 — WebGPU Orient Genome Competition Arena
+
+**Slug:** F305-webgpu-orient-genome-competition-arena
+
+**Architecture:** Canvas2D multi-agent evolutionary arena (WebGPU compute path prepared) of particles with sealed genetic parameters (speed/sense/aggression/turn/efficiency). DeviceOrientation supplies continuous tilt gravity bias. Agents compete for food energy; top fitness spawn mutable offspring. Hybrid DOM fitness cards for top agents can be dragged to boost energy. Champion genomes sealed to IndexedDB for transfer. Fully offline single-file.
+
+**Expected outcome:** Interactive spatial competition. Agents forage and evolve under orientation tilt; human drops food or drags cards to intervene. Seal persists champion; spawn injects mutated offspring. Progressive orientation and IDB.
+
+**Mechanics:** Genome-driven steering + aggression repulsion + orientation force; energy decay/eat; prune low energy; cards update top-3; seal/load JSON genome; mouse drops food.
+
+**Failure modes:** No orientation support/permission → zero tilt (playable); IndexedDB denied → in-memory only; high N FPS drop (capped).
+
+**Builds on:** Prior spatial particle fields and sealed local minds by introducing multi-agent genome competition with sealed transfer and orientation as causal physics input, hybrid fitness DOM, distinct from RNN/reservoir/Hebbian/attention/NCA substrates.
+
+**Next building block:** Full WebGPU compute kernel for agent forces/collisions; WebRTC peer genome exchange; gaze selective pressure.
