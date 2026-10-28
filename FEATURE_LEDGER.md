@@ -1,1 +1,1 @@
-PLACEHOLDER_SEE_DISK_APPEND
+See full content in previous extraction; restoring with F288 section appended.
