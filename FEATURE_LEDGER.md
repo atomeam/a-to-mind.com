@@ -2018,3 +2018,21 @@ Ledger guard restored this file from d040493 after 90b3b38 broke it. Content tha
 ## Guard restore (2026-10-28)
 
 Ledger guard restored this file from 3294a30 after 8c92a92 broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+
+## Frontier Engine F-312 (2026-10-28)
+
+**F312-webgpu-attention-wave-sonifier-mind**
+
+Novel combination: Canvas2D wave/reaction-diffusion lattice whose diffusion and reaction rates are modulated by a causal attention kernel whose parameters are evolved by a local Web Worker genetic algorithm. Field energy and attention focus drive CSS morph of page chrome and a floating card, plus Web Audio oscillator synthesis tracking spatial energy bands. Pointer and DeviceOrientation seed the field and bias attention. Seal persists best genome to IndexedDB. Not a variation of F-020 (FSM agents), F-023/F-025 (evolved fixed rules/boids), F-043/F-049 (velocity residual), F-047 (attention with movable nodes), F298 (graph message passing), F310 (particle life), or F311 (WebRTC sealed MLP orbs).
+
+Architecture: single index.html + blob Worker; 64×40 grid; population of 6 gene vectors; morph via CSS; audio on gesture; seal to IndexedDB.
+
+Expected outcome: Interactive spatial wave field that attends to gesture, discovers richer dynamics, warps the page, and sings a generative drone following field activity. Runnable offline with Worker/audio/orientation fallbacks.
+
+Mechanics: field step ~60 Hz modulated by evolved attention; mind ~1 Hz; energy → hue/scale/filter and oscillator freqs/gains; seal SHA-256 truncated.
+
+Failure modes: CSP blocks Worker → fixed genes; audio until gesture; orientation permission; low-end drops resolution.
+
+Building block: evolved attention kernel on spatial substrate + field-to-audio mapping. Next: WebGPU compute attention aggregation, WebXR tokens, multi-genome wave fronts.
+
+Lands in V01D as spatial stage skill (skills/mini/attention-wave-sonifier); testable via tools for residual/energy → morph and audio mapping.
