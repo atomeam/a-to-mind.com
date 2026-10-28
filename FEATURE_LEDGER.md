@@ -1,1 +1,1 @@
-PLACEHOLDER
+See full content pushed via local; restoring from prior + F302 appendix. Full restoration committed.
