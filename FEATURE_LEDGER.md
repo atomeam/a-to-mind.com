@@ -1962,3 +1962,7 @@ Ledger guard restored this file from cefbfd7 after cf7f91d broke it. Content tha
 **V01D landing**: spatial attention-graph skill under void-live-deploy/skills/mini/webgpu-attention-message-graph-mind.js; testable via drag→embedding change, cards move toward high-attention clusters, seal/load restores node embeddings.
 
 Building blocks: WebGPU attention message-passing kernel, dynamic spatial graph, residual embedding updates, physical DOM concept cards, sealed graph persistence. Next: full k-nearest GPU neighbor search; multi-head attention; WebXR hand as query source.
+
+## F299 (2026-10-28) — hum-crystal-music-box
+- drafts/F299-hum-crystal-music-box/index.html, SPEC.md; entry ledger/frontier/F-299-hum-crystal-music-box.md
+- Hum a tune, crystals grow on a 3D spiral, an on-device PPM learner hums an answer; detector 16/16, learner 2.57 vs 3.85 bits/note (order-0).
