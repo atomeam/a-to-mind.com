@@ -145,3 +145,11 @@ Permanent record of frontier experiments for The Void canvas. Append only.
 **Builds on:** Prior wave interference and local minds by introducing attention-driven potential with explicit wave-function collapse to interactive DOM orbs and bidirectional injection, distinct from reservoir, k-means, MLP, or genome substrates.
 
 **Next building block:** Full WebGPU wave kernel; attention in compute; Web Audio spectral sonification; WebXR hand channel.
+
+## 2026-10-29 — Unique draft numbers, and every draft extends Verse Brain
+
+**Slug:** none (a rule, not a draft)
+
+**What changed:** 33 draft numbers were shared by 80 folders (F197 by seven, F300 by five), so a run that read "the next number" could land on a used one and a run that searched "what F-197 did" found seven answers. In each shared number the oldest draft kept it (F-237 stays with spoken fluid intent, which this ledger records); the other 47 moved to F400 to F446. The full table is `drafts/NUMBERS.md` (and `drafts/numbers.json`). Old names above this note are history and stay as written.
+
+**Rule for every run from now:** take the number from `tools/next-draft-number.sh`, name the folder `F<number>-<slug>` (no dash, no leading zeros), and run `tools/check-draft-numbers.sh` before committing. The novelty rule ("branch away from the recent cluster") made each run drift further from what Verse needs; it is replaced: the owner's direction (2026-10-29) is that the drafts are combined into one entity, Verse Brain, in atomeam/void-loop. A new draft names the Brain part it extends (its shared workspace, the attention scheduler, the imagination rollouts, an organ, the embodiment registry, the self region) and what it adds to that part. A draft that only renames a part that exists is not new.

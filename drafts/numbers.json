@@ -1,0 +1,338 @@
+[
+ {
+  "old": "F021-spatial-field-worker",
+  "new": "F400-spatial-field-worker",
+  "oldNumber": 21,
+  "newNumber": 400,
+  "kept": "F021-webgpu-reaction-diffusion-local-mind"
+ },
+ {
+  "old": "F026-spatial-graph-mind",
+  "new": "F401-spatial-graph-mind",
+  "oldNumber": 26,
+  "newNumber": 401,
+  "kept": "F026-pointer-trajectory-lattice-mind"
+ },
+ {
+  "old": "F026-webxr-nca-mindscape",
+  "new": "F402-webxr-nca-mindscape",
+  "oldNumber": 26,
+  "newNumber": 402,
+  "kept": "F026-pointer-trajectory-lattice-mind"
+ },
+ {
+  "old": "F022-webgpu-thought-gravity",
+  "new": "F403-webgpu-thought-gravity",
+  "oldNumber": 22,
+  "newNumber": 403,
+  "kept": "F022-webgpu-fluid-mind-morph"
+ },
+ {
+  "old": "F041-resonance-seeking-agents",
+  "new": "F404-resonance-seeking-agents",
+  "oldNumber": 41,
+  "newNumber": 404,
+  "kept": "F041-local-ai-portal-lattice-mind"
+ },
+ {
+  "old": "F044-spectral-resonance-lattice",
+  "new": "F405-spectral-resonance-lattice",
+  "oldNumber": 44,
+  "newNumber": 405,
+  "kept": "F044-neural-implicit-vector-mind"
+ },
+ {
+  "old": "F043-predictive-residual-lattice",
+  "new": "F406-predictive-residual-lattice",
+  "oldNumber": 43,
+  "newNumber": 406,
+  "kept": "F043-webgpu-compute-nca-pointer-mind"
+ },
+ {
+  "old": "F048-local-causal-echo-chamber",
+  "new": "F407-local-causal-echo-chamber",
+  "oldNumber": 48,
+  "newNumber": 407,
+  "kept": "F048-resonant-spatial-audio-mind"
+ },
+ {
+  "old": "F050-webxr-evo-density-morph",
+  "new": "F408-webxr-evo-density-morph",
+  "oldNumber": 50,
+  "newNumber": 408,
+  "kept": "F050-spectral-resonance-mind"
+ },
+ {
+  "old": "F187-lattice-autopoiesis",
+  "new": "F409-lattice-autopoiesis",
+  "oldNumber": 187,
+  "newNumber": 409,
+  "kept": "F187-webgpu-spectral-fluid-orientation-evo-mind"
+ },
+ {
+  "old": "F042-predictive-temporal-echo-mind",
+  "new": "F410-predictive-temporal-echo-mind",
+  "oldNumber": 42,
+  "newNumber": 410,
+  "kept": "F042-predictive-audio-particle-mind"
+ },
+ {
+  "old": "F050-evolving-attention-lattice-mind",
+  "new": "F411-evolving-attention-lattice-mind",
+  "oldNumber": 50,
+  "newNumber": 411,
+  "kept": "F050-spectral-resonance-mind"
+ },
+ {
+  "old": "F023-webxr-lattice-mind",
+  "new": "F412-webxr-lattice-mind",
+  "oldNumber": 23,
+  "newNumber": 412,
+  "kept": "F023-webgpu-evo-lattice-mind"
+ },
+ {
+  "old": "F190-webgpu-causal-memory-field-orbs",
+  "new": "F413-webgpu-causal-memory-field-orbs",
+  "oldNumber": 190,
+  "newNumber": 413,
+  "kept": "F190-webgpu-orientation-neural-particles"
+ },
+ {
+  "old": "F196-webgpu-embedding-lattice-mind",
+  "new": "F414-webgpu-embedding-lattice-mind",
+  "oldNumber": 196,
+  "newNumber": 414,
+  "kept": "F196-deviceorientation-webgpu-springmass-hybrid"
+ },
+ {
+  "old": "F196-webxr-causal-attention-lattice",
+  "new": "F415-webxr-causal-attention-lattice",
+  "oldNumber": 196,
+  "newNumber": 415,
+  "kept": "F196-deviceorientation-webgpu-springmass-hybrid"
+ },
+ {
+  "old": "F197-webgpu-sonified-thought-field",
+  "new": "F416-webgpu-sonified-thought-field",
+  "oldNumber": 197,
+  "newNumber": 416,
+  "kept": "F197-webgpu-neural-kernel-competition-field"
+ },
+ {
+  "old": "F197-local-embedding-morph-field",
+  "new": "F417-local-embedding-morph-field",
+  "oldNumber": 197,
+  "newNumber": 417,
+  "kept": "F197-webgpu-neural-kernel-competition-field"
+ },
+ {
+  "old": "F200-webgpu-causal-fluid-mind",
+  "new": "F418-webgpu-causal-fluid-mind",
+  "oldNumber": 200,
+  "newNumber": 418,
+  "kept": "F200-webxr-hand-rnn-dom-physics"
+ },
+ {
+  "old": "F201-webgpu-embodied-rnn-morph",
+  "new": "F419-webgpu-embodied-rnn-morph",
+  "oldNumber": 201,
+  "newNumber": 419,
+  "kept": "F201-webgpu-multiagent-sealed-genome-competition"
+ },
+ {
+  "old": "F205-rd-attention-kernel",
+  "new": "F420-rd-attention-kernel",
+  "oldNumber": 205,
+  "newNumber": 420,
+  "kept": "F205-webrtc-orientation-dom-agent-competition"
+ },
+ {
+  "old": "F197-webgpu-predictive-spectral-constellation",
+  "new": "F421-webgpu-predictive-spectral-constellation",
+  "oldNumber": 197,
+  "newNumber": 421,
+  "kept": "F197-webgpu-neural-kernel-competition-field"
+ },
+ {
+  "old": "F206-webgpu-sequence-transformer-morph",
+  "new": "F422-webgpu-sequence-transformer-morph",
+  "oldNumber": 206,
+  "newNumber": 422,
+  "kept": "F206-orientation-mlp-dom-physics-competition"
+ },
+ {
+  "old": "F197-webgpu-fluid-policy-mind",
+  "new": "F423-webgpu-fluid-policy-mind",
+  "oldNumber": 197,
+  "newNumber": 423,
+  "kept": "F197-webgpu-neural-kernel-competition-field"
+ },
+ {
+  "old": "F197-local-spatial-token-mind",
+  "new": "F424-local-spatial-token-mind",
+  "oldNumber": 197,
+  "newNumber": 424,
+  "kept": "F197-webgpu-neural-kernel-competition-field"
+ },
+ {
+  "old": "F197-webgpu-acoustic-swarm-mind",
+  "new": "F425-webgpu-acoustic-swarm-mind",
+  "oldNumber": 197,
+  "newNumber": 425,
+  "kept": "F197-webgpu-neural-kernel-competition-field"
+ },
+ {
+  "old": "F225-acoustic-causal-lattice-orbs",
+  "new": "F426-acoustic-causal-lattice-orbs",
+  "oldNumber": 225,
+  "newNumber": 426,
+  "kept": "F225-surprisal-strata"
+ },
+ {
+  "old": "F232-resonant-neural-membrane",
+  "new": "F427-resonant-neural-membrane",
+  "oldNumber": 232,
+  "newNumber": 427,
+  "kept": "F232-webxr-hand-particle-genome-arena"
+ },
+ {
+  "old": "F233-webgpu-acoustic-attention-orbs",
+  "new": "F428-webgpu-acoustic-attention-orbs",
+  "oldNumber": 233,
+  "newNumber": 428,
+  "kept": "F233-panel-play"
+ },
+ {
+  "old": "F247-webgpu-causal-token-swarm-mind",
+  "new": "F429-webgpu-causal-token-swarm-mind",
+  "oldNumber": 247,
+  "newNumber": 429,
+  "kept": "F247-webxr-gaze-rnn-dom-portals"
+ },
+ {
+  "old": "F254-sealed-genome-competitive-swarm",
+  "new": "F430-sealed-genome-competitive-swarm",
+  "oldNumber": 254,
+  "newNumber": 430,
+  "kept": "F254-orientation-webgpu-sealed-physics-arena"
+ },
+ {
+  "old": "F254-webgpu-embedding-cluster-memory-palace",
+  "new": "F431-webgpu-embedding-cluster-memory-palace",
+  "oldNumber": 254,
+  "newNumber": 431,
+  "kept": "F254-orientation-webgpu-sealed-physics-arena"
+ },
+ {
+  "old": "F220-webgpu-mlp-sph-genome-competition",
+  "new": "F432-webgpu-mlp-sph-genome-competition",
+  "oldNumber": 220,
+  "newNumber": 432,
+  "kept": "F220-window-spanning-organism"
+ },
+ {
+  "old": "F254-webgpu-multiagent-genome-competition",
+  "new": "F433-webgpu-multiagent-genome-competition",
+  "oldNumber": 254,
+  "newNumber": 433,
+  "kept": "F254-orientation-webgpu-sealed-physics-arena"
+ },
+ {
+  "old": "F260-orient-attention-softbody",
+  "new": "F434-orient-attention-softbody",
+  "oldNumber": 260,
+  "newNumber": 434,
+  "kept": "F260-orientation-rnn-physical-ui-competition"
+ },
+ {
+  "old": "F261-webgpu-density-attractor-ai-audio",
+  "new": "F435-webgpu-density-attractor-ai-audio",
+  "oldNumber": 261,
+  "newNumber": 435,
+  "kept": "F261-webgpu-orientation-nca-portal-mind"
+ },
+ {
+  "old": "F270-webgpu-causal-intent-attention-cards",
+  "new": "F436-webgpu-causal-intent-attention-cards",
+  "oldNumber": 270,
+  "newNumber": 436,
+  "kept": "F270-webgpu-nca-llm-steered-morph"
+ },
+ {
+  "old": "F237-orient-webgpu-mlp-dom",
+  "new": "F437-orient-webgpu-mlp-dom",
+  "oldNumber": 237,
+  "newNumber": 437,
+  "kept": "F237-spoken-fluid-intent"
+ },
+ {
+  "old": "F285-causal-webgpu-softbody-attention-mind",
+  "new": "F438-causal-webgpu-softbody-attention-mind",
+  "oldNumber": 285,
+  "newNumber": 438,
+  "kept": "F285-webgpu-softbody-genome-arena"
+ },
+ {
+  "old": "F285-webxr-hand-genome-competition",
+  "new": "F439-webxr-hand-genome-competition",
+  "oldNumber": 285,
+  "newNumber": 439,
+  "kept": "F285-webgpu-softbody-genome-arena"
+ },
+ {
+  "old": "F286-webgpu-online-learning-spatial-agent",
+  "new": "F440-webgpu-online-learning-spatial-agent",
+  "oldNumber": 286,
+  "newNumber": 440,
+  "kept": "F286-webrtc-sealed-rnn-orientation-shared-arena"
+ },
+ {
+  "old": "F300-webgpu-interference-reservoir-morph",
+  "new": "F441-webgpu-interference-reservoir-morph",
+  "oldNumber": 300,
+  "newNumber": 441,
+  "kept": "F300-orient-causal-mlp-physical-dom-agents"
+ },
+ {
+  "old": "F-300-kuramoto-phase-lock-mind",
+  "new": "F442-kuramoto-phase-lock-mind",
+  "oldNumber": 300,
+  "newNumber": 442,
+  "kept": "F300-orient-causal-mlp-physical-dom-agents"
+ },
+ {
+  "old": "F300-webgpu-nca-spatial-memory-mind",
+  "new": "F443-webgpu-nca-spatial-memory-mind",
+  "oldNumber": 300,
+  "newNumber": 443,
+  "kept": "F300-orient-causal-mlp-physical-dom-agents"
+ },
+ {
+  "old": "F300-webgpu-causal-wave-portal-mind",
+  "new": "F444-webgpu-causal-wave-portal-mind",
+  "oldNumber": 300,
+  "newNumber": 444,
+  "kept": "F300-orient-causal-mlp-physical-dom-agents"
+ },
+ {
+  "old": "F313-webgpu-nca-spatial-memory-mind",
+  "new": "F445-webgpu-nca-spatial-memory-mind",
+  "oldNumber": 313,
+  "newNumber": 445,
+  "kept": "F313-webgpu-causal-motion-rnn-hybrid-sculpt"
+ },
+ {
+  "old": "F314-webgpu-nca-xr-residual-mind",
+  "new": "F446-webgpu-nca-xr-residual-mind",
+  "oldNumber": 314,
+  "newNumber": 446,
+  "kept": "F314-webgpu-multi-mlp-swarm-arena"
+ },
+ {
+  "old": "F200-webgpu-lbm-evolved-swimmers-mind",
+  "new": "F447-webgpu-lbm-evolved-swimmers-mind",
+  "oldNumber": 200,
+  "newNumber": 447,
+  "kept": "F200-webxr-hand-rnn-dom-physics"
+ }
+]
