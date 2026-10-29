@@ -169,3 +169,19 @@ Permanent record of frontier experiments for The Void canvas. Append only.
 **Builds on:** Prior spatial fields and sealed local minds by introducing symbolic expression-tree genetic programming as the reasoning/generative substrate (distinct from MLP, RNN, reservoir, decision-tree, k-means, attention, NCA, or parameter-vector genomes), with explicit interactive node visualization and user-driven evolution.
 
 **Next building block:** WebGPU compute kernel for parallel expression evaluation; embedding of leaves as spatial attractors; crossover between multiple trees; WebXR hand-driven mutation.
+
+## 2026-10-29 — L-System Spatial Evo Mind
+
+**Slug:** F453-l-system-spatial-evo-mind
+
+**Architecture:** Canvas2D turtle-graphics L-system (axiom + production rules, limited expansion) whose rules are evolved by a local genetic algorithm driven by user rewards/clicks. Hybrid DOM rule cards display productions, support drag repositioning and click-to-mutate. Champion sealed to localStorage. Extends Verse Brain imagination rollouts / self region by adding a symbolic L-system generative substrate that can be evolved and manually spliced. Offline single-file.
+
+**Expected outcome:** Interactive spatial generative patterns from an evolving L-system mind. User interactions guide evolution; rule cards provide tangible symbolic access. Seal/load restores the champion. Fully self-contained runnable prototype.
+
+**Mechanics:** Iterative rule expansion → turtle interpretation and stroke; reward increments fitness and mutates rules/angle/step; cards sync from rules object.
+
+**Failure modes:** Long expansions truncated for performance; localStorage denied → memory only; dense rules produce overlapping strokes.
+
+**Builds on:** Prior spatial fields and sealed local minds by introducing L-system genetic programming as the generative substrate (distinct from expression trees, MLPs, reservoirs, decision trees, NCA, or genomes), with explicit interactive rule cards.
+
+**Next building block:** WebGPU compute for parallel expansion or symbol particles; multi-ruleset crossover; WebXR hand mutation.
