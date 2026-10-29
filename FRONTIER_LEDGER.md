@@ -129,3 +129,19 @@ Permanent record of frontier experiments for The Void canvas. Append only.
 **Builds on:** Prior spatial particle fields and sealed local minds by introducing unsupervised online k-means as reasoning substrate with explicit cluster orbs and entropy-driven UI morph, distinct from residual predictors, reservoirs, genomes, decision trees, NCA, or attention.
 
 **Next building block:** Full WebGPU compute kernel with spatial hashing; Worker-hosted incremental clustering; embedding of centroids as generative parameters.
+
+## 2026-10-29 — WebGPU Attention Wave Collapse
+
+**Slug:** F323-webgpu-attention-wave-collapse
+
+**Architecture:** Canvas2D discrete 2D wave-equation lattice (N=64, WebGPU compute path prepared) whose driving potential is biased by a local multi-head attention mind processing pointer trajectory history and lattice energy. High local amplitude triggers collapse events spawning hybrid DOM orbs. Drag re-injects energy/phase. UI morphs with global coherence. Sealed to IndexedDB. Offline single-file.
+
+**Expected outcome:** Interactive spatial wave field that attends to gestures, collapses high-energy regions into tangible orbs the user can drag to reshape the field. Coherence drives chrome. Seal persists attention weights and snapshot. Fully self-contained runnable prototype.
+
+**Mechanics:** History buffer → attention scores → source bias; Laplacian wave step with damping; peak detection spawns orbs and attenuates; drag injects impulse; seal stores JSON weights + partial lattice.
+
+**Failure modes:** High N drops FPS; IndexedDB denied → memory only; no pointer → idle; WebGPU not implemented in baseline.
+
+**Builds on:** Prior wave interference and local minds by introducing attention-driven potential with explicit wave-function collapse to interactive DOM orbs and bidirectional injection, distinct from reservoir, k-means, MLP, or genome substrates.
+
+**Next building block:** Full WebGPU wave kernel; attention in compute; Web Audio spectral sonification; WebXR hand channel.
