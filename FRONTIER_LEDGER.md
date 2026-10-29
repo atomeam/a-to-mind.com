@@ -113,3 +113,19 @@ Permanent record of frontier experiments for The Void canvas. Append only.
 **Builds on:** Prior sealed local minds and hybrid DOM by introducing actual WebGPU compute physics kernel controlled by MLP genomes with orientation as causal input, distinct from Canvas2D reservoirs, NCA, slime, attention, or hand stubs.
 
 **Next building block:** Per-particle neural kernels, WebXR gaze channel, WebRTC shared compute fields.
+
+## 2026-10-28 — WebGPU Online K-Means Particle Mind
+
+**Slug:** F318-webgpu-online-kmeans-particle-mind
+
+**Architecture:** Canvas2D multi-particle spatial field (WebGPU compute path prepared) whose attractors are driven by an online k-means clustering mind (main-thread stub, Worker-ready) on pointer trajectory features. Hybrid DOM cluster orbs can be dragged to reseed centroids. UI chrome morphs with global purity/entropy. Champion centroids sealed to IndexedDB. Offline single-file.
+
+**Expected outcome:** Interactive spatial canvas. Pointer motion trains unsupervised clusters that organize particles; orbs visualize and allow manual reshape. Seal persists the mind. Interface responds to organization. Progressive.
+
+**Mechanics:** Feature extraction → online assignment and mean update; particles attract to nearest centroid + noise; orbs lerp/scale and reseed on drag; seal JSON.
+
+**Failure modes:** High N FPS drop; IndexedDB denied → memory; no pointer → idle diffusion.
+
+**Builds on:** Prior spatial particle fields and sealed local minds by introducing unsupervised online k-means as reasoning substrate with explicit cluster orbs and entropy-driven UI morph, distinct from residual predictors, reservoirs, genomes, decision trees, NCA, or attention.
+
+**Next building block:** Full WebGPU compute kernel with spatial hashing; Worker-hosted incremental clustering; embedding of centroids as generative parameters.
