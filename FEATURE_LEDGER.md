@@ -2112,3 +2112,11 @@ Ledger guard restored this file from 1d065ca after ce44b0a broke it. Content tha
 ## Guard restore (2026-10-29)
 
 Ledger guard restored this file from 93888c3 after ce0beb9 broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+
+## Guard restore (2026-10-29)
+
+Ledger guard restored this file from 5298dfb after cb0d1a8 broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+
+## Guard restore (2026-10-29)
+
+Ledger guard restored this file from 5bc2e55 after a6dfeaa broke it. Content that commit wrote is in its diff; re-add it with git on disk.
