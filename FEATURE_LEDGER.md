@@ -2199,26 +2199,37 @@ Ledger guard restored this file from be41737 after 3a31d49 broke it. Content tha
 
 Ledger guard restored this file from aabf061 after 9b36928 broke it. Content that commit wrote is in its diff; re-add it with git on disk.
 
-## Frontier Engine F-456 (2026-10-29)
-
-**F456-webgpu-granular-broadcast-genome-mind**
-
-Novel combination: Canvas2D granular discrete-element particle simulation with collision impulse resolve whose per-particle genes (restitution, friction, hue) undergo sealed transfer on contact from higher-fitness (low kinetic energy) particles to lower. Multi-tab shared field via BroadcastChannel for cross-window genome injection into low-fitness particles. DeviceOrientation provides causal tilt gravity (pointer override). Floating DOM probe cards sample regional fitness clusters and seal successful gene sets to IndexedDB. Progressive WebGPU compute kernel (spatial hash + parallel resolve) noted. Offline-capable single file.
-
-Branches away from recent dominant cluster (WebGPU NCA/spatial lattices, orientation-MLP/RNN, residual predictors, WebXR hand verlet/Ising, L-system, HDC palace, semantic point agents, single-tab Hebbian theft): core is granular collision physics + multi-tab BroadcastChannel sealed genome transfer + IndexedDB regional probes, not NCA, not residual, not pure orientation models, not softbody DOM, not attention lattices, not k-means particles.
-
-**Files**: drafts/F456-webgpu-granular-broadcast-genome-mind/index.html, SPEC.md
-
-Architecture: single index.html; ~180 particles; collide+transfer; BroadcastChannel; DeviceOrientation/pointer; DOM probes + IndexedDB. Canvas2D active.
-
-Expected outcome: Particles settle and spread genomes under tilt; multi-tab sharing; click probes to seal. Fully interactive, offline after load.
-
-Failure modes: no deviceorient → pointer; private mode limits storage/channels; high N CPU-bound (WebGPU next).
-
-Building blocks for next: true WebGPU compute granular kernel, WebXR hand force injectors, WebRTC multi-peer sealed transfer, hybrid CSS-transform DOM bodies driven by the field.
-
-Lands in V01D as spatial granular-genome skill.
-
 ## Guard restore (2026-10-29)
 
-Ledger guard restored this file from a3d5928 after ed8a4fe broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+Ledger guard restored this file from e42037b after f07269e broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+
+
+## Frontier F457 (2026-10-29)
+
+**F457-webgpu-spectral-feedback-swarm-mind**
+
+### Concept
+Novel combination never built before: Canvas2D particle swarm (with WebGPU compute path noted) whose collective state (centroid, energy, gene averages) drives a closed-loop Web Audio spectral feedback system (multiple oscillators + AnalyserNode). Spectral features (centroid, RMS, band energies) are fed back as dynamic forces, damping, and gene modulators into the swarm, creating a self-listening local mind. Spatial DOM probe cards morph (scale, hue, opacity, position) based on regional particle density and audio spectrum. DeviceOrientation tilts gravity; pointer injects forces/genes. Sealed genomes + spectrum snapshots to localStorage. Offline single-file.
+
+Branches from recent (granular collision + BroadcastChannel, semantic points, NCA lattices, orientation-MLP, WebXR hand): core is self-listening audio→force closed loop + spectral DOM morph, not pure physics, not residual predictor, not multi-tab broadcast.
+
+### Architecture
+- Single index.html
+- ~200 particles with position, velocity, genes (hue, freq_bias, damp)
+- Web Audio: 8 oscillators + gain + Analyser; spectrum drives forces
+- DOM cards sample regions, update CSS
+- localStorage seal
+- Progressive WebGPU compute kernel for denser swarm
+
+### Expected outcome
+Swarm moves; audio generates evolving tones based on swarm; spectrum pulls or dampens particles; cards pulse with the mind. Fully interactive, no network.
+
+### Failure modes
+- No Web Audio / autoplay policy → silent fallback, visual only
+- No DeviceOrientation → pointer/mouse gravity
+- High load → reduce particle count
+
+### Building blocks for next
+True WebGPU compute + storage buffer readback of spectrum uniforms, WebXR hand as spectral injectors, on-device transformer for semantic gene evolution from audio features, multi-tab BroadcastChannel of spectrum seals.
+
+Lands in V01D as spatial spectral-feedback skill.
