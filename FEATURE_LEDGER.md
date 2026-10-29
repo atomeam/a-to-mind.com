@@ -2129,6 +2129,20 @@ Ledger guard restored this file from 288b249 after aa75ecf broke it. Content tha
 
 Ledger guard restored this file from fb02c05 after 2fdb71c broke it. Content that commit wrote is in its diff; re-add it with git on disk.
 
-## Guard restore (2026-10-29)
+## Frontier Engine F-313 (2026-10-29)
 
-Ledger guard restored this file from e996bbd after 00eb9b8 broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+**F313-webgpu-latent-dream-volume-curator**
+
+Novel combination: WebGPU (Canvas2D multi-slice fallback) latent density volume whose evolution is driven by a local generative latent walker (recurrent state + evolutionary gene mutation under density-diversity and seed-co-location fitness). User phrases become persistent memory seeds (attractor points). A curator agent samples high-density regions, maps latent coordinates to interpretive phrases, and spawns floating DOM concept cards at projected positions. Dragging a card relocates its seed and reinforces the genome. Density variance morphs page chrome. Seal persists walker genome + seeds to IndexedDB. Not a variation of F-020 (FSM agents), F-023/F-025 (evolved lattice/boids), F-043 (residual), F-047 (attention nodes), F298 (graph message), F310 (particle life), F311 (WebRTC orbs), or F312 (attention wave sonifier).
+
+Architecture: single index.html; volume step on main; curator samples peaks; hybrid draggable DOM cards; IndexedDB seal. WebGPU compute path noted for full 3D.
+
+Expected outcome: Interactive spatial dream volume that evolves structures around user seeds, interprets them as living rearrangeable cards, warps the page, and remembers genomes. Runnable offline.
+
+Mechanics: 48×48 density (slice of 3D); walker 8-dim + 4 genes; curator ~1.5 Hz; drag closes seed loop; variance → CSS hue/scale.
+
+Failure modes: no Worker needed (main thread); IndexedDB private → session; low-end ok.
+
+Building block: full WebGPU raymarched volume + on-device embedding for phrase gen; WebXR dream view.
+
+Lands in V01D as spatial stage skill (skills/mini/latent-dream-volume.js); testable via seed→peak density and drag→seed relocate + seal restore.
