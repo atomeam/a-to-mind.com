@@ -5,6 +5,7 @@ This file exists so hourly research automations never recommend the same capabil
 ## Rules for every future run
 
 - Write FEATURE_LEDGER.md with git on disk, append only. Never replace it with a full-file API write. `tools/check-ledger.sh` must pass (Suggested-by: Void (run 118)).
+- A frontier draft needs no ledger write. Commit only `drafts/FNNN-slug/SPEC.md` and `index.html`; ledger-guard appends the `## Frontier Engine F-NNN` entry from that SPEC.md. Do not open FEATURE_LEDGER.md for a draft, and never write it with the contents API.
 
 1. Read this ledger first (`https://raw.githubusercontent.com/atomeam/a-to-mind.com/master/FEATURE_LEDGER.md`).
 2. Pick **exactly one** unused slug from the Queue, starting at the top (easiest / most common first).
@@ -2282,3 +2283,39 @@ Lands in V01D as spatial acoustic-cloth skill (skills/mini/spectral-cloth-weaver
 ## Guard restore (2026-10-30)
 
 Ledger guard restored this file from f3362a1 after 0d8444d broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+
+## Frontier Engine F-467 (2026-10-30)
+
+**F467-webgpu-causal-echo-lattice-mind**
+
+Entry added by ledger-guard from drafts/F467-webgpu-causal-echo-lattice-mind/SPEC.md, after a full-file write dropped it.
+
+
+**Concept**
+Causal Echo Lattice Mind: user pointer trajectories, device orientation, and optional microphone spectral energy generate delayed "echo" particles on a lattice. A local residual predictor forecasts the next pointer position; the residual error injects turbulence and attraction that warps the echoes. Spatial editable DOM tiles act as embodied seeds — dragging them injects strong echoes. Sealing captures a snapshot of residual, echoes, and tile states to IndexedDB. CSS chrome morphs with residual. Canvas2D active; WebGPU compute path noted for future advection.
+
+**Novelty**
+Not a superficial variation of F466 spectral cloth (mass-spring mesh + spectral stiffness), F465 Hebbian swarm, residual density lattices, NCA, or pure predictive orbs. Core is trajectory-echo delay lines + causal residual prediction driving a morphic particle lattice that couples to spatial DOM tiles as active seeds, with sealed echo memory.
+
+**Architecture**
+- Single index.html
+- Canvas2D echo particles with residual-driven forces
+- Main-thread linear residual predictor (Worker evolutionary upgrade noted)
+- Absolute-positioned contenteditable tiles with drag seeding
+- DeviceOrientation + optional AnalyserNode
+- IndexedDB seals
+- CSS hue/background morph
+
+**Expected Outcome**
+Interactive spatial echo field that trails and anticipates user motion, responds to tilt and voice, lets tiles seed and be warped by the lattice, and restores sealed memories. Fully offline after load.
+
+**Failure Modes**
+No orientation (tilt=0), mic denied (energy=0), Canvas2D only, private mode IDB limits.
+
+**Building Blocks**
+True WebGPU compute echo advection, Worker residual MLP, WebXR tracked echoes, multi-tab BroadcastChannel echo sharing.
+
+**V01D Landing**
+skills/mini/causal-echo-lattice; testable via residual→echo turbulence, drag→seed injection, seal→IDB restore.
+
+**Files**: drafts/F467-webgpu-causal-echo-lattice-mind/SPEC.md, drafts/F467-webgpu-causal-echo-lattice-mind/index.html

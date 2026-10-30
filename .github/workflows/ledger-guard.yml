@@ -3,7 +3,7 @@ name: ledger-guard
 on:
   push:
     branches: [master]
-    paths: [FEATURE_LEDGER.md, .github/workflows/ledger-guard.yml, tools/check-ledger.sh, .githooks/**]
+    paths: [FEATURE_LEDGER.md, .github/workflows/ledger-guard.yml, tools/check-ledger.sh, tools/ledger-salvage.sh, .githooks/**, 'drafts/**']
 permissions:
   contents: write
 jobs:
@@ -19,23 +19,42 @@ jobs:
           git show HEAD~1:FEATURE_LEDGER.md > /tmp/prev.md 2>/dev/null || : > /tmp/prev.md
           bash tools/check-ledger.sh FEATURE_LEDGER.md /tmp/prev.md
         continue-on-error: true
+      - name: Append entries for new drafts
+        if: steps.check.outcome == 'success'
+        run: |
+          base="${{ github.event.before }}"
+          git cat-file -e "$base^{commit}" 2>/dev/null || base=HEAD~1
+          added=$(bash tools/ledger-salvage.sh "$base" FEATURE_LEDGER.md | sed 's/^salvaged //' | paste -sd' ' -)
+          [ -n "$added" ] || exit 0
+          bash tools/check-ledger.sh FEATURE_LEDGER.md
+          git config user.name ledger-guard; git config user.email ledger-guard@users.noreply.github.com
+          git commit -am "ledger-guard: add ledger entries for $added" -m "Built from each draft's SPEC.md."
+          git pull --rebase && git push
       - name: Auto-restore last good ledger
+        id: restore
         if: steps.check.outcome == 'failure'
         run: |
           for c in $(git log --format=%H -50 -- FEATURE_LEDGER.md | tail -n +2); do
             git show "$c:FEATURE_LEDGER.md" > /tmp/L || continue
             if bash tools/check-ledger.sh /tmp/L; then
-              bad=$(git show HEAD:FEATURE_LEDGER.md)
               cp /tmp/L FEATURE_LEDGER.md
-              { echo; echo "## Guard restore ($(date -u +%F))"; echo; echo "Ledger guard restored this file from ${c:0:7} after ${GITHUB_SHA:0:7} broke it. Content that commit wrote is in its diff; re-add it with git on disk."; } >> FEATURE_LEDGER.md
+              salvaged=$(bash tools/ledger-salvage.sh "$c" FEATURE_LEDGER.md | sed 's/^salvaged //' | paste -sd' ' -)
+              { echo; echo "## Guard restore ($(date -u +%F))"; echo; echo "Ledger guard restored this file from ${c:0:7} after ${GITHUB_SHA:0:7} broke it.${salvaged:+ Entries rebuilt from SPEC.md: $salvaged.} Write the ledger with git on disk, append only."; } >> FEATURE_LEDGER.md
+              bash tools/check-ledger.sh FEATURE_LEDGER.md
               git config user.name ledger-guard; git config user.email ledger-guard@users.noreply.github.com
               git commit -am "ledger-guard: restore FEATURE_LEDGER.md from ${c:0:7}" -m "Suggested-by: Void (run 118)"
               git pull --rebase && git push
+              echo "restored=${c:0:7}" >> "$GITHUB_OUTPUT"
+              echo "salvaged=$salvaged" >> "$GITHUB_OUTPUT"
               break
             fi
           done
-      - name: Fail loudly
+      - name: Report
         if: steps.check.outcome == 'failure'
         run: |
-          echo "::error::FEATURE_LEDGER.md was blanked or lost sections at $GITHUB_SHA (auto-restore attempted)"
-          exit 1
+          if [ -n "${{ steps.restore.outputs.restored }}" ]; then
+            echo "::warning::A full-file write broke FEATURE_LEDGER.md at ${GITHUB_SHA:0:7}. Restored from ${{ steps.restore.outputs.restored }}. Rebuilt: ${{ steps.restore.outputs.salvaged || 'none' }}. The writer must append with git on disk."
+          else
+            echo "::error::FEATURE_LEDGER.md was blanked or lost sections at $GITHUB_SHA and no good version was found to restore"
+            exit 1
+          fi
