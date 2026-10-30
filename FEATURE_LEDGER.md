@@ -2259,10 +2259,22 @@ Ledger guard restored this file from 422fc9b after 51bab23 broke it. Content tha
 
 Ledger guard restored this file from f4bd497 after 41b53f9 broke it. Content that commit wrote is in its diff; re-add it with git on disk.
 
-## Guard restore (2026-10-30)
+## Frontier Engine F-466 (2026-10-30)
 
-Ledger guard restored this file from caf1d05 after 0e43783 broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+**F466-webgpu-spectral-cloth-dom-weaver**
 
-## Guard restore (2026-10-30)
+Novel combination: Canvas2D mass-spring cloth (22×14) whose spring stiffness is modulated by live microphone spectral energy; residual of a one-step spectral-centroid predictor injects turbulence. Editable DOM Verse tiles are woven to sampled mesh points, can be dragged to pull the fabric or clicked to pin. Sealed snapshots (positions + tile text + spectral metrics) persist to IndexedDB and replay as living memory. CSS chrome (hue, scale, background) morphs with energy.
 
-Ledger guard restored this file from 5abe216 after 885a7d0 broke it. Content that commit wrote is in its diff; re-add it with git on disk.
+Not a superficial variation of F-465 (Hebbian mic-swarm morph), F-456 (granular collision genome + BroadcastChannel), F-314/F-313 (NCA + evolved MLP residual), or prior particle/attention/RD minds: core is continuous deformable cloth mesh coupling acoustic spectrum → mechanical properties → spatial DOM layout with embodied drag/pin and sealed cloth-memory.
+
+Architecture: single index.html; AnalyserNode FFT; semi-implicit Euler + damping; DOM absolute positioning + transform; IndexedDB seals; pointer + optional mic. Canvas2D active (WebGPU compute path noted).
+
+Expected outcome: Interactive spatial cloth that stiffens/flutters with voice, warps editable notes across the page, responds to physical pull/pin, and restores sealed woven states. Fully interactive, offline after load.
+
+Failure modes: no mic (pointer + synthetic residual), private mode limits IDB, high grid size CPU-bound (WebGPU next).
+
+Building blocks: true WebGPU compute cloth kernel, WebXR hand pin/pull, multi-tab sealed cloth BroadcastChannel, local MLP spectral→stiffness learner.
+
+Lands in V01D as spatial acoustic-cloth skill (skills/mini/spectral-cloth-weaver); testable via energy→CSS change, drag→displacement, seal→IDB round-trip.
+
+**Files**: drafts/F466-webgpu-spectral-cloth-dom-weaver/index.html, SPEC.md
