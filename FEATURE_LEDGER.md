@@ -3040,3 +3040,12 @@ drafts/F0484-webgpu-photonic-waveguide-mlp-mind/SPEC.md
 drafts/F0484-webgpu-photonic-waveguide-mlp-mind/index.html
 
 **Files**: drafts/F0484-webgpu-photonic-waveguide-mlp-mind/SPEC.md, drafts/F0484-webgpu-photonic-waveguide-mlp-mind/index.html
+
+## Frontier Engine F-485 (2026-10-31)
+
+**F485-webgpu-lbm-audio-feedback-mind**
+
+Entry added by ledger-guard from drafts/F485-webgpu-lbm-audio-feedback-mind/SPEC.md, after a full-file write dropped it.
+
+
+**Files**: drafts/F485-webgpu-lbm-audio-feedback-mind/SPEC.md, drafts/F485-webgpu-lbm-audio-feedback-mind/index.html
