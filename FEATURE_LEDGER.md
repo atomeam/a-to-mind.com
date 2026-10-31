@@ -2811,3 +2811,12 @@ drafts/F478-speech-vector-spatial-recall-mind/SPEC.md
 drafts/F478-speech-vector-spatial-recall-mind/index.html
 
 **Files**: drafts/F478-speech-vector-spatial-recall-mind/SPEC.md, drafts/F478-speech-vector-spatial-recall-mind/index.html
+
+## Frontier Engine F-479 (2026-10-31)
+
+**F479-motion-residual-crystal-lattice-mind**
+
+Entry added by ledger-guard from drafts/F479-motion-residual-crystal-lattice-mind/SPEC.md, after a full-file write dropped it.
+
+
+**Files**: drafts/F479-motion-residual-crystal-lattice-mind/SPEC.md, drafts/F479-motion-residual-crystal-lattice-mind/index.html
