@@ -3694,3 +3694,12 @@ Interactive living CSS Grid of Verse cards that rewrite themselves under a colla
 - Click Seal or key S seals; R restores
 
 **Files**: drafts/F498-webgpu-wfc-mlp-living-grid-mind/SPEC.md, drafts/F498-webgpu-wfc-mlp-living-grid-mind/index.html
+
+## Frontier Engine F-499 (2026-11-01)
+
+**F499-webgpu-battery-metabolism-particle-mind**
+
+Entry added by ledger-guard from drafts/F499-webgpu-battery-metabolism-particle-mind/SPEC.md, after a full-file write dropped it.
+
+
+**Files**: drafts/F499-webgpu-battery-metabolism-particle-mind/SPEC.md, drafts/F499-webgpu-battery-metabolism-particle-mind/index.html
