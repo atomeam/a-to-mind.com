@@ -3148,3 +3148,12 @@ drafts/F487-webgpu-attention-cluster-dom-mind/SPEC.md
 drafts/F487-webgpu-attention-cluster-dom-mind/index.html
 
 **Files**: drafts/F487-webgpu-attention-cluster-dom-mind/SPEC.md, drafts/F487-webgpu-attention-cluster-dom-mind/index.html
+
+## Frontier Engine F-488 (2026-11-01)
+
+**F488-orient-reservoir-dom-auction-mind**
+
+Entry added by ledger-guard from drafts/F488-orient-reservoir-dom-auction-mind/SPEC.md, after a full-file write dropped it.
+
+
+**Files**: drafts/F488-orient-reservoir-dom-auction-mind/SPEC.md, drafts/F488-orient-reservoir-dom-auction-mind/index.html
