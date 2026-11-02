@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F-508 Spectral Resonance DOM Mind</title>
+<style>
+  :root {
+    --entropy: 0.3;
+    --hue: 200;
+    --blur: 0px;
+  }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: hsl(var(--hue), 40%, 8%);
+    color: #e0e0e0;
+    font-family: system-ui, sans-serif;
+    overflow: hidden;
+    filter: blur(var(--blur));
+    transition: background 0.4s, filter 0.4s;
+  }
+  #canvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    cursor: crosshair;
+  }
+  .card {
+    position: absolute;
+    width: 80px; height: 80px;
+    border-radius: 12px;
+    background: hsla(var(--h), 70%, 55%, 0.85);
+    border: 1px solid rgba(255,255,255,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    pointer-events: auto;
+    transform: translate(-50%, -50%);
+    animation: pulse var(--period, 1s) ease-in-out infinite;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    cursor: pointer;
+    user-select: none;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.15); }
+  }
+  #ui {
+    position: absolute;
+    top: 12px; left: 12px;
+    z-index: 10;
+    background: rgba(0,0,0,0.5);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+  }
+  button {
+    margin-left: 8px;
+    padding: 4px 10px;
+    background: #333;
+    color: #fff;
+    border: 1px solid #555;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  button:hover { background: #444; }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="ui">
+  Spectral Resonance Mind · F-508
+  <button id="seal">Seal</button>
+  <button id="reset">Reset</button>
+  <span id="stats"></span>
+</div>
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let W = 256, H = 256;
+const CELL = 2;
+function resize() {
+  canvas.width = W * CELL;
+  canvas.height = H * CELL;
+  canvas.style.width = '100%';
+  canvas.style.height = '100%';
+}
+resize();
+
+// Wave field
+let u = new Float32Array(W * H);
+let v = new Float32Array(W * H);
+let uPrev = new Float32Array(W * H);
+const c2 = 0.25; // wave speed squared
+const damp = 0.995;
+
+function stepWave() {
+  for (let y = 1; y < H - 1; y++) {
+    for (let x = 1; x < W - 1; x++) {
+      const i = y * W + x;
+      const lap = u[i-1] + u[i+1] + u[i-W] + u[i+W] - 4 * u[i];
+      const acc = c2 * lap;
+      v[i] = (v[i] + acc) * damp;
+      uPrev[i] = u[i];
+    }
+  }
+  for (let i = 0; i < u.length; i++) {
+    u[i] += v[i];
+    // soft bounds
+    if (u[i] > 2) u[i] = 2;
+    if (u[i] < -2) u[i] = -2;
+  }
+}
+
+function inject(x, y, strength = 1.5) {
+  const ix = Math.floor(x / CELL);
+  const iy = Math.floor(y / CELL);
+  if (ix < 1 || ix >= W-1 || iy < 1 || iy >= H-1) return;
+  const i = iy * W + ix;
+  u[i] += strength;
+  v[i] += strength * 0.5;
+}
+
+// Draw
+function draw() {
+  const img = ctx.createImageData(W * CELL, H * CELL);
+  const data = img.data;
+  for (let y = 0; y < H; y++) {
+    for (let x = 0; x < W; x++) {
+      const i = y * W + x;
+      const val = Math.max(-1, Math.min(1, u[i]));
+      const g = Math.floor((val + 1) * 127.5);
+      const b = Math.floor((1 - Math.abs(val)) * 80);
+      for (let dy = 0; dy < CELL; dy++) {
+        for (let dx = 0; dx < CELL; dx++) {
+          const p = ((y * CELL + dy) * (W * CELL) + (x * CELL + dx)) * 4;
+          data[p] = g;
+          data[p+1] = g * 0.6;
+          data[p+2] = 180 + b;
+          data[p+3] = 255;
+        }
+      }
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+}
+
+// Spectral sampling + simple DFT on energy history
+const ENERGY_LEN = 64;
+let energyHist = new Float32Array(ENERGY_LEN);
+let histIdx = 0;
+function sampleEnergy() {
+  let e = 0;
+  for (let i = 0; i < u.length; i += 8) e += u[i] * u[i];
+  energyHist[histIdx] = e / (u.length / 8);
+  histIdx = (histIdx + 1) % ENERGY_LEN;
+}
+
+function simpleDFT() {
+  // Dominant frequency bin from energy history
+  let maxAmp = 0, maxBin = 1;
+  for (let k = 1; k < ENERGY_LEN / 2; k++) {
+    let re = 0, im = 0;
+    for (let n = 0; n < ENERGY_LEN; n++) {
+      const ang = -2 * Math.PI * k * n / ENERGY_LEN;
+      re += energyHist[n] * Math.cos(ang);
+      im += energyHist[n] * Math.sin(ang);
+    }
+    const amp = Math.sqrt(re*re + im*im);
+    if (amp > maxAmp) { maxAmp = amp; maxBin = k; }
+  }
+  const freq = maxBin / ENERGY_LEN; // cycles per sample
+  const period = freq > 0.01 ? 1 / (freq * 60) : 1; // rough seconds assuming 60fps
+  return { bin: maxBin, amp: maxAmp, period: Math.max(0.3, Math.min(3, period)) };
+}
+
+// DOM cards
+const cards = [];
+const MAX_CARDS = 6;
+function spawnCard(x, y, period, hue) {
+  if (cards.length >= MAX_CARDS) {
+    const old = cards.shift();
+    old.el.remove();
+  }
+  const el = document.createElement('div');
+  el.className = 'card';
+  el.style.setProperty('--period', period + 's');
+  el.style.setProperty('--h', hue);
+  el.textContent = period.toFixed(1) + 's';
+  el.style.left = x + 'px';
+  el.style.top = y + 'px';
+  el.onclick = () => reinforce(el);
+  document.body.appendChild(el);
+  cards.push({ el, x, y, period, hue, born: performance.now() });
+}
+
+function reinforce(el) {
+  // Positive feedback: slight genome bias (simulated)
+  document.documentElement.style.setProperty('--hue', parseInt(getComputedStyle(document.documentElement).getPropertyValue('--hue')) + 10);
+  el.style.borderColor = '#fff';
+  setTimeout(() => el.style.borderColor = '', 400);
+}
+
+// Worker for evolution (minimal)
+const workerCode = `
+let genomes = Array.from({length: 4}, () => ({ bias: Math.random(), fitness: 0 }));
+self.onmessage = (e) => {
+  const { energy, bin } = e.data;
+  genomes.forEach(g => {
+    g.fitness = g.fitness * 0.9 + (energy > 0.1 ? 1 : 0) * (1 - Math.abs(g.bias - bin/32));
+  });
+  // mutate best
+  genomes.sort((a,b) => b.fitness - a.fitness);
+  genomes[3] = { bias: genomes[0].bias + (Math.random()-0.5)*0.2, fitness: 0 };
+  self.postMessage({ best: genomes[0].bias });
+};
+`;
+const worker = new Worker(URL.createObjectURL(new Blob([workerCode])));
+let bestBias = 0.5;
+worker.onmessage = (e) => { bestBias = e.data.best; };
+
+// Main loop
+let lastSpawn = 0;
+function loop() {
+  stepWave();
+  sampleEnergy();
+  const spec = simpleDFT();
+  draw();
+
+  // Entropy morph
+  const entropy = Math.min(1, spec.amp * 0.01);
+  document.documentElement.style.setProperty('--entropy', entropy.toFixed(2));
+  document.documentElement.style.setProperty('--hue', (200 + spec.bin * 4) % 360);
+  document.documentElement.style.setProperty('--blur', (entropy * 2) + 'px');
+
+  // Spawn based on energy + bias
+  const now = performance.now();
+  if (now - lastSpawn > 800 && spec.amp > 5) {
+    const hx = Math.random() * window.innerWidth;
+    const hy = Math.random() * window.innerHeight;
+    spawnCard(hx, hy, spec.period, (200 + spec.bin * 5) % 360);
+    lastSpawn = now;
+    worker.postMessage({ energy: spec.amp, bin: spec.bin });
+  }
+
+  // Drift cards slightly toward hotspots (simple)
+  cards.forEach(c => {
+    c.x += (Math.random() - 0.5) * 2;
+    c.y += (Math.random() - 0.5) * 2;
+    c.el.style.left = Math.max(40, Math.min(window.innerWidth - 40, c.x)) + 'px';
+    c.el.style.top = Math.max(40, Math.min(window.innerHeight - 40, c.y)) + 'px';
+  });
+
+  document.getElementById('stats').textContent = ` bin:${spec.bin} amp:${spec.amp.toFixed(1)} cards:${cards.length}`;
+  requestAnimationFrame(loop);
+}
+loop();
+
+// Input
+canvas.addEventListener('pointerdown', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  inject((e.clientX - rect.left) * (W * CELL / rect.width), (e.clientY - rect.top) * (H * CELL / rect.height));
+});
+
+// Seal / restore
+const DB_NAME = 'f508-spectral';
+function seal() {
+  const state = {
+    genomes: bestBias,
+    energy: Array.from(energyHist),
+    ts: Date.now()
+  };
+  const req = indexedDB.open(DB_NAME, 1);
+  req.onupgradeneeded = () => req.result.createObjectStore('seal');
+  req.onsuccess = () => {
+    const tx = req.result.transaction('seal', 'readwrite');
+    tx.objectStore('seal').put(state, 'mind');
+    document.getElementById('stats').textContent += ' sealed';
+  };
+}
+document.getElementById('seal').onclick = seal;
+document.getElementById('reset').onclick = () => {
+  u.fill(0); v.fill(0); energyHist.fill(0);
+  cards.forEach(c => c.el.remove());
+  cards.length = 0;
+};
+
+// Restore on load
+const req = indexedDB.open(DB_NAME, 1);
+req.onsuccess = () => {
+  const tx = req.result.transaction('seal', 'readonly');
+  const get = tx.objectStore('seal').get('mind');
+  get.onsuccess = () => {
+    if (get.result) {
+      bestBias = get.result.genomes || 0.5;
+      document.getElementById('stats').textContent = 'restored';
+    }
+  };
+};
+</script>
+</body>
+</html>
