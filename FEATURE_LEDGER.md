@@ -4103,3 +4103,12 @@ This leaves that cluster entirely: no WebGPU, no MLP (uses simple causal RNN), i
 Skill under void-live-deploy/skills/tensegrity-rnn-mind or page for Verse canvas hybrid spatial. Test: stability metric decreases under tilt while genomes transfer intact between tabs.
 
 **Files**: drafts/F506-tilt-gaze-rnn-tensegrity-mind/SPEC.md, drafts/F506-tilt-gaze-rnn-tensegrity-mind/index.html
+
+## Frontier Engine F-507 (2026-11-02)
+
+**F507-webrtc-rnn-spatial-dom-auction-mind**
+
+Entry added by ledger-guard from drafts/F507-webrtc-rnn-spatial-dom-auction-mind/SPEC.md, after a full-file write dropped it.
+
+
+**Files**: drafts/F507-webrtc-rnn-spatial-dom-auction-mind/SPEC.md, drafts/F507-webrtc-rnn-spatial-dom-auction-mind/index.html
