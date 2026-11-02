@@ -4061,3 +4061,12 @@ drafts/F504-webgpu-stable-fluids-mlp-advection-mind/index.html
 Spatial stage skill under void-live-deploy/skills/stable-fluids-mlp-advection-mind.js; test asserts velocity sample → agent displacement, MLP output → force injection, seal hash integrity.
 
 **Files**: drafts/F504-webgpu-stable-fluids-mlp-advection-mind/SPEC.md, drafts/F504-webgpu-stable-fluids-mlp-advection-mind/index.html
+
+## Frontier Engine F-505 (2026-11-02)
+
+**F505-webgpu-implicit-mind-surface**
+
+Entry added by ledger-guard from drafts/F505-webgpu-implicit-mind-surface/SPEC.md, after a full-file write dropped it.
+
+
+**Files**: drafts/F505-webgpu-implicit-mind-surface/SPEC.md, drafts/F505-webgpu-implicit-mind-surface/index.html
