@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F515 WebGPU MLP Auction DOM Mind — Verse</title>
+<style>
+  body { margin: 0; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  #canvas { position: relative; width: 100vw; height: 100vh; }
+  .verse-card {
+    position: absolute; width: 120px; height: 80px; border-radius: 12px;
+    background: #1a1a2e; border: 2px solid #333; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; text-align: center; transition: transform 0.1s linear, filter 0.2s, background 0.3s;
+    user-select: none; box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+  .verse-card.owned { border-color: #0ff; }
+  #hud { position: fixed; top: 12px; left: 12px; background: rgba(0,0,0,0.7); padding: 10px; border-radius: 8px; font-size: 13px; z-index: 10; max-width: 280px; }
+  button { margin: 4px; padding: 6px 10px; background: #222; color: #0ff; border: 1px solid #0ff; border-radius: 4px; cursor: pointer; }
+  button:hover { background: #0ff; color: #000; }
+  #status { font-size: 11px; color: #aaa; margin-top: 6px; }
+</style>
+</head>
+<body>
+<div id="hud">
+  <strong>F515 MLP Auction DOM Mind</strong><br>
+  Agents bid via tiny MLPs for exclusive control of Verse cards.<br>
+  Pointer boosts bids · DeviceOrientation biases gravity feature · Seal/transfer genomes.
+  <div>
+    <button id="sealBtn">Seal State</button>
+    <button id="restoreBtn">Restore</button>
+    <button id="transferBtn">Transfer Selected Genome</button>
+  </div>
+  <div id="status">Initializing…</div>
+</div>
+<div id="canvas"></div>
+<script>
+const NUM_AGENTS = 10;
+const NUM_CARDS = 6;
+const IN = 6, HID = 8, OUT = 2;
+const cards = [];
+const agents = [];
+let ownership = new Array(NUM_CARDS).fill(-1);
+let pointer = { x: 0.5, y: 0.5, boost: 0 };
+let orient = { x: 0, y: 0 };
+let selectedAgent = 0;
+let gpuDevice = null;
+let gpuPipeline = null;
+let gpuBuffers = null;
+const channel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('verse-auction-f515') : null;
+const statusEl = document.getElementById('status');
+const canvas = document.getElementById('canvas');
+
+function randn() { return (Math.random() + Math.random() + Math.random() - 1.5) * 0.5; }
+function makeWeights() {
+  const w1 = new Float32Array(IN * HID);
+  const b1 = new Float32Array(HID);
+  const w2 = new Float32Array(HID * OUT);
+  const b2 = new Float32Array(OUT);
+  for (let i = 0; i < w1.length; i++) w1[i] = randn() * 0.3;
+  for (let i = 0; i < w2.length; i++) w2[i] = randn() * 0.3;
+  return { w1, b1, w2, b2 };
+}
+function relu(x) { return Math.max(0, x); }
+function mlpForward(agent, feat) {
+  const h = new Float32Array(HID);
+  for (let j = 0; j < HID; j++) {
+    let s = agent.b1[j];
+    for (let i = 0; i < IN; i++) s += feat[i] * agent.w1[i * HID + j];
+    h[j] = relu(s);
+  }
+  const o = new Float32Array(OUT);
+  for (let k = 0; k < OUT; k++) {
+    let s = agent.b2[k];
+    for (let j = 0; j < HID; j++) s += h[j] * agent.w2[j * OUT + k];
+    o[k] = s;
+  }
+  return o; // [bid, styleDelta]
+}
+function hashWeights(w) {
+  let h = 0;
+  const arr = new Float32Array([...w.w1, ...w.b1, ...w.w2, ...w.b2]);
+  for (let i = 0; i < arr.length; i++) h = (h * 31 + Math.round(arr[i] * 1000)) | 0;
+  return (h >>> 0).toString(16).slice(0, 8);
+}
+
+function initAgents() {
+  for (let i = 0; i < NUM_AGENTS; i++) {
+    agents.push({ id: i, weights: makeWeights(), fitness: 0 });
+  }
+}
+function initCards() {
+  for (let i = 0; i < NUM_CARDS; i++) {
+    const el = document.createElement('div');
+    el.className = 'verse-card';
+    el.textContent = `Card ${i}`;
+    el.style.left = (10 + (i % 3) * 30) + '%';
+    el.style.top = (20 + Math.floor(i / 3) * 35) + '%';
+    el.dataset.idx = i;
+    canvas.appendChild(el);
+    cards.push(el);
+  }
+}
+
+function featuresFor(agentId, cardId) {
+  const cx = parseFloat(cards[cardId].style.left) / 100;
+  const cy = parseFloat(cards[cardId].style.top) / 100;
+  const dx = pointer.x - cx, dy = pointer.y - cy;
+  const dist = Math.sqrt(dx*dx + dy*dy);
+  return new Float32Array([
+    Math.max(0, 1 - dist * 2),
+    orient.x * 0.5,
+    orient.y * 0.5,
+    cardId / NUM_CARDS,
+    agentId / NUM_AGENTS,
+    (Math.sin(performance.now() * 0.001 + agentId) * 0.5 + 0.5) * 0.2
+  ]);
+}
+
+function runAuction() {
+  const bids = Array.from({ length: NUM_CARDS }, () => Array(NUM_AGENTS).fill(-Infinity));
+  const styles = Array.from({ length: NUM_CARDS }, () => Array(NUM_AGENTS).fill(0));
+  for (let a = 0; a < NUM_AGENTS; a++) {
+    for (let c = 0; c < NUM_CARDS; c++) {
+      const feat = featuresFor(a, c);
+      const out = mlpForward(agents[a], feat);
+      let bid = out[0] + (pointer.boost > 0 && Math.hypot(pointer.x - parseFloat(cards[c].style.left)/100, pointer.y - parseFloat(cards[c].style.top)/100) < 0.15 ? pointer.boost : 0);
+      bids[c][a] = bid;
+      styles[c][a] = out[1];
+    }
+  }
+  for (let c = 0; c < NUM_CARDS; c++) {
+    let best = -1, bestBid = -Infinity;
+    for (let a = 0; a < NUM_AGENTS; a++) {
+      if (bids[c][a] > bestBid) { bestBid = bids[c][a]; best = a; }
+    }
+    ownership[c] = best;
+    agents[best].fitness += 1;
+    const el = cards[c];
+    el.classList.add('owned');
+    const styleD = styles[c][best];
+    const hue = (best * 36 + styleD * 40 + 180) % 360;
+    el.style.background = `hsl(${hue}, 70%, 25%)`;
+    el.style.transform = `scale(${1 + Math.tanh(styleD) * 0.15}) translate(${styleD * 4}px, ${-styleD * 3}px)`;
+    el.textContent = `Card ${c}\nA${best} ${bestBid.toFixed(1)}`;
+  }
+}
+
+async function tryWebGPU() {
+  if (!navigator.gpu) return;
+  try {
+    const adapter = await navigator.gpu.requestAdapter();
+    if (!adapter) return;
+    gpuDevice = await adapter.requestDevice();
+    statusEl.textContent += ' | WebGPU ready (batch path stub)';
+    // Full compute shader for batched MLP left as extension; JS path is primary for reliability
+  } catch (e) { console.warn(e); }
+}
+
+function seal() {
+  const data = {
+    agents: agents.map(a => ({ id: a.id, weights: { w1: Array.from(a.weights.w1), b1: Array.from(a.weights.b1), w2: Array.from(a.weights.w2), b2: Array.from(a.weights.b2) }, fitness: a.fitness })),
+    ownership,
+    ts: Date.now()
+  };
+  const req = indexedDB.open('verse-auction-f515', 1);
+  req.onupgradeneeded = () => req.result.createObjectStore('state');
+  req.onsuccess = () => {
+    const tx = req.result.transaction('state', 'readwrite');
+    tx.objectStore('state').put(data, 'latest');
+    statusEl.textContent = 'Sealed to IndexedDB · hash sample ' + hashWeights(agents[0].weights);
+  };
+}
+function restore() {
+  const req = indexedDB.open('verse-auction-f515', 1);
+  req.onsuccess = () => {
+    const tx = req.result.transaction('state', 'readonly');
+    const get = tx.objectStore('state').get('latest');
+    get.onsuccess = () => {
+      if (!get.result) { statusEl.textContent = 'No sealed state'; return; }
+      const d = get.result;
+      d.agents.forEach((a, i) => {
+        if (agents[i]) {
+          agents[i].weights.w1.set(a.weights.w1);
+          agents[i].weights.b1.set(a.weights.b1);
+          agents[i].weights.w2.set(a.weights.w2);
+          agents[i].weights.b2.set(a.weights.b2);
+          agents[i].fitness = a.fitness;
+        }
+      });
+      ownership = d.ownership || ownership;
+      statusEl.textContent = 'Restored from IndexedDB';
+    };
+  };
+}
+function transferGenome() {
+  const a = agents[selectedAgent];
+  const payload = { type: 'genome', agentId: a.id, weights: { w1: Array.from(a.weights.w1), b1: Array.from(a.weights.b1), w2: Array.from(a.weights.w2), b2: Array.from(a.weights.b2) }, hash: hashWeights(a.weights) };
+  if (channel) channel.postMessage(payload);
+  // Local inject into next agent for demo
+  const target = agents[(selectedAgent + 1) % NUM_AGENTS];
+  target.weights.w1.set(a.weights.w1);
+  target.weights.b1.set(a.weights.b1);
+  target.weights.w2.set(a.weights.w2);
+  target.weights.b2.set(a.weights.b2);
+  statusEl.textContent = `Transferred genome ${payload.hash} → agent ${target.id} (local + channel)`;
+  selectedAgent = (selectedAgent + 1) % NUM_AGENTS;
+}
+
+if (channel) {
+  channel.onmessage = (ev) => {
+    if (ev.data.type === 'genome') {
+      const t = agents[ev.data.agentId % NUM_AGENTS];
+      t.weights.w1.set(ev.data.weights.w1);
+      t.weights.b1.set(ev.data.weights.b1);
+      t.weights.w2.set(ev.data.weights.w2);
+      t.weights.b2.set(ev.data.weights.b2);
+      statusEl.textContent = `Received genome ${ev.data.hash} from peer`;
+    }
+  };
+}
+
+window.addEventListener('pointermove', e => {
+  pointer.x = e.clientX / innerWidth;
+  pointer.y = e.clientY / innerHeight;
+  pointer.boost = Math.min(2, pointer.boost + 0.1);
+});
+window.addEventListener('pointerdown', () => { pointer.boost = 3; });
+window.addEventListener('pointerup', () => { pointer.boost = 0; });
+if (window.DeviceOrientationEvent) {
+  window.addEventListener('deviceorientation', e => {
+    orient.x = (e.gamma || 0) / 45;
+    orient.y = (e.beta || 0) / 45;
+  });
+}
+
+document.getElementById('sealBtn').onclick = seal;
+document.getElementById('restoreBtn').onclick = restore;
+document.getElementById('transferBtn').onclick = transferGenome;
+
+initAgents();
+initCards();
+tryWebGPU();
+statusEl.textContent = 'Running · agents auctioning for cards · pointer to boost · tilt device if available';
+
+function loop() {
+  pointer.boost *= 0.95;
+  runAuction();
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
+</body>
+</html>
