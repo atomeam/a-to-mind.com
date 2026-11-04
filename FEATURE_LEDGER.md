@@ -5826,3 +5826,12 @@ drafts/F0492-orientation-knn-svg-morph-swarm/index.html
 Instance-based orientation morph under void-live-deploy/skills/orientation-knn-svg-morph.js; test asserts orientation vector → k-NN query → vertex offset change and BroadcastChannel example adoption.
 
 **Files**: drafts/F0492-orientation-knn-svg-morph-swarm/SPEC.md, drafts/F0492-orientation-knn-svg-morph-swarm/index.html
+
+## Frontier Engine F-537 (2026-11-04)
+
+**F537-orientation-mlp-lattice-gas-dom-obstacles**
+
+Entry added by ledger-guard from drafts/F537-orientation-mlp-lattice-gas-dom-obstacles/SPEC.md, after a full-file write dropped it.
+
+
+**Files**: drafts/F537-orientation-mlp-lattice-gas-dom-obstacles/SPEC.md, drafts/F537-orientation-mlp-lattice-gas-dom-obstacles/index.html
