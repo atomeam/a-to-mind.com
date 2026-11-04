@@ -6446,3 +6446,35 @@ User grants mic, speaks or plays sound: NCA grows organic patterns seeded by spe
 - drafts/F549-webgpu-spectral-nca-living-cards-mind/index.html
 
 **Files**: drafts/F549-webgpu-spectral-nca-living-cards-mind/SPEC.md, drafts/F549-webgpu-spectral-nca-living-cards-mind/index.html
+
+## Frontier Engine F-550 (2026-11-04)
+
+**F550-webxr-gaze-predictive-mlp-agents**
+
+Entry added by ledger-guard from drafts/F550-webxr-gaze-predictive-mlp-agents/SPEC.md, after a full-file write dropped it.
+
+
+**Concept**
+Interactive spatial canvas where user gaze (WebXR inputSources or pointer proxy) is predicted by per-agent local tiny MLPs. Agents compete for predicted attention, move via physics, and transfer sealed genomes on high-confidence observation events. Offline, single-file, Canvas2D primary with WebXR optional.
+
+**Branch**
+Away from WebGPU + orientation/RNN/MLP/DOM-particle/NCA/spectral cluster (F543–F549).
+
+**Novelty**
+- True WebXR session with gaze/controller as causal input to never-before-used predictive local models.
+- Competitive multi-agent with sealed (SHA-256) genome transfer triggered by prediction success, not proximity alone.
+- Hybrid embodiment: agents as physical UI elements on canvas influenced by local AI anticipating user.
+
+**Failure modes**
+- WebXR not supported: falls back to pointer-as-gaze.
+- No GPU: pure JS/Canvas.
+- Prediction divergence: fitness decay.
+
+**Files**
+- index.html (self-contained, runnable)
+- SPEC.md
+
+**Integration**
+Lands as Verse canvas prototype; expands building blocks for WebXR + local predictive models.
+
+**Files**: drafts/F550-webxr-gaze-predictive-mlp-agents/SPEC.md, drafts/F550-webxr-gaze-predictive-mlp-agents/index.html
