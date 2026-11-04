@@ -6478,3 +6478,12 @@ Away from WebGPU + orientation/RNN/MLP/DOM-particle/NCA/spectral cluster (F543â€
 Lands as Verse canvas prototype; expands building blocks for WebXR + local predictive models.
 
 **Files**: drafts/F550-webxr-gaze-predictive-mlp-agents/SPEC.md, drafts/F550-webxr-gaze-predictive-mlp-agents/index.html
+
+## Frontier Engine F-551 (2026-11-04)
+
+**F551-webgpu-mic-fluid-spectral-mlp-portals**
+
+Entry added by ledger-guard from drafts/F551-webgpu-mic-fluid-spectral-mlp-portals/SPEC.md, after a full-file write dropped it.
+
+
+**Files**: drafts/F551-webgpu-mic-fluid-spectral-mlp-portals/SPEC.md, drafts/F551-webgpu-mic-fluid-spectral-mlp-portals/index.html
