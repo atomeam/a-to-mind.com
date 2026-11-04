@@ -6118,3 +6118,30 @@ Runnable prototype in which dragging and tuning DOM resonators creates visible i
 Wave interference phase stage under `void-live-deploy/skills/webgpu-wave-interference-phase.js`; test asserts source drag → field update → card hue/scale change and IndexedDB roundtrip.
 
 **Files**: drafts/F542-webgpu-wave-interference-phase-dom-mind/SPEC.md, drafts/F542-webgpu-wave-interference-phase-dom-mind/index.html
+
+## Frontier Engine F-543 (2026-11-04)
+
+**F543-orientation-rnn-sealed-dom-agents**
+
+Entry added by ledger-guard from drafts/F543-orientation-rnn-sealed-dom-agents/SPEC.md, after a full-file write dropped it.
+
+
+**Concept**
+DeviceOrientationEvent provides causal sequential input (alpha/beta/gamma history) to per-agent local Elman RNNs. Each RNN drives velocity of a physical DOM Verse card. Agents compete in screen space; on AABB collision the higher-energy agent absorbs a sealed genome fragment (weight snapshot hashed into IndexedDB). BroadcastChannel enables multi-tab shared competition. Branches from recent WebGPU physics-kernel + MLP/attention + DOM resonator/vortex/lattice cluster into sequential causal local models controlling multi-agent physical embodiments with sealed transfer.
+
+**Novelty**
+- First use of DeviceOrientation as causal RNN input (not MLP static or pointer residual).
+- Multi-agent competition with sealed genome transfer on physical collision (not auction or attention lattice).
+- Hybrid embodiment: RNNs output forces that directly transform living DOM cards under simple rigid constraints.
+- Persistent seals via IndexedDB + optional BroadcastChannel cross-tab.
+
+**Failure modes**
+- DeviceOrientation permission denied or unavailable (desktop): falls back to pointer-driven synthetic orientation.
+- RNN explosion: clipped hidden state and learning rate 0.
+- Collision spam: cooldown per pair.
+- IndexedDB quota: seals are small JSON.
+
+**Build**
+Single-file index.html. Offline. Canvas2D trails optional. WebGPU path reserved for future compute of RNN batch.
+
+**Files**: drafts/F543-orientation-rnn-sealed-dom-agents/SPEC.md, drafts/F543-orientation-rnn-sealed-dom-agents/index.html
