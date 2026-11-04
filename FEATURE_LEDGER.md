@@ -5691,3 +5691,12 @@ drafts/F0491-webrtc-causal-portal-swarm/index.html
 Multi-agent causal portal swarm under void-live-deploy/skills/webrtc-causal-portal-swarm.js; test asserts orientation delta → MLP → force gain change and BroadcastChannel genome adoption.
 
 **Files**: drafts/F0491-webrtc-causal-portal-swarm/SPEC.md, drafts/F0491-webrtc-causal-portal-swarm/index.html
+
+## Frontier Engine F-534 (2026-11-04)
+
+**F534-webgpu-attention-particle-policy-dom-morph**
+
+Entry added by ledger-guard from drafts/F534-webgpu-attention-particle-policy-dom-morph/SPEC.md, after a full-file write dropped it.
+
+
+**Files**: drafts/F534-webgpu-attention-particle-policy-dom-morph/SPEC.md, drafts/F534-webgpu-attention-particle-policy-dom-morph/index.html
