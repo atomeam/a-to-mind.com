@@ -7875,3 +7875,12 @@ No prior F- implements multi-agent (cross-tab) sealed genome transfer via Broadc
 Void is now Verse everywhere.
 
 **Files**: drafts/F574-crosstab-sealed-genome-cssgrid-mind/SPEC.md, drafts/F574-crosstab-sealed-genome-cssgrid-mind/index.html
+
+## Frontier Engine F-575 (2026-11-05)
+
+**F575-speech-nca-dom-garden**
+
+Entry added by ledger-guard from drafts/F575-speech-nca-dom-garden/SPEC.md, after a full-file write dropped it.
+
+
+**Files**: drafts/F575-speech-nca-dom-garden/SPEC.md, drafts/F575-speech-nca-dom-garden/index.html
