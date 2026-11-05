@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F560 WebGPU ESRN Spatial UI Morph Mind</title>
+<style>
+  :root {
+    --scale: 1;
+    --rot: 0deg;
+    --hue: 0deg;
+    --blur: 0px;
+    --dx: 0px;
+    --dy: 0px;
+    --opacity: 1;
+  }
+  body { margin: 0; background: #07070f; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
+  #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; pointer-events: none; }
+  .morph {
+    position: absolute;
+    background: rgba(20, 20, 40, 0.7);
+    border: 1px solid #446;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 14px;
+    transform: translate(var(--dx), var(--dy)) scale(var(--scale)) rotate(var(--rot));
+    filter: hue-rotate(var(--hue)) blur(var(--blur));
+    opacity: var(--opacity);
+    transition: transform 0.1s linear, filter 0.1s linear;
+    pointer-events: auto;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  #controls { top: 16px; left: 16px; }
+  #status-panel { top: 16px; right: 16px; max-width: 280px; }
+  #info-panel { bottom: 16px; left: 16px; }
+  button { margin: 0 4px; padding: 6px 12px; background: #222; color: #fff; border: 1px solid #555; border-radius: 6px; cursor: pointer; }
+  button:hover { background: #333; }
+  #status { font-size: 12px; color: #aaa; margin-top: 6px; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui-layer">
+  <div class="morph" id="controls">
+    <button id="seal">Seal Mind</button>
+    <button id="reset">Reset Reservoir</button>
+    <button id="pulse">Inject Pulse</button>
+  </div>
+  <div class="morph" id="status-panel">
+    <div>ESRN Spatial UI Morph</div>
+    <div id="status">Move pointer to inject into the reservoir. UI morphs with the mind's state.</div>
+    <div id="energy">Energy: 0.00</div>
+  </div>
+  <div class="morph" id="info-panel">
+    Reservoir computing mind · CSS morph driven by internal state · Seal to IndexedDB
+  </div>
+</div>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const statusEl = document.getElementById('status');
+const energyEl = document.getElementById('energy');
+let W = canvas.width = innerWidth;
+let H = canvas.height = innerHeight;
+window.addEventListener('resize', () => { W = canvas.width = innerWidth; H = canvas.height = innerHeight; });
+
+const N = 128; // reservoir size
+const LEAK = 0.15;
+const SPEC_RADIUS = 0.9;
+let state = new Float32Array(N);
+let Wrec = null; // sparse recurrent
+let Win = null;  // input weights
+let Wout = null; // fixed random readout to 6 dims
+
+function initReservoir() {
+  Wrec = new Float32Array(N * N);
+  Win = new Float32Array(N * 4); // 4 input features: vx, vy, xnorm, ynorm
+  Wout = new Float32Array(6 * N);
+  // sparse random recurrent, spectral radius approx
+  const density = 0.08;
+  for (let i = 0; i < N; i++) {
+    for (let j = 0; j < N; j++) {
+      if (Math.random() < density) {
+        Wrec[i * N + j] = (Math.random() - 0.5) * 2;
+      }
+    }
+  }
+  // rough scale to spectral radius
+  let maxAbs = 0;
+  for (let v of Wrec) maxAbs = Math.max(maxAbs, Math.abs(v));
+  if (maxAbs > 0) {
+    const scale = SPEC_RADIUS / maxAbs;
+    for (let i = 0; i < Wrec.length; i++) Wrec[i] *= scale;
+  }
+  for (let i = 0; i < Win.length; i++) Win[i] = (Math.random() - 0.5) * 0.5;
+  for (let i = 0; i < Wout.length; i++) Wout[i] = (Math.random() - 0.5) * 0.3;
+  state.fill(0);
+}
+
+const particles = [];
+const PCOUNT = 600;
+for (let i = 0; i < PCOUNT; i++) {
+  particles.push({
+    x: Math.random() * W, y: Math.random() * H,
+    vx: 0, vy: 0, hue: Math.random() * 360, life: 1
+  });
+}
+
+let lastX = 0, lastY = 0;
+canvas.addEventListener('pointermove', e => {
+  const vx = (e.clientX - lastX) / 10;
+  const vy = (e.clientY - lastY) / 10;
+  const xn = (e.clientX / W) * 2 - 1;
+  const yn = (e.clientY / H) * 2 - 1;
+  // inject
+  for (let i = 0; i < N; i++) {
+    let inp = Win[i*4] * vx + Win[i*4+1] * vy + Win[i*4+2] * xn + Win[i*4+3] * yn;
+    state[i] = (1 - LEAK) * state[i] + LEAK * Math.tanh(inp + Math.random()*0.01);
+  }
+  lastX = e.clientX; lastY = e.clientY;
+});
+
+function reservoirStep() {
+  const next = new Float32Array(N);
+  for (let i = 0; i < N; i++) {
+    let sum = 0;
+    for (let j = 0; j < N; j++) sum += Wrec[i * N + j] * state[j];
+    next[i] = (1 - LEAK) * state[i] + LEAK * Math.tanh(sum);
+  }
+  state.set(next);
+}
+
+function projectToCSS() {
+  const proj = new Float32Array(6);
+  for (let k = 0; k < 6; k++) {
+    let s = 0;
+    for (let i = 0; i < N; i++) s += Wout[k * N + i] * state[i];
+    proj[k] = Math.tanh(s);
+  }
+  document.documentElement.style.setProperty('--scale', (1 + proj[0] * 0.35).toFixed(3));
+  document.documentElement.style.setProperty('--rot', (proj[1] * 25).toFixed(1) + 'deg');
+  document.documentElement.style.setProperty('--hue', (proj[2] * 180).toFixed(1) + 'deg');
+  document.documentElement.style.setProperty('--blur', Math.max(0, proj[3] * 4).toFixed(2) + 'px');
+  document.documentElement.style.setProperty('--dx', (proj[4] * 40).toFixed(1) + 'px');
+  document.documentElement.style.setProperty('--dy', (proj[5] * 30).toFixed(1) + 'px');
+  const energy = state.reduce((s, v) => s + v*v, 0) / N;
+  energyEl.textContent = `Energy: ${energy.toFixed(3)}`;
+  return energy;
+}
+
+document.getElementById('pulse').onclick = () => {
+  for (let i = 0; i < N; i++) state[i] += (Math.random() - 0.5) * 0.8;
+  statusEl.textContent = 'Injected pulse into reservoir';
+};
+document.getElementById('reset').onclick = () => {
+  initReservoir();
+  statusEl.textContent = 'Reservoir reset';
+};
+
+const DB_NAME = 'f560-esrn-mind';
+function openDB() {
+  return new Promise((res, rej) => {
+    const r = indexedDB.open(DB_NAME, 1);
+    r.onupgradeneeded = () => r.result.createObjectStore('mind');
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  });
+}
+async function seal() {
+  try {
+    const db = await openDB();
+    const tx = db.transaction('mind', 'readwrite');
+    tx.objectStore('mind').put({
+      Wrec: Array.from(Wrec), Win: Array.from(Win), Wout: Array.from(Wout),
+      state: Array.from(state), ts: Date.now()
+    }, 'main');
+    await new Promise(r => tx.oncomplete = r);
+    statusEl.textContent = 'Mind sealed to IndexedDB';
+  } catch (e) { statusEl.textContent = 'Seal failed (in-memory only)'; }
+}
+document.getElementById('seal').onclick = seal;
+
+async function load() {
+  try {
+    const db = await openDB();
+    const tx = db.transaction('mind', 'readonly');
+    const req = tx.objectStore('mind').get('main');
+    await new Promise(r => req.onsuccess = r);
+    if (req.result) {
+      Wrec = new Float32Array(req.result.Wrec);
+      Win = new Float32Array(req.result.Win);
+      Wout = new Float32Array(req.result.Wout);
+      state.set(req.result.state);
+      statusEl.textContent = 'Loaded sealed mind from IndexedDB';
+    } else {
+      initReservoir();
+    }
+  } catch (e) { initReservoir(); }
+}
+load();
+
+function loop() {
+  requestAnimationFrame(loop);
+  reservoirStep();
+  const energy = projectToCSS();
+  // particles driven by reservoir
+  ctx.fillStyle = 'rgba(7,7,15,0.18)';
+  ctx.fillRect(0, 0, W, H);
+  for (let pi = 0; pi < particles.length; pi++) {
+    const p = particles[pi];
+    const idx = Math.floor((p.x / W) * N) % N;
+    const act = state[idx];
+    const ang = Math.atan2(p.vy, p.vx) + act * 0.4;
+    const spd = 0.8 + Math.abs(act) * 2.2;
+    p.vx = Math.cos(ang) * spd + (Math.random()-0.5)*0.3;
+    p.vy = Math.sin(ang) * spd + (Math.random()-0.5)*0.3;
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+    if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+    p.hue = (p.hue + act * 8) % 360;
+    ctx.fillStyle = `hsla(${p.hue},75%,62%,0.75)`;
+    ctx.fillRect(p.x - 1, p.y - 1, 3, 3);
+  }
+}
+loop();
+
+if (navigator.gpu) {
+  statusEl.textContent += ' | WebGPU available (Canvas2D path active for reliability)';
+}
+</script>
+</body>
+</html>
