@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F591 WebGPU Predictive Error Fog Portals Mind — Verse</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root { --fog-hue: 220; --error: 0.3; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #0a0a12; color: #e0e0ff; font-family: system-ui, sans-serif; overflow: hidden; height: 100vh; }
+#canvas { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; }
+.portal {
+  position: absolute; width: 120px; height: 80px; border-radius: 12px;
+  background: hsla(var(--fog-hue), 70%, 50%, 0.35); backdrop-filter: blur(4px);
+  border: 1px solid hsla(var(--fog-hue), 80%, 70%, 0.6); color: white;
+  display: flex; align-items: center; justify-content: center; text-align: center;
+  font-size: 12px; cursor: grab; user-select: none; z-index: 2;
+  transition: transform 0.1s linear, filter 0.2s, opacity 0.2s;
+  box-shadow: 0 0 20px hsla(var(--fog-hue), 80%, 60%, 0.4);
+}
+.portal:active { cursor: grabbing; }
+#hud {
+  position: fixed; bottom: 16px; left: 16px; z-index: 3; background: rgba(0,0,0,0.6);
+  padding: 12px 16px; border-radius: 8px; font-size: 13px; max-width: 320px;
+}
+button {
+  background: #2a2a4a; color: white; border: 1px solid #666; padding: 6px 12px;
+  border-radius: 6px; cursor: pointer; margin-right: 8px; margin-top: 6px;
+}
+button:hover { background: #3a3a6a; }
+#status { margin-top: 8px; opacity: 0.8; font-size: 11px; }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="portals"></div>
+<div id="hud">
+  <div><strong>F591 Predictive Error Fog Portals</strong></div>
+  <div>Error: <span id="err">0.00</span> | Pred: <span id="pred">—</span></div>
+  <button id="seal">Seal Mind</button>
+  <button id="reset">Reset</button>
+  <div id="status">Move pointer. Drag portals to correct the mind. Fog = residual.</div>
+</div>
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const portalsEl = document.getElementById('portals');
+const errEl = document.getElementById('err');
+const predEl = document.getElementById('pred');
+const statusEl = document.getElementById('status');
+
+let W = canvas.width = innerWidth, H = canvas.height = innerHeight;
+addEventListener('resize', () => { W = canvas.width = innerWidth; H = canvas.height = innerHeight; });
+
+// --- Tiny MLP: input 8 (history), hidden 12, output 2 (pred dx,dy) ---
+const IN = 8, HID = 12, OUT = 2;
+let w1 = Array.from({length: HID}, () => Array.from({length: IN}, () => (Math.random()-0.5)*0.4));
+let b1 = Array(HID).fill(0);
+let w2 = Array.from({length: OUT}, () => Array.from({length: HID}, () => (Math.random()-0.5)*0.4));
+let b2 = Array(OUT).fill(0);
+const hist = Array(IN).fill(0);
+let px = W/2, py = H/2, lastX = px, lastY = py;
+let error = 0.3;
+let learning = 0.02;
+
+function relu(x) { return Math.max(0, x); }
+function forward(input) {
+  const h = b1.map((b, i) => relu(b + input.reduce((s, v, j) => s + v * w1[i][j], 0)));
+  const o = b2.map((b, i) => b + h.reduce((s, v, j) => s + v * w2[i][j], 0));
+  return { h, o };
+}
+function trainStep(input, target) {
+  const { h, o } = forward(input);
+  const dOut = o.map((v, i) => v - target[i]);
+  // simple backprop-ish for output
+  for (let i = 0; i < OUT; i++) {
+    for (let j = 0; j < HID; j++) w2[i][j] -= learning * dOut[i] * h[j];
+    b2[i] -= learning * dOut[i];
+  }
+  // hidden
+  const dH = Array(HID).fill(0);
+  for (let j = 0; j < HID; j++) {
+    let s = 0;
+    for (let i = 0; i < OUT; i++) s += dOut[i] * w2[i][j];
+    dH[j] = s * (h[j] > 0 ? 1 : 0);
+    for (let k = 0; k < IN; k++) w1[j][k] -= learning * dH[j] * input[k];
+    b1[j] -= learning * dH[j];
+  }
+}
+
+// --- Fog particles (Canvas2D stand-in for WebGPU volume) ---
+const particles = Array.from({length: 180}, () => ({
+  x: Math.random()*W, y: Math.random()*H,
+  vx: (Math.random()-0.5)*0.8, vy: (Math.random()-0.5)*0.8,
+  life: Math.random()
+}));
+
+// --- Portals ---
+const portals = [];
+for (let i = 0; i < 5; i++) {
+  const el = document.createElement('div');
+  el.className = 'portal';
+  el.textContent = `Portal ${i+1}\nerror sample`;
+  el.style.left = (80 + i * 140) + 'px';
+  el.style.top = (120 + (i%2)*100) + 'px';
+  portalsEl.appendChild(el);
+  portals.push({ el, x: 80 + i*140, y: 120 + (i%2)*100, vx: 0, vy: 0 });
+  makeDraggable(el, portals[i]);
+}
+function makeDraggable(el, p) {
+  let dx=0, dy=0, drag=false;
+  el.addEventListener('pointerdown', e => { drag=true; dx=e.clientX-p.x; dy=e.clientY-p.y; el.setPointerCapture(e.pointerId); });
+  el.addEventListener('pointermove', e => {
+    if (!drag) return;
+    p.x = e.clientX - dx; p.y = e.clientY - dy;
+    // corrective: treat drag as reduced error target
+    const pred = forward(hist).o;
+    trainStep(hist, [0, 0]); // nudge toward stillness when corrected
+  });
+  el.addEventListener('pointerup', () => drag=false);
+}
+
+// Pointer
+addEventListener('pointermove', e => {
+  lastX = px; lastY = py;
+  px = e.clientX; py = e.clientY;
+  const dx = (px - lastX) / 40, dy = (py - lastY) / 40;
+  hist.push(dx, dy); hist.splice(0, 2);
+});
+
+// Optional orientation bias
+let tiltX = 0, tiltY = 0;
+addEventListener('deviceorientation', e => {
+  if (e.gamma != null) { tiltX = e.gamma / 90; tiltY = e.beta / 90; }
+});
+
+// Seal / restore
+const DB = 'verse-f591';
+async function seal() {
+  try {
+    const db = await new Promise((res, rej) => {
+      const r = indexedDB.open(DB, 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('mind');
+      r.onsuccess = () => res(r.result);
+      r.onerror = rej;
+    });
+    const tx = db.transaction('mind', 'readwrite');
+    tx.objectStore('mind').put({
+      w1, b1, w2, b2, portals: portals.map(p => ({x:p.x,y:p.y})), hist: [...hist], error
+    }, 'state');
+    statusEl.textContent = 'Mind sealed to IndexedDB.';
+  } catch (e) { statusEl.textContent = 'Seal failed (in-memory only).'; }
+}
+async function restore() {
+  try {
+    const db = await new Promise((res, rej) => {
+      const r = indexedDB.open(DB, 1);
+      r.onsuccess = () => res(r.result);
+      r.onerror = rej;
+    });
+    const tx = db.transaction('mind', 'readonly');
+    const req = tx.objectStore('mind').get('state');
+    req.onsuccess = () => {
+      const s = req.result;
+      if (!s) return;
+      w1 = s.w1; b1 = s.b1; w2 = s.w2; b2 = s.b2;
+      hist.splice(0, hist.length, ...s.hist);
+      s.portals.forEach((sp, i) => { if (portals[i]) { portals[i].x = sp.x; portals[i].y = sp.y; } });
+      statusEl.textContent = 'Mind restored.';
+    };
+  } catch {}
+}
+document.getElementById('seal').onclick = seal;
+document.getElementById('reset').onclick = () => location.reload();
+restore();
+
+// Loop
+function loop() {
+  // Predict
+  const { o: pred } = forward(hist);
+  const actualDx = (px - lastX) / 40, actualDy = (py - lastY) / 40;
+  const resX = pred[0] - actualDx, resY = pred[1] - actualDy;
+  error = Math.hypot(resX, resY);
+  // occasional train
+  if (Math.random() < 0.15) trainStep(hist, [actualDx, actualDy]);
+
+  // Fog particles
+  ctx.fillStyle = 'rgba(10,10,18,0.25)';
+  ctx.fillRect(0, 0, W, H);
+  const density = Math.min(1, error * 1.8);
+  particles.forEach(p => {
+    p.x += p.vx + (px - p.x) * 0.0008 * density + tiltX * 0.3;
+    p.y += p.vy + (py - p.y) * 0.0008 * density + tiltY * 0.3;
+    if (p.x < 0 || p.x > W) p.vx *= -1;
+    if (p.y < 0 || p.y > H) p.vy *= -1;
+    const a = 0.15 + density * 0.45;
+    ctx.fillStyle = `hsla(${200 + error*80}, 70%, 60%, ${a})`;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 2 + density * 3, 0, Math.PI*2);
+    ctx.fill();
+  });
+
+  // Portals respond to residual
+  document.documentElement.style.setProperty('--fog-hue', 200 + error * 100);
+  document.documentElement.style.setProperty('--error', error);
+  portals.forEach(p => {
+    const dx = (px - p.x) * 0.002 * error;
+    const dy = (py - p.y) * 0.002 * error;
+    p.x += dx; p.y += dy;
+    p.el.style.left = p.x + 'px';
+    p.el.style.top = p.y + 'px';
+    const scale = 0.8 + error * 0.6;
+    p.el.style.transform = `scale(${scale})`;
+    p.el.style.opacity = 0.55 + Math.min(0.4, error);
+    p.el.style.filter = `blur(${error * 1.5}px) hue-rotate(${error*40}deg)`;
+  });
+
+  errEl.textContent = error.toFixed(3);
+  predEl.textContent = `${pred[0].toFixed(2)}, ${pred[1].toFixed(2)}`;
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
+</body>
+</html>
