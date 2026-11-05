@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F580 WebXR Hand Reservoir Vicsek Flock Mind — Verse</title>
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+#canvas { position:absolute; inset:0; width:100%; height:100%; }
+.bird { position:absolute; font-size:22px; pointer-events:auto; user-select:none; cursor:grab; transition:transform 0.05s linear; filter:drop-shadow(0 0 4px #6af); }
+#ui { position:absolute; top:12px; left:12px; background:rgba(0,0,20,0.75); padding:10px 14px; border-radius:8px; z-index:10; max-width:280px; }
+button { margin:4px; padding:6px 10px; background:#223; color:#adf; border:1px solid #46a; border-radius:4px; cursor:pointer; }
+button:hover { background:#334; }
+#status { font-size:12px; opacity:0.85; margin-top:6px; }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="ui">
+  <strong>F580 Vicsek Reservoir Flock</strong><br>
+  <button id="xrBtn">Enter WebXR Hand</button>
+  <button id="sealBtn">Seal Genome</button>
+  <button id="resetBtn">Reset</button>
+  <div id="status">Initializing reservoir…</div>
+</div>
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const statusEl = document.getElementById('status');
+let W = canvas.width = innerWidth, H = canvas.height = innerHeight;
+addEventListener('resize', () => { W = canvas.width = innerWidth; H = canvas.height = innerHeight; });
+
+// --- Echo State Reservoir ---
+const N = 24; // reservoir size
+const INPUT_DIM = 6; // pinch, gazeX, gazeY, dx, dy, energy
+let W_res = new Float32Array(N * N);
+let W_in = new Float32Array(N * INPUT_DIM);
+let readout = new Float32Array(N * 3); // alignment, noise, speed
+let state = new Float32Array(N);
+const spectral = 0.9, leak = 0.3;
+
+function initReservoir() {
+  for (let i = 0; i < N*N; i++) W_res[i] = (Math.random()-0.5)*2 * (Math.random()<0.1?1:0);
+  // scale to spectral radius ~0.9 (approx)
+  let scale = spectral / Math.sqrt(N*0.1);
+  for (let i = 0; i < N*N; i++) W_res[i] *= scale;
+  for (let i = 0; i < N*INPUT_DIM; i++) W_in[i] = (Math.random()-0.5)*0.5;
+  for (let i = 0; i < N*3; i++) readout[i] = (Math.random()-0.5)*0.1;
+  state.fill(0);
+}
+
+// --- Vicsek agents ---
+const AGENTS = 48;
+const agents = Array.from({length:AGENTS}, () => ({
+  x: Math.random()*W, y: Math.random()*H,
+  vx: (Math.random()-0.5)*2, vy: (Math.random()-0.5)*2,
+  el: null
+}));
+const glyphs = '✦✧★☆◆◇▲▼●○'.split('');
+
+function createBirds() {
+  agents.forEach((a,i) => {
+    const el = document.createElement('span');
+    el.className = 'bird';
+    el.textContent = glyphs[i % glyphs.length];
+    el.style.left = a.x + 'px';
+    el.style.top = a.y + 'px';
+    document.body.appendChild(el);
+    a.el = el;
+    el.addEventListener('pointerdown', e => grab(a, e));
+  });
+}
+
+let grabbed = null, grabOffX=0, grabOffY=0;
+function grab(a, e) {
+  grabbed = a;
+  grabOffX = e.clientX - a.x; grabOffY = e.clientY - a.y;
+  e.preventDefault();
+  // reward
+  reward(0.8);
+}
+addEventListener('pointermove', e => {
+  if (!grabbed) return;
+  grabbed.x = e.clientX - grabOffX;
+  grabbed.y = e.clientY - grabOffY;
+  grabbed.vx *= 0.5; grabbed.vy *= 0.5;
+});
+addEventListener('pointerup', () => { grabbed = null; });
+
+// --- Inputs ---
+let pinch = 0, gazeX=0, gazeY=0, pdx=0, pdy=0, energy=0.5;
+let lastX=0, lastY=0;
+addEventListener('pointermove', e => {
+  pdx = e.clientX - lastX; pdy = e.clientY - lastY;
+  lastX = e.clientX; lastY = e.clientY;
+  energy = Math.min(1, energy + 0.01);
+});
+
+// WebXR
+let xrSession = null;
+document.getElementById('xrBtn').onclick = async () => {
+  if (!navigator.xr) { statusEl.textContent = 'WebXR unavailable — pointer mode'; return; }
+  try {
+    xrSession = await navigator.xr.requestSession('immersive-vr', { optionalFeatures: ['hand-tracking'] });
+    statusEl.textContent = 'WebXR session active (hand/gaze driving reservoir)';
+    // Simplified: in real XR we'd poll XRFrame; here we simulate enhanced pinch via button
+    // Full skeletal would require XRWebGLLayer + pose polling each frame.
+  } catch (err) { statusEl.textContent = 'WebXR denied: ' + err.message; }
+};
+
+// DeviceOrientation fallback
+addEventListener('deviceorientation', e => {
+  gazeX = (e.gamma || 0) / 90;
+  gazeY = (e.beta || 0) / 90;
+});
+
+// --- Update ---
+function reservoirStep(input) {
+  const newState = new Float32Array(N);
+  for (let i = 0; i < N; i++) {
+    let sum = 0;
+    for (let j = 0; j < N; j++) sum += W_res[i*N + j] * state[j];
+    for (let k = 0; k < INPUT_DIM; k++) sum += W_in[i*INPUT_DIM + k] * input[k];
+    newState[i] = Math.tanh(sum);
+  }
+  for (let i = 0; i < N; i++) state[i] = (1-leak)*state[i] + leak*newState[i];
+  // readout
+  const out = [0,0,0];
+  for (let o = 0; o < 3; o++) {
+    for (let i = 0; i < N; i++) out[o] += readout[o*N + i] * state[i];
+  }
+  return out.map(v => Math.tanh(v));
+}
+
+function reward(r) {
+  // simple delta-rule on readout toward higher coherence
+  const target = [0.6, -0.3, 0.4]; // prefer high alignment, low noise
+  for (let o = 0; o < 3; o++) {
+    for (let i = 0; i < N; i++) {
+      readout[o*N + i] += 0.002 * r * (target[o] - Math.tanh(readout[o*N + i]*state[i])) * state[i];
+    }
+  }
+  energy = Math.min(1, energy + r*0.2);
+}
+
+let fitness = 0;
+function step() {
+  const input = [pinch, gazeX, gazeY, pdx*0.01, pdy*0.01, energy];
+  const [align, noise, spd] = reservoirStep(input);
+  const alignment = 0.4 + align*0.4;
+  const noiseAmp = 0.3 + noise*0.3;
+  const speed = 1.2 + spd*0.8;
+
+  // Vicsek
+  const radius = 80;
+  let meanAlign = 0;
+  agents.forEach(a => {
+    let sumVx=0, sumVy=0, count=0;
+    agents.forEach(b => {
+      const dx=a.x-b.x, dy=a.y-b.y;
+      if (dx*dx+dy*dy < radius*radius) { sumVx+=b.vx; sumVy+=b.vy; count++; }
+    });
+    if (count) {
+      const mx=sumVx/count, my=sumVy/count;
+      const ang = Math.atan2(my, mx) + (Math.random()-0.5)*noiseAmp;
+      a.vx = Math.cos(ang)*speed * alignment + a.vx*(1-alignment);
+      a.vy = Math.sin(ang)*speed * alignment + a.vy*(1-alignment);
+      meanAlign += alignment;
+    }
+    a.x += a.vx; a.y += a.vy;
+    if (a.x<0||a.x>W) a.vx*=-1; if (a.y<0||a.y>H) a.vy*=-1;
+    a.x = Math.max(0, Math.min(W, a.x));
+    a.y = Math.max(0, Math.min(H, a.y));
+    const rot = Math.atan2(a.vy, a.vx)*180/Math.PI;
+    a.el.style.transform = `translate(${a.x}px,${a.y}px) rotate(${rot}deg)`;
+  });
+  fitness = meanAlign / AGENTS;
+
+  // canvas field
+  ctx.clearRect(0,0,W,H);
+  ctx.strokeStyle = 'rgba(100,180,255,0.25)';
+  agents.forEach(a => {
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y);
+    ctx.lineTo(a.x + a.vx*8, a.y + a.vy*8);
+    ctx.stroke();
+  });
+
+  energy *= 0.995;
+  statusEl.textContent = `Align:${fitness.toFixed(2)} Noise:${noiseAmp.toFixed(2)} Energy:${energy.toFixed(2)} XR:${!!xrSession}`;
+  requestAnimationFrame(step);
+}
+
+// --- Persistence ---
+const DB = 'verse-f580';
+function seal() {
+  const data = { readout: Array.from(readout), fitness, ts: Date.now() };
+  const req = indexedDB.open(DB, 1);
+  req.onupgradeneeded = e => e.target.result.createObjectStore('genomes', {keyPath:'id'});
+  req.onsuccess = e => {
+    const tx = e.target.result.transaction('genomes','readwrite');
+    tx.objectStore('genomes').put({id:'main', ...data});
+    statusEl.textContent = 'Genome sealed';
+  };
+  // broadcast
+  try {
+    const bc = new BroadcastChannel('f580-genome');
+    bc.postMessage(data);
+  } catch(e) {}
+}
+document.getElementById('sealBtn').onclick = seal;
+
+try {
+  const bc = new BroadcastChannel('f580-genome');
+  bc.onmessage = e => {
+    if (e.data.fitness > fitness + 0.05) {
+      readout.set(e.data.readout);
+      statusEl.textContent = 'Adopted higher-fitness genome';
+    }
+  };
+} catch(e) {}
+
+function loadSeal() {
+  const req = indexedDB.open(DB, 1);
+  req.onsuccess = e => {
+    const tx = e.target.result.transaction('genomes','readonly');
+    const g = tx.objectStore('genomes').get('main');
+    g.onsuccess = () => {
+      if (g.result) { readout.set(g.result.readout); statusEl.textContent = 'Restored sealed genome'; }
+    };
+  };
+}
+
+document.getElementById('resetBtn').onclick = () => { initReservoir(); energy=0.5; statusEl.textContent='Reset'; };
+
+// init
+initReservoir();
+createBirds();
+loadSeal();
+step();
+</script>
+</body>
+</html>
