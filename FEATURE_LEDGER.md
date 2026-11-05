@@ -6609,3 +6609,12 @@ Away from the dominant recent cluster of WebGPU kernels (spectral-NCA, embedding
 Lands as Verse canvas prototype expanding building blocks for evolutionary local models controlling physical UI and sealed multi-tab genome transfer. Test: tilt device (or move pointer) and observe cards adapting spring parameters; seal button persists winner; open second tab to receive genome.
 
 **Files**: drafts/F551-orientation-evo-dom-physics-mind/SPEC.md, drafts/F551-orientation-evo-dom-physics-mind/index.html
+
+## Frontier Engine F-553 (2026-11-04)
+
+**F553-opfs-causal-graph-evo-spatial-audio-mind**
+
+Entry added by ledger-guard from drafts/F553-opfs-causal-graph-evo-spatial-audio-mind/SPEC.md, after a full-file write dropped it.
+
+
+**Files**: drafts/F553-opfs-causal-graph-evo-spatial-audio-mind/SPEC.md, drafts/F553-opfs-causal-graph-evo-spatial-audio-mind/index.html
