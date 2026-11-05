@@ -7985,3 +7985,12 @@ Mechanics: seed injection, entropy-driven reflow, sealed genome persistence.
 Outcome: prototype delivered; ready for ledger-guard append.
 
 **Files**: drafts/F576-webgpu-ca-css-grid-living-layout-mind/SPEC.md
+
+## Frontier Engine F-578 (2026-11-05)
+
+**F578-ambient-sensor-mlp-webgpu-sdf-css-paint-mind**
+
+Entry added by ledger-guard from drafts/F578-ambient-sensor-mlp-webgpu-sdf-css-paint-mind/SPEC.md, after a full-file write dropped it.
+
+PLACEHOLDER_SPEC
+**Files**: drafts/F578-ambient-sensor-mlp-webgpu-sdf-css-paint-mind/SPEC.md, drafts/F578-ambient-sensor-mlp-webgpu-sdf-css-paint-mind/index.html
