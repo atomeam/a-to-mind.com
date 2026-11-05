@@ -1,1 +1,267 @@
-HTML_TOO_LONG_USE_FILE
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F578 Ambient Sensor MLP · WebGPU SDF · CSS Paint Living Chrome</title>
+<style>
+:root {
+  --mind-cx: 0.5;
+  --mind-cy: 0.5;
+  --mind-cz: 0.3;
+  --mind-r: 0.25;
+  --mind-hue: 200;
+  --mind-energy: 0.1;
+}
+html, body { margin: 0; height: 100%; background: #0a0c10; color: #e0e6f0; font-family: system-ui, sans-serif; overflow: hidden; }
+#chrome {
+  position: fixed; inset: 0;
+  background: paint(living-chrome);
+  pointer-events: none;
+  z-index: 0;
+}
+#stage {
+  position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;
+}
+canvas { width: min(80vw, 640px); height: min(60vh, 480px); border-radius: 12px; box-shadow: 0 0 40px rgba(80,160,255,.3); background: #000; }
+.panel {
+  background: paint(living-chrome);
+  border: 2px solid transparent;
+  border-radius: 10px;
+  padding: 0.8rem 1.2rem;
+  min-width: 280px;
+  text-align: center;
+  backdrop-filter: blur(4px);
+}
+button, .status { font-size: 0.9rem; }
+button { margin: 0 0.3rem; padding: 0.4rem 0.8rem; border-radius: 6px; border: 1px solid #446; background: #1a2233; color: #cde; cursor: pointer; }
+button:hover { background: #2a3344; }
+#status { font-variant-numeric: tabular-nums; opacity: 0.85; }
+</style>
+</head>
+<body>
+<div id="chrome"></div>
+<div id="stage">
+  <canvas id="sdf" width="640" height="480"></canvas>
+  <div class="panel">
+    <div id="status">initializing…</div>
+    <div style="margin-top:0.6rem">
+      <button id="seal">Seal</button>
+      <button id="reset">Reset</button>
+      <button id="inject">Inject</button>
+    </div>
+  </div>
+</div>
+<script>
+// ---------- CSS Paint Worklet (blob) ----------
+const paintSource = `
+class LivingChrome {
+  static get inputProperties() { return ['--mind-cx','--mind-cy','--mind-cz','--mind-r','--mind-hue','--mind-energy']; }
+  paint(ctx, geom, props) {
+    const cx = parseFloat(props.get('--mind-cx')||0.5);
+    const cy = parseFloat(props.get('--mind-cy')||0.5);
+    const r  = parseFloat(props.get('--mind-r')||0.25);
+    const hue= parseFloat(props.get('--mind-hue')||200);
+    const e  = parseFloat(props.get('--mind-energy')||0.1);
+    const w = geom.width, h = geom.height;
+    const g = ctx.createRadialGradient(cx*w, cy*h, 0, cx*w, cy*h, Math.max(w,h)*r*1.8);
+    g.addColorStop(0, \`hsla(\${hue},70%,\${40+e*30}%,\${0.35+e*0.3})\`);
+    g.addColorStop(1, 'hsla(' + hue + ',40%,8%,0.05)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0,0,w,h);
+    ctx.strokeStyle = \`hsla(\${hue},80%,60%,\${0.4+e*0.4})\`);
+    ctx.lineWidth = 1 + e*3;
+    for(let i=0;i<6;i++){
+      const a = (i/6)*Math.PI*2 + e*2;
+      ctx.beginPath();
+      ctx.arc(cx*w + Math.cos(a)*r*w*0.6, cy*h + Math.sin(a)*r*h*0.6, 8+e*20, 0, Math.PI*2);
+      ctx.stroke();
+    }
+  }
+}
+registerPaint('living-chrome', LivingChrome);
+`;
+if ('paintWorklet' in CSS) {
+  const blob = new Blob([paintSource], {type:'application/javascript'});
+  CSS.paintWorklet.addModule(URL.createObjectURL(blob)).catch(()=>{});
+}
+
+// ---------- Tiny MLP ----------
+class MLP {
+  constructor() {
+    this.w1 = Array.from({length:10}, () => Array.from({length:5}, () => (Math.random()-0.5)*0.8));
+    this.b1 = Array.from({length:10}, () => (Math.random()-0.5)*0.2);
+    this.w2 = Array.from({length:6}, () => Array.from({length:10}, () => (Math.random()-0.5)*0.8));
+    this.b2 = Array.from({length:6}, () => (Math.random()-0.5)*0.2);
+  }
+  forward(x) { // x: [5]
+    const h = this.w1.map((row,i) => Math.tanh(row.reduce((s,w,j)=>s+w*x[j], this.b1[i])));
+    return this.w2.map((row,i) => Math.tanh(row.reduce((s,w,j)=>s+w*h[j], this.b2[i])));
+  }
+  serialize() { return {w1:this.w1, b1:this.b1, w2:this.w2, b2:this.b2}; }
+  load(o) { if(o) Object.assign(this, o); }
+}
+const mlp = new MLP();
+
+// ---------- Sensors & state ----------
+let beta=0, gamma=0, accel=0, lum=0.4, energy=0.1;
+let pointerX=0.5, pointerY=0.5;
+window.addEventListener('deviceorientation', e => { beta = (e.beta||0)/90; gamma = (e.gamma||0)/90; });
+window.addEventListener('devicemotion', e => { const a=e.acceleration; accel = Math.hypot(a?.x||0, a?.y||0, a?.z||0)/20; });
+// mouse proxy
+document.addEventListener('pointermove', e => { pointerX = e.clientX/innerWidth; pointerY = e.clientY/innerHeight; });
+document.addEventListener('click', e => { energy = Math.min(1, energy+0.35); });
+
+// ---------- WebGPU / Canvas2D ----------
+const canvas = document.getElementById('sdf');
+const ctx2d = canvas.getContext('2d');
+let gpu = null, pipeline, uniformBuffer, bindGroup;
+
+async function initWebGPU() {
+  if (!navigator.gpu) return false;
+  const adapter = await navigator.gpu.requestAdapter();
+  if (!adapter) return false;
+  const device = await adapter.requestDevice();
+  const context = canvas.getContext('webgpu');
+  const format = navigator.gpu.getPreferredCanvasFormat();
+  context.configure({ device, format, alphaMode: 'opaque' });
+  uniformBuffer = device.createBuffer({ size: 32, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
+  const shader = device.createShaderModule({ code: `
+    struct Uniforms { params: vec4<f32>, extra: vec4<f32> };
+    @group(0) @binding(0) var<uniform> u: Uniforms;
+    @fragment fn fs(@builtin(position) pos: vec4<f32>) -> @location(0) vec4<f32> {
+      let uv = (pos.xy / vec2<f32>(640.0,480.0)) * 2.0 - 1.0;
+      let ro = vec3<f32>(0.0, 0.0, -1.8);
+      let rd = normalize(vec3<f32>(uv.x, uv.y, 1.2));
+      var t = 0.0;
+      for(var i=0; i<48; i++) {
+        let p = ro + rd * t;
+        var d = 100.0;
+        for(var s=0; s<4; s++) {
+          let ang = f32(s)*1.57 + u.extra.x;
+          let sc = vec3<f32>(cos(ang)*u.params.x, sin(ang*0.7)*u.params.y, u.params.z);
+          d = min(d, length(p - sc) - (0.25 + u.params.w*0.15));
+        }
+        if(d < 0.002) {
+          let h = u.extra.y;
+          return vec4<f32>(0.3+sin(h)*0.3, 0.5+cos(h)*0.2, 0.8, 1.0);
+        }
+        t += d;
+        if(t > 6.0) break;
+      }
+      return vec4<f32>(0.02,0.03,0.05,1.0);
+    }
+    @vertex fn vs(@builtin(vertex_index) i: u32) -> @builtin(position) vec4<f32> {
+      let x = f32(i32(i) % 2); let y = f32(i32(i) / 2);
+      return vec4<f32>(x*2.0-1.0, y*2.0-1.0, 0.0, 1.0);
+    }
+  `});
+  pipeline = device.createRenderPipeline({
+    layout: 'auto',
+    vertex: { module: shader, entryPoint: 'vs' },
+    fragment: { module: shader, entryPoint: 'fs', targets: [{ format }] },
+    primitive: { topology: 'triangle-strip' }
+  });
+  bindGroup = device.createBindGroup({ layout: pipeline.getBindGroupLayout(0), entries: [{ binding:0, resource:{ buffer: uniformBuffer }}] });
+  gpu = { device, context, format };
+  return true;
+}
+const hasGPU = await initWebGPU();
+
+function draw2D(params) {
+  const [cx,cy,cz,r,hue,e] = params;
+  ctx2d.fillStyle = '#05070a';
+  ctx2d.fillRect(0,0,640,480);
+  for(let s=0;s<4;s++){
+    const ang = s*1.57 + e*3;
+    const sx = 320 + Math.cos(ang)*cx*180;
+    const sy = 240 + Math.sin(ang*0.7)*cy*140;
+    const rad = 40 + r*60;
+    const g = ctx2d.createRadialGradient(sx,sy,0,sx,sy,rad);
+    g.addColorStop(0, `hsla(${hue},70%,60%,0.9)`);
+    g.addColorStop(1, 'transparent');
+    ctx2d.fillStyle = g;
+    ctx2d.beginPath(); ctx2d.arc(sx,sy,rad,0,Math.PI*2); ctx2d.fill();
+  }
+}
+
+// ---------- Persistence ----------
+const DB = 'f578-sdf-paint-mind';
+async function seal() {
+  const db = await new Promise((res,rej) => {
+    const r = indexedDB.open(DB,1);
+    r.onupgradeneeded = () => r.result.createObjectStore('state');
+    r.onsuccess = () => res(r.result);
+    r.onerror = rej;
+  });
+  const tx = db.transaction('state','readwrite');
+  tx.objectStore('state').put({ mlp: mlp.serialize(), energy, beta, gamma }, 'main');
+  return tx.complete;
+}
+async function load() {
+  try {
+    const db = await new Promise((res,rej) => {
+      const r = indexedDB.open(DB,1);
+      r.onsuccess = () => res(r.result);
+      r.onerror = rej;
+    });
+    const tx = db.transaction('state');
+    const data = await new Promise(res => {
+      const req = tx.objectStore('state').get('main');
+      req.onsuccess = () => res(req.result);
+    });
+    if(data) { mlp.load(data.mlp); energy = data.energy||0.1; }
+  } catch(e) {}
+}
+
+// ---------- Loop ----------
+async function loop() {
+  energy *= 0.985;
+  const input = [
+    hasGPU ? beta : (pointerX-0.5)*2,
+    hasGPU ? gamma : (pointerY-0.5)*2,
+    accel,
+    lum,
+    energy
+  ];
+  const out = mlp.forward(input);
+  const params = out.map((v,i) => i<4 ? (v+1)*0.5 : (v+1)*0.5); // normalize
+  params[4] = 160 + out[4]*80; // hue
+  params[5] = energy;
+
+  document.documentElement.style.setProperty('--mind-cx', params[0].toFixed(3));
+  document.documentElement.style.setProperty('--mind-cy', params[1].toFixed(3));
+  document.documentElement.style.setProperty('--mind-cz', params[2].toFixed(3));
+  document.documentElement.style.setProperty('--mind-r', params[3].toFixed(3));
+  document.documentElement.style.setProperty('--mind-hue', params[4].toFixed(0));
+  document.documentElement.style.setProperty('--mind-energy', energy.toFixed(3));
+
+  if (hasGPU && gpu) {
+    const data = new Float32Array([params[0],params[1],params[2],params[3], energy, params[4]/360, 0, 0]);
+    gpu.device.queue.writeBuffer(uniformBuffer, 0, data);
+    const encoder = gpu.device.createCommandEncoder();
+    const pass = encoder.beginRenderPass({ colorAttachments: [{ view: gpu.context.getCurrentTexture().createView(), loadOp:'clear', storeOp:'store', clearValue:[0,0,0,1] }] });
+    pass.setPipeline(pipeline);
+    pass.setBindGroup(0, bindGroup);
+    pass.draw(4);
+    pass.end();
+    gpu.device.queue.submit([encoder.finish()]);
+  } else {
+    draw2D(params);
+  }
+
+  document.getElementById('status').textContent =
+    `MLP→SDF | energy ${(energy*100).toFixed(0)}% | ${hasGPU?'WebGPU':'Canvas2D'} | tilt ${(beta*90).toFixed(0)}°/${(gamma*90).toFixed(0)}°`;
+  requestAnimationFrame(loop);
+}
+
+document.getElementById('seal').onclick = () => seal().then(() => alert('Sealed to IndexedDB'));
+document.getElementById('reset').onclick = () => { mlp.load(null); energy=0.1; location.reload(); };
+document.getElementById('inject').onclick = () => { energy = Math.min(1, energy+0.5); };
+
+load().then(() => {
+  document.getElementById('status').textContent = 'ready — tilt or move pointer';
+  loop();
+});
+</script>
+</body>
+</html>
