@@ -9472,3 +9472,12 @@ drafts/F606-webgpu-som-spatial-dom-mind/index.html
 WebGPU SOM on higher-dim embeddings, multi-map hierarchies, transfer of sealed maps into larger local transformers, WebXR gaze as input vector, or SOM-driven CSS Paint Worklet glyphs.
 
 **Files**: drafts/F606-webgpu-som-spatial-dom-mind/SPEC.md, drafts/F606-webgpu-som-spatial-dom-mind/index.html
+
+## Frontier Engine F-607 (2026-11-06)
+
+**F607-webgpu-spiking-lif-dom-mind**
+
+Entry added by ledger-guard from drafts/F607-webgpu-spiking-lif-dom-mind/SPEC.md, after a full-file write dropped it.
+
+
+**Files**: drafts/F607-webgpu-spiking-lif-dom-mind/SPEC.md, drafts/F607-webgpu-spiking-lif-dom-mind/index.html
