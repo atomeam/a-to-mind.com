@@ -4,6 +4,7 @@ This file exists so hourly research automations never recommend the same capabil
 
 ## Rules for every future run
 
+- **Every frontier draft is a tool a person comes back for: read `drafts/BRIEF.md` before you build** (owner, 2026-11-06: "the lab experiments all seem pointless ... make grok build better and more useful things"). SPEC.md opens with `Plain name:` and `Job:` lines; the page takes the person's own input and gives back a download, copy, share link or saved work; no particle fields, lattices, swarms, orbs or "minds". Verse grades each draft automatically (atomeam/void-loop `tools/lab-grade.mjs`) and lists only the tools.
 - Write FEATURE_LEDGER.md with git on disk, append only. Never replace it with a full-file API write. `tools/check-ledger.sh` must pass (Suggested-by: Void (run 118)).
 - A frontier draft needs no ledger write. Commit only `drafts/FNNN-slug/SPEC.md` and `index.html`; ledger-guard appends the `## Frontier Engine F-NNN` entry from that SPEC.md. Do not open FEATURE_LEDGER.md for a draft, and never write it with the contents API.
 

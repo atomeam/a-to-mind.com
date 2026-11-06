@@ -1,0 +1,42 @@
+# The usefulness gate (owner, 2026-11-06: "make grok build better and more useful things"). Every new or changed draft is graded by Verse's own
+# grader (atomeam/void-loop tools/lab-grade.mjs, the rules in drafts/BRIEF.md): a tool or a toy, and why. The verdicts go to drafts/GRADES.md,
+# newest first, so the next run reads how its last draft did. Verse's lab sync grades the same way and lists only the tools.
+name: usefulness
+on:
+  push:
+    branches: [master]
+    paths: ['drafts/**/index.html', 'drafts/**/SPEC.md']
+permissions:
+  contents: write
+concurrency: { group: usefulness, cancel-in-progress: false }
+jobs:
+  grade:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 20 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Grade the drafts this push touched
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/atomeam/void-loop/main/tools/lab-grade.mjs -o /tmp/lab-grade.mjs || { echo "::warning::the grader could not be fetched; nothing graded"; exit 0; }
+          base="${{ github.event.before }}"; git cat-file -e "$base^{commit}" 2>/dev/null || base=HEAD~1
+          dirs=$(git diff --name-only "$base" HEAD -- drafts | sed -n 's#^drafts/\([^/]*\)/\(index.html\|SPEC.md\)$#\1#p' | sort -u)
+          [ -n "$dirs" ] || exit 0
+          touch drafts/GRADES.md; rows=""
+          for d in $dirs; do
+            [ -f "drafts/$d/index.html" ] || continue
+            j=$(node /tmp/lab-grade.mjs --file "drafts/$d/index.html") || continue
+            row=$(printf '%s' "$j" | node -e 'let s="";process.stdin.on("data",(c)=>s+=c).on("end",()=>{const g=JSON.parse(s),c=(t)=>String(t||"").replace(/[|\n]/g," ").slice(0,160);const d=process.argv[1];console.log("| "+[new Date().toISOString().slice(0,10),d,g.grade==="tool"?"**tool**":"toy",c(g.job)||"(no Job: line)",c((g.why||[]).join("; ")),g.idea?c("its idea is already the "+g.idea.tool+(g.idea.page?" at "+g.idea.page:"")+": build a job from drafts/BRIEF.md instead"):""].join(" | ")+" |")})' "$d")
+            rows="$rows$row"$'\n'; echo "$row"
+          done
+          [ -n "$rows" ] || exit 0
+          old=$(sed -n '/^| [0-9]/p' drafts/GRADES.md | head -n 80)
+          { echo "# Draft grades (the usefulness workflow writes this file; do not edit by hand)"; echo
+            echo "Each draft is graded by Verse's grader against drafts/BRIEF.md: a **tool** does a job a person has, from their own input, with something to keep. A toy is kept but not listed on Verse. Newest first."; echo
+            echo "| day | draft | grade | job | why | next |"; echo "|---|---|---|---|---|---|"
+            printf '%s' "$rows"; [ -n "$old" ] && echo "$old"; } > /tmp/G && mv /tmp/G drafts/GRADES.md
+          git config user.name usefulness-gate; git config user.email usefulness-gate@users.noreply.github.com
+          git add drafts/GRADES.md && git commit -m "usefulness: grade $(echo $dirs | wc -w) draft(s)" -m "Graded by atomeam/void-loop tools/lab-grade.mjs against drafts/BRIEF.md." || exit 0
+          for i in 1 2 3; do git pull --rebase -q && git push -q && break; sleep 5; done

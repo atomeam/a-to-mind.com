@@ -7,7 +7,7 @@ Every frontier draft folder is `drafts/F<number>-<slug>`, and every number belon
 1. Get the number with `tools/next-draft-number.sh` (the highest number in `drafts/` and `ledger/frontier/`, plus one). Never pick a number by hand and never reuse the number of the draft you build on.
 2. Name the folder `F<number>-<slug>` with no dash or leading zeros in the number (`F447-...`, not `F-447` or `F0447`).
 3. Run `tools/check-draft-numbers.sh` before you commit. It fails when two folders share a number.
-4. Name the Verse Brain part the draft extends (see the 2026-10-29 note in FRONTIER_LEDGER.md). A draft that extends no part, or only repeats one under a new name, is not a new draft.
+4. Build a tool, not a demo: read `drafts/BRIEF.md` first (owner, 2026-11-06). The SPEC names the job in a `Job:` line, the page takes the person's own input and gives back something to keep, and it is not already on Verse. This replaces the 2026-10-29 rule to extend a Verse Brain part, which produced 450 demos and 5 tools.
 
 ## Renumbered on 2026-10-29
 
