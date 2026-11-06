@@ -9700,3 +9700,17 @@ Offline, private, single page. Assign specific items to specific people (or mult
 - Invalid numbers: ignored or zeroed with visual cue.
 
 **Files**: drafts/F612-bill-splitter/SPEC.md, drafts/F612-bill-splitter/index.html
+
+## Frontier Engine F-614 (2026-11-06)
+
+**F614-sleep-cycle-calculator**
+
+Entry added by ledger-guard from drafts/F614-sleep-cycle-calculator/SPEC.md, after a full-file write dropped it.
+
+Plain name: Sleep cycle calculator
+Job: Enter a wake-up time and get recommended bedtimes based on 90-minute sleep cycles (plus a fall-asleep buffer), with the option to download an .ics file for calendar alarms.
+Input: Wake-up time (time input), optional cycles (4–6), fall-asleep minutes (default 15).
+Keeps: Copy the list of bedtimes as text; download .ics for the chosen bedtime alarm; last values saved on the device.
+Not on Verse yet: checked against llms.txt and GAPS.md — Verse has floating-page answers for sleep cycles, but no dedicated offline tool page with .ics export and saved inputs.
+
+**Files**: drafts/F614-sleep-cycle-calculator/SPEC.md
