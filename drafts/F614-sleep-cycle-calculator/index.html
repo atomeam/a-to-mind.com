@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sleep cycle calculator</title>
+<style>
+:root { --bg:#0f1115; --fg:#e8e8e8; --acc:#6ee7b7; --card:#1a1d24; --border:#2a2e37; }
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:var(--fg);line-height:1.5;padding:1rem}
+h1{font-size:1.6rem;margin:0 0 .5rem}
+p{margin:.4rem 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem;margin:1rem 0;max-width:480px}
+label{display:block;margin:.6rem 0 .2rem;font-size:.9rem}
+input,select,button{font:inherit;padding:.5rem .7rem;border-radius:8px;border:1px solid var(--border);background:#111;color:var(--fg);width:100%}
+button{background:var(--acc);color:#042;border:none;font-weight:600;cursor:pointer;margin-top:.6rem}
+button:hover{filter:brightness(1.1)}
+.results{margin-top:1rem}
+.bed{padding:.6rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.bed:last-child{border:none}
+.small{font-size:.8rem;opacity:.7}
+.copy,.ics{width:auto;padding:.3rem .6rem;font-size:.8rem;margin:0}
+</style>
+</head>
+<body>
+<h1>Sleep cycle calculator</h1>
+<p>Enter when you need to wake up. Get bedtimes that land you at the end of a 90-minute sleep cycle (plus a few minutes to fall asleep). Download a calendar alarm for the bedtime you choose.</p>
+<div class="card">
+  <label for="wake">Wake-up time</label>
+  <input type="time" id="wake" value="07:00">
+  <label for="cycles">Number of cycles (90 min each)</label>
+  <select id="cycles">
+    <option value="4">4 (6 h)</option>
+    <option value="5" selected>5 (7.5 h)</option>
+    <option value="6">6 (9 h)</option>
+  </select>
+  <label for="buffer">Minutes to fall asleep</label>
+  <input type="number" id="buffer" value="15" min="0" max="60">
+  <button id="calc">Calculate bedtimes</button>
+  <div id="out" class="results"></div>
+</div>
+<p class="small">Based on the common 90-minute sleep cycle model. Individual cycles vary. This is not medical advice. Times are local. Saved on this device only.</p>
+<script>
+const $ = id => document.getElementById(id);
+const KEY = 'verse-f614-sleep';
+
+function load() {
+  try {
+    const s = JSON.parse(localStorage.getItem(KEY) || '{}');
+    if (s.wake) $('wake').value = s.wake;
+    if (s.cycles) $('cycles').value = s.cycles;
+    if (s.buffer != null) $('buffer').value = s.buffer;
+  } catch {}
+}
+function save() {
+  localStorage.setItem(KEY, JSON.stringify({
+    wake: $('wake').value,
+    cycles: $('cycles').value,
+    buffer: $('buffer').value
+  }));
+}
+function pad(n) { return n.toString().padStart(2, '0'); }
+function toMin(t) {
+  const [h, m] = t.split(':').map(Number);
+  return h * 60 + m;
+}
+function fromMin(m) {
+  m = ((m % 1440) + 1440) % 1440;
+  return pad(Math.floor(m / 60)) + ':' + pad(m % 60);
+}
+function calc() {
+  save();
+  const wake = toMin($('wake').value);
+  const n = +$('cycles').value;
+  const buf = +$('buffer').value || 0;
+  const cycle = 90;
+  const beds = [];
+  for (let c = n; c >= 4; c--) {
+    const sleep = c * cycle + buf;
+    const bed = wake - sleep;
+    beds.push({ cycles: c, time: fromMin(bed), hours: (c * 90 / 60).toFixed(1) });
+  }
+  const uniq = [];
+  const seen = new Set();
+  for (const b of beds) {
+    if (!seen.has(b.time)) { seen.add(b.time); uniq.push(b); }
+  }
+  uniq.sort((a,b) => toMin(b.time) - toMin(a.time));
+  let html = '';
+  uniq.forEach(b => {
+    html += `<div class="bed">
+      <div><strong>${b.time}</strong> <span class="small">(${b.cycles} cycles · ${b.hours} h sleep)</span></div>
+      <div>
+        <button class="copy" data-t="${b.time}">Copy</button>
+        <button class="ics" data-t="${b.time}" data-w="${$('wake').value}">.ics</button>
+      </div>
+    </div>`;
+  });
+  $('out').innerHTML = html || '<p>Enter a valid time.</p>';
+  $('out').querySelectorAll('.copy').forEach(btn => {
+    btn.onclick = () => navigator.clipboard.writeText(btn.dataset.t).then(() => btn.textContent = 'Copied');
+  });
+  $('out').querySelectorAll('.ics').forEach(btn => {
+    btn.onclick = () => downloadICS(btn.dataset.t, btn.dataset.w);
+  });
+}
+function downloadICS(bed, wake) {
+  const now = new Date();
+  const [bh, bm] = bed.split(':').map(Number);
+  const d = new Date(now);
+  d.setHours(bh, bm, 0, 0);
+  if (d < now) d.setDate(d.getDate() + 1);
+  const stamp = d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+  const end = new Date(d.getTime() + 15 * 60000);
+  const estamp = end.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+  const ics = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Verse//Sleep Cycle//EN
+BEGIN:VEVENT
+UID:sleep-${Date.now()}@verse
+DTSTAMP:${stamp}
+DTSTART:${stamp}
+DTEND:${estamp}
+SUMMARY:Bedtime for ${wake} wake-up
+DESCRIPTION:Suggested bedtime based on 90-minute cycles. Set alarm or reminder.
+END:VEVENT
+END:VCALENDAR`;
+  const blob = new Blob([ics], { type: 'text/calendar' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `bedtime-${bed.replace(':','')}.ics`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+$('calc').onclick = calc;
+load();
+calc();
+</script>
+</body>
+</html>
