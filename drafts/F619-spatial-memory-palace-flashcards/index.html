@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Spatial Memory Palace Flashcards — Verse F619</title>
+<style>
+:root { --bg:#0f1115; --card:#1a1d24; --accent:#5eead4; --text:#e5e7eb; --due:#fbbf24; --good:#34d399; }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--text); font-family:system-ui,sans-serif; height:100dvh; overflow:hidden; }
+#ui { position:fixed; top:0; left:0; right:0; z-index:20; padding:8px; background:rgba(15,17,21,.9); backdrop-filter:blur(8px); display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+input, textarea, button, select { background:var(--card); color:var(--text); border:1px solid #333; border-radius:6px; padding:6px 10px; font-size:13px; }
+button { cursor:pointer; }
+button:hover { border-color:var(--accent); }
+#palace { position:absolute; inset:70px 0 0 0; overflow:auto; background:#111; }
+.card { position:absolute; width:160px; min-height:70px; background:var(--card); border:1px solid #333; border-radius:10px; padding:8px; font-size:12px; cursor:grab; user-select:none; box-shadow:0 4px 12px rgba(0,0,0,.5); }
+.card.due { border-color:var(--due); }
+.card.studying { border-color:var(--accent); outline:2px solid var(--accent); }
+.card .front { font-weight:600; }
+.card .back { opacity:.7; margin-top:4px; display:none; }
+.card.revealed .back { display:block; }
+#study { position:fixed; bottom:0; left:0; right:0; background:rgba(15,17,21,.95); padding:10px; z-index:20; display:none; gap:8px; flex-wrap:wrap; align-items:center; }
+#status { font-size:12px; opacity:.7; }
+</style>
+</head>
+<body>
+<div id="ui">
+  <textarea id="paste" placeholder="front, back&#10;one per line" rows="1" style="width:180px;height:32px;resize:none;"></textarea>
+  <button id="addPaste">Add from paste</button>
+  <input id="front" placeholder="Front">
+  <input id="back" placeholder="Back">
+  <button id="addOne">Add</button>
+  <button id="studyBtn">Study due</button>
+  <button id="exportJSON">Export JSON</button>
+  <button id="exportCSV">Export CSV</button>
+  <button id="clear">Clear</button>
+  <span id="status">Drag cards · spatial palace + SM-2</span>
+</div>
+<div id="palace"></div>
+<div id="study">
+  <span id="studyFront" style="flex:1;font-weight:600;"></span>
+  <button id="reveal">Reveal</button>
+  <button id="again">Again</button>
+  <button id="hard">Hard</button>
+  <button id="good">Good</button>
+  <button id="easy">Easy</button>
+  <button id="speak">Speak</button>
+  <button id="stopStudy">Stop</button>
+</div>
+<script>
+const palace = document.getElementById('palace');
+const status = document.getElementById('status');
+const DB_NAME = 'verse-f619-palace';
+const STORE = 'cards';
+let cards = []; // {id, front, back, x, y, ease, interval, reps, due}
+let db, studying = null, revealed = false;
+
+function now() { return Date.now(); }
+
+function sm2(card, quality) { // quality 0-5
+  if (quality < 3) {
+    card.reps = 0;
+    card.interval = 1;
+  } else {
+    if (card.reps === 0) card.interval = 1;
+    else if (card.reps === 1) card.interval = 6;
+    else card.interval = Math.round(card.interval * card.ease);
+    card.reps += 1;
+    card.ease = Math.max(1.3, card.ease + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02)));
+  }
+  card.due = now() + card.interval * 86400000;
+}
+
+function addCard(front, back, x, y) {
+  if (!front.trim()) return;
+  const c = {
+    id: Date.now() + Math.random(),
+    front: front.trim(),
+    back: (back || '').trim(),
+    x: x ?? Math.random() * (palace.scrollWidth - 180) + 20,
+    y: y ?? Math.random() * (palace.scrollHeight - 100) + 20,
+    ease: 2.5, interval: 0, reps: 0, due: now()
+  };
+  cards.push(c);
+  render();
+  save();
+}
+
+function render() {
+  palace.innerHTML = '';
+  const dueCount = cards.filter(c => c.due <= now()).length;
+  status.textContent = `${cards.length} cards · ${dueCount} due · drag to place`;
+  cards.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'card' + (c.due <= now() ? ' due' : '') + (studying && studying.id === c.id ? ' studying' : '');
+    el.innerHTML = `<div class="front">${escape(c.front)}</div><div class="back">${escape(c.back)}</div>`;
+    el.style.left = c.x + 'px';
+    el.style.top = c.y + 'px';
+    makeDraggable(el, c);
+    el.onclick = () => { if (!studying) { studying = c; revealed = false; showStudy(); } };
+    palace.appendChild(el);
+  });
+}
+
+function escape(s) { return s.replace(/[&<>]/g, m => ({'&':'&','<':'<','>':'>'}[m])); }
+
+function makeDraggable(el, c) {
+  let ox, oy, dragging = false;
+  el.onpointerdown = e => {
+    if (e.button !== 0) return;
+    dragging = true;
+    ox = e.clientX - c.x; oy = e.clientY - c.y;
+    el.setPointerCapture(e.pointerId);
+    e.preventDefault();
+  };
+  el.onpointermove = e => {
+    if (!dragging) return;
+    c.x = e.clientX - ox; c.y = e.clientY - oy;
+    el.style.left = c.x + 'px'; el.style.top = c.y + 'px';
+  };
+  el.onpointerup = () => { if (dragging) { dragging = false; save(); } };
+}
+
+function showStudy() {
+  if (!studying) return;
+  document.getElementById('study').style.display = 'flex';
+  document.getElementById('studyFront').textContent = studying.front;
+  document.getElementById('reveal').style.display = 'inline-block';
+  ['again','hard','good','easy'].forEach(id => document.getElementById(id).style.display = 'none');
+  revealed = false;
+  render();
+}
+
+function rate(q) {
+  if (!studying) return;
+  sm2(studying, q);
+  studying = null;
+  document.getElementById('study').style.display = 'none';
+  render();
+  save();
+  const next = cards.filter(c => c.due <= now()).sort((a,b)=>a.due-b.due)[0];
+  if (next) { studying = next; setTimeout(showStudy, 300); }
+}
+
+function speak() {
+  if (!studying || !window.speechSynthesis) return;
+  const u = new SpeechSynthesisUtterance(studying.front);
+  speechSynthesis.speak(u);
+}
+
+function openDB() {
+  return new Promise((res, rej) => {
+    const r = indexedDB.open(DB_NAME, 1);
+    r.onupgradeneeded = e => e.target.result.createObjectStore(STORE);
+    r.onsuccess = e => res(e.target.result);
+    r.onerror = rej;
+  });
+}
+async function save() {
+  if (!db) return;
+  const tx = db.transaction(STORE, 'readwrite');
+  tx.objectStore(STORE).put(cards, 'all');
+}
+async function load() {
+  try {
+    db = await openDB();
+    const tx = db.transaction(STORE, 'readonly');
+    const req = tx.objectStore(STORE).get('all');
+    req.onsuccess = () => {
+      if (req.result) { cards = req.result; render(); }
+    };
+  } catch (e) { status.textContent = 'IDB unavailable — in-memory only'; }
+}
+load();
+
+document.getElementById('addOne').onclick = () => {
+  addCard(document.getElementById('front').value, document.getElementById('back').value);
+  document.getElementById('front').value = ''; document.getElementById('back').value = '';
+};
+document.getElementById('addPaste').onclick = () => {
+  const lines = document.getElementById('paste').value.split('\n').filter(l => l.trim());
+  lines.forEach(l => {
+    const parts = l.split(/,|\t/).map(s => s.trim());
+    if (parts[0]) addCard(parts[0], parts[1] || '');
+  });
+  document.getElementById('paste').value = '';
+};
+document.getElementById('studyBtn').onclick = () => {
+  const due = cards.filter(c => c.due <= now()).sort((a,b)=>a.due-b.due);
+  if (due.length) { studying = due[0]; showStudy(); }
+  else status.textContent = 'No cards due right now';
+};
+document.getElementById('reveal').onclick = () => {
+  if (!studying) return;
+  revealed = true;
+  document.querySelector('.card.studying')?.classList.add('revealed');
+  document.getElementById('reveal').style.display = 'none';
+  ['again','hard','good','easy'].forEach(id => document.getElementById(id).style.display = 'inline-block');
+  document.getElementById('studyFront').textContent = studying.front + ' → ' + studying.back;
+};
+document.getElementById('again').onclick = () => rate(1);
+document.getElementById('hard').onclick = () => rate(3);
+document.getElementById('good').onclick = () => rate(4);
+document.getElementById('easy').onclick = () => rate(5);
+document.getElementById('speak').onclick = speak;
+document.getElementById('stopStudy').onclick = () => { studying = null; document.getElementById('study').style.display = 'none'; render(); };
+document.getElementById('clear').onclick = () => { if (confirm('Clear all cards?')) { cards = []; render(); save(); } };
+document.getElementById('exportJSON').onclick = () => {
+  const blob = new Blob([JSON.stringify({cards, exported: now()}, null, 2)], {type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'verse-memory-palace.json'; a.click();
+};
+document.getElementById('exportCSV').onclick = () => {
+  const csv = 'front,back,ease,interval,reps,due\n' + cards.map(c =>
+    `"${c.front.replace(/"/g,'""')}","${c.back.replace(/"/g,'""')}",${c.ease},${c.interval},${c.reps},${new Date(c.due).toISOString()}`
+  ).join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'verse-flashcards.csv'; a.click();
+};
+
+palace.style.width = '2000px'; palace.style.height = '1500px';
+</script>
+</body>
+</html>
