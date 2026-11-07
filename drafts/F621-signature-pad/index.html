@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Signature pad · Verse</title>
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --fg: #f0ebe3;
+    --muted: #8a8478;
+    --accent: #d4a017;
+    --surface: #1a1a18;
+    --rule: #2a2a28;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+  }
+  h1 { font-size: 1.4rem; font-weight: 500; margin-bottom: 0.5rem; }
+  p.note { color: var(--muted); font-size: 0.9rem; margin-bottom: 1rem; text-align: center; max-width: 40rem; }
+  #canvas-wrap {
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    touch-action: none;
+    position: relative;
+    max-width: 100%;
+  }
+  canvas {
+    display: block;
+    cursor: crosshair;
+    max-width: 100%;
+    height: auto;
+  }
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1rem 0;
+    justify-content: center;
+    align-items: center;
+  }
+  button, label {
+    background: var(--surface);
+    color: var(--fg);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  button:hover { border-color: var(--accent); }
+  input[type="color"] { width: 2.5rem; height: 2rem; border: none; background: none; }
+  input[type="range"] { width: 100px; }
+  .status { color: var(--muted); font-size: 0.8rem; margin-top: 0.5rem; }
+  footer { margin-top: auto; color: var(--muted); font-size: 0.75rem; padding: 1rem; }
+</style>
+</head>
+<body>
+<h1>Signature pad</h1>
+<p class="note">Draw with mouse or finger. Download a transparent PNG or copy the data URL. Nothing leaves your device.</p>
+
+<div id="canvas-wrap">
+  <canvas id="sig" width="600" height="220"></canvas>
+</div>
+
+<div class="controls">
+  <label>Color <input type="color" id="color" value="#111111"></label>
+  <label>Width <input type="range" id="width" min="1" max="12" value="3"></label>
+  <button id="clear">Clear</button>
+  <button id="undo">Undo</button>
+  <button id="download">Download PNG</button>
+  <button id="copy">Copy data URL</button>
+</div>
+<div class="status" id="status">Ready · last signature restored if any</div>
+
+<footer>Local only · offline after load · no account · nothing sent</footer>
+
+<script>
+const canvas = document.getElementById('sig');
+const ctx = canvas.getContext('2d');
+const colorInput = document.getElementById('color');
+const widthInput = document.getElementById('width');
+const status = document.getElementById('status');
+const STORAGE_KEY = 'verse-f621-signature';
+
+let drawing = false;
+let paths = [];
+let currentPath = null;
+
+function resizeCanvas() {
+  const wrap = document.getElementById('canvas-wrap');
+  const maxW = Math.min(600, wrap.parentElement.clientWidth - 32);
+  const ratio = 220 / 600;
+  canvas.width = maxW;
+  canvas.height = Math.round(maxW * ratio);
+  redraw();
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+function load() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const data = JSON.parse(raw);
+      paths = data.paths || [];
+      if (data.color) colorInput.value = data.color;
+      if (data.width) widthInput.value = data.width;
+      redraw();
+      status.textContent = 'Restored last signature';
+    }
+  } catch (e) {}
+}
+
+function save() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      paths,
+      color: colorInput.value,
+      width: Number(widthInput.value)
+    }));
+  } catch (e) {}
+}
+
+function redraw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  for (const p of paths) {
+    if (p.points.length < 2) continue;
+    ctx.beginPath();
+    ctx.strokeStyle = p.color;
+    ctx.lineWidth = p.width * (canvas.width / 600);
+    ctx.moveTo(p.points[0].x * canvas.width, p.points[0].y * canvas.height);
+    for (let i = 1; i < p.points.length; i++) {
+      ctx.lineTo(p.points[i].x * canvas.width, p.points[i].y * canvas.height);
+    }
+    ctx.stroke();
+  }
+}
+
+function getPos(e) {
+  const rect = canvas.getBoundingClientRect();
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  return {
+    x: (clientX - rect.left) / rect.width,
+    y: (clientY - rect.top) / rect.height
+  };
+}
+
+function start(e) {
+  e.preventDefault();
+  drawing = true;
+  const pos = getPos(e);
+  currentPath = {
+    color: colorInput.value,
+    width: Number(widthInput.value),
+    points: [pos]
+  };
+  paths.push(currentPath);
+}
+
+function move(e) {
+  if (!drawing) return;
+  e.preventDefault();
+  const pos = getPos(e);
+  currentPath.points.push(pos);
+  redraw();
+}
+
+function end() {
+  if (!drawing) return;
+  drawing = false;
+  currentPath = null;
+  save();
+  status.textContent = 'Saved on this device';
+}
+
+canvas.addEventListener('mousedown', start);
+canvas.addEventListener('mousemove', move);
+canvas.addEventListener('mouseup', end);
+canvas.addEventListener('mouseleave', end);
+canvas.addEventListener('touchstart', start, { passive: false });
+canvas.addEventListener('touchmove', move, { passive: false });
+canvas.addEventListener('touchend', end);
+
+document.getElementById('clear').onclick = () => {
+  paths = [];
+  redraw();
+  save();
+  status.textContent = 'Cleared';
+};
+
+document.getElementById('undo').onclick = () => {
+  paths.pop();
+  redraw();
+  save();
+  status.textContent = 'Undone';
+};
+
+document.getElementById('download').onclick = () => {
+  const link = document.createElement('a');
+  link.download = 'signature.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+  status.textContent = 'PNG downloaded';
+};
+
+document.getElementById('copy').onclick = async () => {
+  const url = canvas.toDataURL('image/png');
+  try {
+    await navigator.clipboard.writeText(url);
+    status.textContent = 'Data URL copied';
+  } catch (e) {
+    status.textContent = 'Copy failed (permission?)';
+  }
+};
+
+colorInput.onchange = () => { if (currentPath) currentPath.color = colorInput.value; save(); };
+widthInput.oninput = () => { if (currentPath) currentPath.width = Number(widthInput.value); save(); };
+
+load();
+</script>
+</body>
+</html>
