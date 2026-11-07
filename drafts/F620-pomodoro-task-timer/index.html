@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pomodoro task timer</title>
+<style>
+:root { --bg:#0f1115; --card:#1a1d24; --accent:#4f8cff; --good:#3dd68c; --text:#e8eaed; --muted:#9aa0a6; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--text); line-height:1.4; }
+header { padding:1rem; text-align:center; border-bottom:1px solid #2a2e36; }
+h1 { margin:0; font-size:1.4rem; }
+.sub { color:var(--muted); font-size:0.85rem; }
+main { max-width:640px; margin:0 auto; padding:1rem; }
+.timer-box { background:var(--card); border-radius:16px; padding:1.5rem; text-align:center; margin-bottom:1rem; }
+#time { font-size:3.5rem; font-variant-numeric:tabular-nums; font-weight:600; margin:0.5rem 0; }
+.ring { width:180px; height:180px; margin:0 auto; position:relative; }
+.ring svg { transform:rotate(-90deg); }
+.ring circle { fill:none; stroke-width:10; }
+.bg { stroke:#2a2e36; }
+.fg { stroke:var(--accent); stroke-linecap:round; transition:stroke-dashoffset 0.3s; }
+.mode { font-size:0.9rem; color:var(--muted); margin-bottom:0.5rem; }
+.controls { display:flex; gap:0.5rem; justify-content:center; flex-wrap:wrap; margin-top:1rem; }
+button { background:#2a2e36; color:var(--text); border:none; border-radius:8px; padding:0.6rem 1rem; font-size:0.95rem; cursor:pointer; }
+button.primary { background:var(--accent); color:#fff; }
+button.good { background:var(--good); color:#000; }
+button:disabled { opacity:0.5; cursor:not-allowed; }
+.tasks { background:var(--card); border-radius:12px; padding:1rem; margin-bottom:1rem; }
+.task { display:flex; align-items:center; gap:0.5rem; padding:0.6rem; border-radius:8px; margin:0.3rem 0; background:#22262e; }
+.task.selected { outline:2px solid var(--accent); }
+.task .name { flex:1; }
+.task .count { color:var(--muted); font-size:0.85rem; min-width:4rem; text-align:right; }
+.add-row { display:flex; gap:0.5rem; margin-bottom:0.5rem; }
+input[type=text], input[type=number] { flex:1; background:#22262e; border:1px solid #3a3f48; color:var(--text); border-radius:8px; padding:0.6rem; font-size:1rem; }
+.tally { background:var(--card); border-radius:12px; padding:1rem; text-align:center; margin-bottom:1rem; }
+.tally strong { font-size:1.8rem; color:var(--good); }
+.export { display:flex; gap:0.5rem; flex-wrap:wrap; justify-content:center; }
+footer { text-align:center; color:var(--muted); font-size:0.75rem; padding:1rem; }
+.warn { color:#ffb74d; font-size:0.8rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Pomodoro task timer</h1>
+  <div class="sub">Work sessions tied to your tasks. Stays on this device.</div>
+</header>
+<main>
+  <div class="timer-box">
+    <div class="mode" id="mode">Work · 25 min</div>
+    <div class="ring">
+      <svg width="180" height="180" viewBox="0 0 180 180">
+        <circle class="bg" cx="90" cy="90" r="80"/>
+        <circle class="fg" id="ring" cx="90" cy="90" r="80" stroke-dasharray="502.65" stroke-dashoffset="0"/>
+      </svg>
+      <div id="time" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">25:00</div>
+    </div>
+    <div class="controls">
+      <button id="startBtn" class="primary">Start</button>
+      <button id="pauseBtn" disabled>Pause</button>
+      <button id="skipBtn">Skip</button>
+      <button id="breakBtn">Short break</button>
+      <button id="longBtn">Long break</button>
+    </div>
+    <div style="margin-top:0.5rem;font-size:0.8rem;color:var(--muted);">
+      Work <input type="number" id="workLen" value="25" min="1" max="90" style="width:3.5rem"> min ·
+      Short <input type="number" id="shortLen" value="5" min="1" max="30" style="width:3.5rem"> ·
+      Long <input type="number" id="longLen" value="15" min="1" max="60" style="width:3.5rem">
+    </div>
+  </div>
+
+  <div class="tally">
+    Today: <strong id="todayCount">0</strong> pomodoros
+    <div style="font-size:0.8rem;color:var(--muted);margin-top:0.3rem;" id="dateLabel"></div>
+  </div>
+
+  <div class="tasks">
+    <div class="add-row">
+      <input type="text" id="taskInput" placeholder="Add a task…" maxlength="80">
+      <button id="addBtn" class="primary">Add</button>
+    </div>
+    <div id="taskList"></div>
+    <div id="noTasks" style="color:var(--muted);text-align:center;padding:1rem;">No tasks yet. Add one to focus on.</div>
+  </div>
+
+  <div class="export">
+    <button id="copyBtn">Copy summary</button>
+    <button id="downloadBtn">Download .txt</button>
+    <button id="resetToday">Reset today</button>
+  </div>
+  <div id="status" class="warn" style="text-align:center;margin-top:0.5rem;"></div>
+</main>
+<footer>Local only · times use your device clock · no account · nothing sent</footer>
+
+<script>
+const STORAGE_KEY = 'verse-f620-pomo';
+const CIRC = 2 * Math.PI * 80;
+
+let state = {
+  tasks: [],
+  today: { date: new Date().toISOString().slice(0,10), count: 0 },
+  selected: null
+};
+let timer = {
+  running: false,
+  mode: 'work', // work | short | long
+  remaining: 25 * 60,
+  total: 25 * 60,
+  startTs: 0,
+  pausedRemaining: 0
+};
+let rafId = null;
+let audioCtx = null;
+
+function load() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      state.tasks = parsed.tasks || [];
+      const today = new Date().toISOString().slice(0,10);
+      if (parsed.today && parsed.today.date === today) {
+        state.today = parsed.today;
+      } else {
+        state.today = { date: today, count: 0 };
+      }
+    }
+  } catch (e) {
+    document.getElementById('status').textContent = 'Could not load saved data. Using fresh state.';
+  }
+  render();
+}
+
+function save() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ tasks: state.tasks, today: state.today }));
+  } catch (e) {
+    document.getElementById('status').textContent = 'Could not save (storage full?). Data is temporary.';
+  }
+}
+
+function render() {
+  const list = document.getElementById('taskList');
+  const no = document.getElementById('noTasks');
+  list.innerHTML = '';
+  if (state.tasks.length === 0) {
+    no.style.display = 'block';
+  } else {
+    no.style.display = 'none';
+    state.tasks.forEach((t, i) => {
+      const div = document.createElement('div');
+      div.className = 'task' + (state.selected === i ? ' selected' : '');
+      div.innerHTML = `<span class="name">${escapeHtml(t.name)}</span><span class="count">${t.count} 🍅</span><button data-i="${i}" class="selectBtn">Select</button><button data-i="${i}" class="delBtn">×</button>`;
+      list.appendChild(div);
+    });
+  }
+  document.getElementById('todayCount').textContent = state.today.count;
+  document.getElementById('dateLabel').textContent = state.today.date;
+  updateTimerDisplay();
+}
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(timer.remaining / 60);
+  const s = Math.floor(timer.remaining % 60);
+  document.getElementById('time').textContent = `${m}:${s.toString().padStart(2,'0')}`;
+  const progress = timer.total > 0 ? (timer.total - timer.remaining) / timer.total : 0;
+  document.getElementById('ring').style.strokeDashoffset = CIRC * (1 - progress);
+  const modeNames = { work: 'Work', short: 'Short break', long: 'Long break' };
+  const len = Math.round(timer.total / 60);
+  document.getElementById('mode').textContent = `${modeNames[timer.mode]} · ${len} min`;
+}
+
+function setMode(mode) {
+  if (timer.running) return;
+  timer.mode = mode;
+  const lens = { work: +document.getElementById('workLen').value || 25, short: +document.getElementById('shortLen').value || 5, long: +document.getElementById('longLen').value || 15 };
+  timer.total = Math.max(60, Math.min(90*60, lens[mode] * 60));
+  timer.remaining = timer.total;
+  updateTimerDisplay();
+}
+
+function startTimer() {
+  if (timer.mode === 'work' && state.selected === null && state.tasks.length > 0) {
+    alert('Select a task first (or start without one).');
+  }
+  timer.running = true;
+  timer.startTs = performance.now() - (timer.total - timer.remaining) * 1000;
+  document.getElementById('startBtn').disabled = true;
+  document.getElementById('pauseBtn').disabled = false;
+  tick();
+}
+
+function pauseTimer() {
+  timer.running = false;
+  cancelAnimationFrame(rafId);
+  document.getElementById('startBtn').disabled = false;
+  document.getElementById('pauseBtn').disabled = true;
+}
+
+function tick() {
+  if (!timer.running) return;
+  const elapsed = (performance.now() - timer.startTs) / 1000;
+  timer.remaining = Math.max(0, timer.total - elapsed);
+  updateTimerDisplay();
+  if (timer.remaining <= 0) {
+    completeSession();
+    return;
+  }
+  rafId = requestAnimationFrame(tick);
+}
+
+function completeSession() {
+  timer.running = false;
+  cancelAnimationFrame(rafId);
+  document.getElementById('startBtn').disabled = false;
+  document.getElementById('pauseBtn').disabled = true;
+  beep();
+  if (timer.mode === 'work') {
+    if (state.selected !== null && state.tasks[state.selected]) {
+      state.tasks[state.selected].count++;
+    }
+    state.today.count++;
+    save();
+    render();
+    document.getElementById('status').textContent = 'Work session complete! Take a break.';
+    setTimeout(() => setMode('short'), 500);
+  } else {
+    document.getElementById('status').textContent = 'Break over. Ready for work?';
+    setTimeout(() => setMode('work'), 500);
+  }
+}
+
+function beep() {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.connect(g); g.connect(audioCtx.destination);
+    o.frequency.value = 880;
+    g.gain.setValueAtTime(0.2, audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+    o.start(); o.stop(audioCtx.currentTime + 0.4);
+  } catch (e) {}
+}
+
+function summaryText() {
+  const lines = state.tasks.map(t => `${t.name}: ${t.count} pomodoros`);
+  lines.push('');
+  lines.push(`Today (${state.today.date}): ${state.today.count} pomodoros`);
+  return lines.join('\n');
+}
+
+document.getElementById('addBtn').onclick = () => {
+  const name = document.getElementById('taskInput').value.trim();
+  if (!name) return;
+  state.tasks.push({ name, count: 0 });
+  document.getElementById('taskInput').value = '';
+  save(); render();
+};
+document.getElementById('taskInput').onkeydown = e => { if (e.key === 'Enter') document.getElementById('addBtn').click(); };
+
+document.getElementById('taskList').onclick = e => {
+  const i = e.target.dataset.i;
+  if (i === undefined) return;
+  if (e.target.classList.contains('selectBtn')) {
+    state.selected = +i;
+    render();
+  } else if (e.target.classList.contains('delBtn')) {
+    if (confirm('Delete this task?')) {
+      state.tasks.splice(+i, 1);
+      if (state.selected === +i) state.selected = null;
+      else if (state.selected > +i) state.selected--;
+      save(); render();
+    }
+  }
+};
+
+document.getElementById('startBtn').onclick = startTimer;
+document.getElementById('pauseBtn').onclick = pauseTimer;
+document.getElementById('skipBtn').onclick = () => { if (timer.running) { timer.remaining = 0; completeSession(); } };
+document.getElementById('breakBtn').onclick = () => setMode('short');
+document.getElementById('longBtn').onclick = () => setMode('long');
+document.getElementById('workLen').onchange = () => { if (!timer.running && timer.mode === 'work') setMode('work'); };
+document.getElementById('shortLen').onchange = () => { if (!timer.running && timer.mode === 'short') setMode('short'); };
+document.getElementById('longLen').onchange = () => { if (!timer.running && timer.mode === 'long') setMode('long'); };
+
+document.getElementById('copyBtn').onclick = async () => {
+  try {
+    await navigator.clipboard.writeText(summaryText());
+    document.getElementById('status').textContent = 'Summary copied.';
+  } catch (e) {
+    document.getElementById('status').textContent = 'Copy failed. Select and copy manually.';
+  }
+};
+
+document.getElementById('downloadBtn').onclick = () => {
+  const blob = new Blob([summaryText()], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `pomodoro-${state.today.date}.txt`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+};
+
+document.getElementById('resetToday').onclick = () => {
+  if (confirm('Reset today\'s tally to 0?')) {
+    state.today.count = 0;
+    save(); render();
+  }
+};
+
+// Init
+setMode('work');
+load();
+</script>
+</body>
+</html>
