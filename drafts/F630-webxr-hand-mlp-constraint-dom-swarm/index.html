@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F630 WebXR Hand-Tracked Constraint DOM Swarm</title>
+<style>
+body { margin:0; background:#0a0a12; color:#eee; font-family:system-ui; overflow:hidden; }
+#chrome { position:fixed; top:8px; left:8px; z-index:10; background:rgba(0,0,0,.6); padding:8px; border-radius:6px; font-size:13px; }
+#status { position:fixed; bottom:8px; left:8px; z-index:10; background:rgba(0,0,0,.6); padding:6px; border-radius:4px; }
+.card { position:absolute; width:70px; height:70px; border-radius:12px; background:#224; border:2px solid #4af; display:flex; align-items:center; justify-content:center; font-size:11px; cursor:pointer; user-select:none; transition:background .2s; }
+.card.fit { border-color:#fa4; }
+button { margin:2px; }
+</style>
+</head>
+<body>
+<div id="chrome">
+  F630 Hand Constraint Swarm — move pointer / XR hand | S seal | R reward
+  <button id="seal">Seal Genome</button>
+  <button id="xr">Enter XR (if avail)</button>
+</div>
+<div id="status">init</div>
+<script>
+const N = 8;
+const cards = [];
+const constraints = [];
+let mlp = { w1: Array(6*8).fill(0).map(()=>Math.random()*0.2-0.1), b1: Array(8).fill(0), w2: Array(8*4).fill(0).map(()=>Math.random()*0.2-0.1), b2: Array(4).fill(0) };
+let bestFit = 0;
+const bc = new BroadcastChannel('f630-genome');
+const status = document.getElementById('status');
+function setStatus(s){ status.textContent = s; }
+
+function rand(a,b){ return a + Math.random()*(b-a); }
+function sigmoid(x){ return 1/(1+Math.exp(-x)); }
+
+function initCards(){
+  for(let i=0;i<N;i++){
+    const el = document.createElement('div');
+    el.className = 'card';
+    el.textContent = 'A'+i;
+    el.style.left = rand(50, window.innerWidth-100)+'px';
+    el.style.top = rand(50, window.innerHeight-100)+'px';
+    document.body.appendChild(el);
+    const c = { el, x: parseFloat(el.style.left), y: parseFloat(el.style.top), vx:0, vy:0, fit:0, hue:200 };
+    cards.push(c);
+    el.onclick = ()=>{ c.fit += 0.5; setStatus('reward +0.5 on '+i); };
+  }
+  // fixed constraints: ring + diagonals
+  for(let i=0;i<N;i++){
+    constraints.push({ a:i, b:(i+1)%N, rest:120 });
+    if(i%2===0) constraints.push({ a:i, b:(i+3)%N, rest:180 });
+  }
+}
+initCards();
+
+function mlpForward(inp){
+  const h = [];
+  for(let i=0;i<8;i++){
+    let s = mlp.b1[i];
+    for(let j=0;j<6;j++) s += inp[j]*mlp.w1[j*8+i];
+    h.push(sigmoid(s));
+  }
+  const o = [];
+  for(let i=0;i<4;i++){
+    let s = mlp.b2[i];
+    for(let j=0;j<8;j++) s += h[j]*mlp.w2[j*4+i];
+    o.push(sigmoid(s));
+  }
+  return o;
+}
+
+let pointer = {x:window.innerWidth/2, y:window.innerHeight/2, vx:0, vy:0};
+window.onpointermove = e=>{
+  const dx = e.clientX - pointer.x, dy = e.clientY - pointer.y;
+  pointer.vx = dx*0.1; pointer.vy = dy*0.1;
+  pointer.x = e.clientX; pointer.y = e.clientY;
+};
+
+// WebXR hand fallback stub (pointer primary for prototype)
+let xrSession = null;
+document.getElementById('xr').onclick = async ()=>{
+  if(!navigator.xr){ setStatus('no WebXR'); return; }
+  try{
+    xrSession = await navigator.xr.requestSession('immersive-vr', {optionalFeatures:['hand-tracking']});
+    setStatus('XR session started (hand tracking optional)');
+  }catch(e){ setStatus('XR failed: '+e.message); }
+};
+
+function step(){
+  // input: pointer velocity + 4 dummy joint proxies
+  const inp = [pointer.vx/20, pointer.vy/20, Math.sin(Date.now()/500)*0.3, Math.cos(Date.now()/700)*0.3, pointer.x/window.innerWidth-0.5, pointer.y/window.innerHeight-0.5];
+  const out = mlpForward(inp);
+  // modulate rests
+  constraints.forEach((c,i)=>{
+    c.rest = 80 + out[i%4]*160;
+  });
+  // forces
+  const forces = cards.map(()=>({fx:0,fy:0}));
+  constraints.forEach(con=>{
+    const A = cards[con.a], B = cards[con.b];
+    const dx = B.x - A.x, dy = B.y - A.y;
+    const dist = Math.hypot(dx,dy)||1;
+    const stretch = dist - con.rest;
+    const f = stretch * 0.05;
+    const ux = dx/dist, uy = dy/dist;
+    forces[con.a].fx += ux*f; forces[con.a].fy += uy*f;
+    forces[con.b].fx -= ux*f; forces[con.b].fy -= uy*f;
+  });
+  // attract to pointer slightly
+  cards.forEach((c,i)=>{
+    const dx = pointer.x - c.x, dy = pointer.y - c.y;
+    const d = Math.hypot(dx,dy)||1;
+    forces[i].fx += (dx/d)*0.8;
+    forces[i].fy += (dy/d)*0.8;
+    // integrate
+    c.vx = (c.vx + forces[i].fx)*0.92;
+    c.vy = (c.vy + forces[i].fy)*0.92;
+    c.x += c.vx; c.y += c.vy;
+    // bounds
+    c.x = Math.max(20, Math.min(window.innerWidth-80, c.x));
+    c.y = Math.max(20, Math.min(window.innerHeight-80, c.y));
+    c.el.style.left = c.x+'px';
+    c.el.style.top = c.y+'px';
+    // fitness
+    const distP = Math.hypot(pointer.x-c.x, pointer.y-c.y);
+    c.fit = Math.max(0, c.fit*0.99 + (distP<100?0.1:0));
+    if(c.fit > bestFit) bestFit = c.fit;
+    c.el.classList.toggle('fit', c.fit>1.5);
+    c.el.style.background = `hsl(${c.hue},60%,30%)`;
+  });
+  // genome transfer on high fit
+  cards.forEach(c=>{
+    if(c.fit > 2.5 && Math.random()<0.02){
+      const frag = mlp.w1.slice(0,4).map(w=>w.toFixed(3)).join(',');
+      bc.postMessage({type:'genome', frag, fit:c.fit});
+      c.hue = (c.hue + 30)%360;
+      setStatus('sealed transfer fit='+c.fit.toFixed(2));
+      c.fit *= 0.5;
+    }
+  });
+  requestAnimationFrame(step);
+}
+requestAnimationFrame(step);
+
+bc.onmessage = e=>{
+  if(e.data.type==='genome' && e.data.fit > bestFit*0.8){
+    // simple adopt: mutate a bit
+    for(let i=0;i<mlp.w1.length;i++) mlp.w1[i] += (Math.random()-0.5)*0.02;
+    setStatus('adopted peer genome');
+  }
+};
+
+document.getElementById('seal').onclick = ()=>{
+  const dbReq = indexedDB.open('verse-f630',1);
+  dbReq.onupgradeneeded = e=>{ e.target.result.createObjectStore('genomes'); };
+  dbReq.onsuccess = e=>{
+    const tx = e.target.result.transaction('genomes','readwrite');
+    tx.objectStore('genomes').put({mlp, bestFit, ts:Date.now()}, 'best');
+    setStatus('sealed to IndexedDB');
+  };
+};
+
+// load
+const dbReq = indexedDB.open('verse-f630',1);
+dbReq.onsuccess = e=>{
+  const tx = e.target.result.transaction('genomes');
+  const req = tx.objectStore('genomes').get('best');
+  req.onsuccess = ()=>{
+    if(req.result){ mlp = req.result.mlp; bestFit = req.result.bestFit||0; setStatus('restored genome'); }
+  };
+};
+
+document.addEventListener('keydown', e=>{
+  if(e.key==='s'||e.key==='S') document.getElementById('seal').click();
+});
+</script>
+</body>
+</html>
