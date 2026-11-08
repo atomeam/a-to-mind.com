@@ -2,38 +2,38 @@
 
 Plain name: Flooring and tile estimator
 
-Job: Enter one or more room sizes, the size of the tile or plank, a waste percentage and how many tiles come in a box; get the total area, tiles to buy after waste, boxes needed, a per-room breakdown, then copy the shopping list or download it as CSV.
+Job: Enter one or more room sizes, tile size and waste percent; see how many tiles and boxes to buy, a live scaled drawing of the tiled floor (full tiles and cuts), then copy the shopping list or download it as CSV or .txt.
 
-Input: Room list (name, length, width, units), tile dimensions and units, waste percent, tiles per box.
+Input: Room length/width (feet or metres), tile length/width (inches or cm), tiles per box, waste percent, optional room name; add more rooms.
 
-Keeps: Copy the full list as text; download CSV; last session saved in localStorage; share link that restores the numbers.
+Keeps: Copy the full shopping list; download CSV or .txt; last rooms and settings saved in localStorage (`verse-f626-floor`); share link carries the numbers via URL hash.
 
-Not on Verse yet: checked against llms.txt and GAPS.md — stage cards can answer a single-room tile count, but there is no dedicated offline multi-room flooring estimator with waste, box rounding, per-room breakdown, CSV export and device save.
+Not on Verse yet: checked against llms.txt and GAPS.md — floating pages answer simple “how many tiles for a 10x12” asks, but no offline multi-room estimator with spatial layout preview, waste, boxes, and export exists.
 
 ## Architecture
 
-Single self-contained HTML file. Pure vanilla JS:
+Single self-contained HTML file. Pure vanilla JS + Canvas2D:
 
-- Live recalculation on every change.
-- Units: feet/metres for rooms, inches/centimetres for tiles; all converted internally to metres then to square metres, then tiles.
-- Waste applied to total tile count; boxes rounded up.
-- localStorage persistence of the whole project.
-- URL hash for sharing the current numbers.
-- Mobile-friendly stacked form; works offline after load; no external assets or network.
+- Live calculation of area, tiles needed (ceil after waste), boxes.
+- Canvas draws a scaled top-down room with a grid of tiles; full tiles solid, cut tiles outlined or hatched; room outline and dimensions labelled.
+- Multiple rooms as cards; each has its own canvas preview that updates as numbers change.
+- Unit toggle (imperial/metric) converts consistently.
+- URL hash + localStorage persistence.
+- Mobile-friendly; works offline after load; no external assets or network.
 
 ## Expected outcome
 
-A person measuring a hallway and two bedrooms pastes the dimensions, picks 12×24 inch tiles at 10 % waste and 8 per box, and immediately sees “buy 14 boxes”. They copy the list into a note or download the CSV for the supplier. They come back because the last project is still there when they open the page again.
+A person planning a floor (kitchen + hallway, bathroom, etc.) enters the sizes once, sees the exact shopping list and a visual that shows how the tiles will sit (including the cuts), copies or downloads it for the store or contractor, and comes back because the layout and saved rooms make the estimate concrete instead of abstract math.
 
 ## Failure modes
 
-- Zero or negative dimensions are ignored and flagged.
-- Extremely large numbers are capped to avoid nonsense.
-- Unit conversion is exact for the stated units; no custom unit.
-- No price calculation (prices change); no installation advice.
+- Zero or negative dimensions show a clear note and zero tiles.
+- Very large rooms scale the canvas down so the whole floor is visible; tiny tiles still draw as a grid within limits.
+- No photo upload or complex shapes (L-rooms approximated as rectangle); note says rectangle only.
+- Storage blocked: works in memory, notes that saving may not persist.
 
 ## Frontier Engine F-626
 
-Architecture: Multi-room geometric estimator with unit conversion, waste multiplier, ceiling to whole boxes, sealed local persistence and shareable hash.  
-Expected outcome: a reusable home-improvement shopping list generator that a person keeps open while measuring rooms.  
-Mechanics: live area summation, tile count with waste, box rounding, text/CSV export, localStorage + hash seal.
+Architecture: Multi-room form + live Canvas2D spatial tile-layout preview (full vs cut tiles) + unit-aware quantity engine + sealed localStorage/URL persistence.  
+Expected outcome: interactive spatial estimator whose floor drawing updates with every dimension change and whose shopping list is ready to copy or download.  
+Mechanics: live area/tile/box calculation, scaled canvas grid rendering with cut highlighting, multi-room cards, export and share.
