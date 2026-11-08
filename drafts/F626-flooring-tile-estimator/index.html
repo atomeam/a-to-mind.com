@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flooring and tile estimator</title>
+<style>
+:root { --bg:#0f1115; --fg:#e8e8e8; --card:#1a1d24; --accent:#4a9eff; --border:#2a2e36; --ok:#3dd68c; --warn:#f0b429; }
+@media (prefers-color-scheme: light) {
+  :root { --bg:#f6f7f9; --fg:#1a1d24; --card:#fff; --accent:#0066cc; --border:#ddd; }
+}
+* { box-sizing: border-box; }
+body { margin:0; font:16px/1.45 system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--fg); }
+header, main, footer { max-width: 820px; margin:0 auto; padding:1rem; }
+h1 { font-size:1.6rem; margin:0 0 .25rem; }
+.sub { opacity:.75; margin-bottom:1rem; }
+.card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1rem; margin-bottom:1rem; }
+label { display:block; font-size:.85rem; margin:.4rem 0 .15rem; opacity:.9; }
+input, select, button { font:inherit; padding:.5rem .65rem; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--fg); }
+input[type=number] { width:100%; }
+.row { display:grid; grid-template-columns:1fr 1fr 1fr auto; gap:.5rem; align-items:end; margin-bottom:.5rem; }
+.row.tile { grid-template-columns:1fr 1fr 1fr; }
+@media (max-width:600px) { .row, .row.tile { grid-template-columns:1fr 1fr; } }
+button { cursor:pointer; background:var(--accent); color:#fff; border:none; }
+button.secondary { background:transparent; border:1px solid var(--border); color:var(--fg); }
+button.danger { background:#c44; }
+.room-item { display:flex; gap:.5rem; align-items:center; margin-bottom:.5rem; flex-wrap:wrap; }
+.room-item input { flex:1; min-width:80px; }
+.result { font-size:1.1rem; }
+.result strong { color:var(--ok); }
+.breakdown { font-size:.9rem; opacity:.9; }
+.actions { display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.75rem; }
+footer { font-size:.8rem; opacity:.65; }
+.note { font-size:.85rem; opacity:.75; margin-top:.5rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Flooring and tile estimator</h1>
+  <p class="sub">Measure rooms, set tile size and waste, get boxes to buy. Everything stays on this device.</p>
+</header>
+<main>
+  <div class="card">
+    <h2>Rooms</h2>
+    <div id="rooms"></div>
+    <button type="button" id="addRoom" class="secondary">+ Add room</button>
+  </div>
+
+  <div class="card">
+    <h2>Tile / plank</h2>
+    <div class="row tile">
+      <div>
+        <label>Width</label>
+        <input type="number" id="tileW" min="1" step="0.1" value="12">
+      </div>
+      <div>
+        <label>Length</label>
+        <input type="number" id="tileL" min="1" step="0.1" value="24">
+      </div>
+      <div>
+        <label>Unit</label>
+        <select id="tileUnit">
+          <option value="in">inches</option>
+          <option value="cm">centimetres</option>
+        </select>
+      </div>
+    </div>
+    <div class="row tile">
+      <div>
+        <label>Waste %</label>
+        <input type="number" id="waste" min="0" max="50" step="1" value="10">
+      </div>
+      <div>
+        <label>Tiles per box</label>
+        <input type="number" id="perBox" min="1" step="1" value="8">
+      </div>
+      <div>
+        <label>Room units</label>
+        <select id="roomUnit">
+          <option value="ft">feet</option>
+          <option value="m">metres</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Result</h2>
+    <div id="result" class="result">Add rooms to calculate.</div>
+    <div id="breakdown" class="breakdown"></div>
+    <div class="actions">
+      <button type="button" id="copyBtn">Copy list</button>
+      <button type="button" id="csvBtn" class="secondary">Download CSV</button>
+      <button type="button" id="shareBtn" class="secondary">Copy share link</button>
+    </div>
+    <p class="note">Approximate only. Always measure carefully, account for cuts and patterns, and confirm with the supplier. Not installation or structural advice.</p>
+  </div>
+</main>
+<footer>
+  Works offline after load. Last project is remembered on this device. No data leaves the browser.
+</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+const roomsEl = $('rooms');
+let rooms = [];
+
+function uid() { return Math.random().toString(36).slice(2, 9); }
+
+function addRoom(data = {}) {
+  const r = { id: uid(), name: data.name || 'Room ' + (rooms.length + 1), length: data.length || 10, width: data.width || 12 };
+  rooms.push(r);
+  renderRooms();
+  calc();
+}
+
+function renderRooms() {
+  roomsEl.innerHTML = '';
+  rooms.forEach(r => {
+    const div = document.createElement('div');
+    div.className = 'room-item';
+    div.innerHTML = `
+      <input type="text" value="${r.name}" data-id="${r.id}" data-field="name" placeholder="Name">
+      <input type="number" value="${r.length}" data-id="${r.id}" data-field="length" min="0.1" step="0.1" placeholder="Length">
+      <input type="number" value="${r.width}" data-id="${r.id}" data-field="width" min="0.1" step="0.1" placeholder="Width">
+      <button type="button" class="danger" data-del="${r.id}">✕</button>
+    `;
+    roomsEl.appendChild(div);
+  });
+}
+
+roomsEl.addEventListener('input', e => {
+  const el = e.target;
+  if (!el.dataset.id) return;
+  const r = rooms.find(x => x.id === el.dataset.id);
+  if (!r) return;
+  if (el.dataset.field === 'name') r.name = el.value;
+  else r[el.dataset.field] = parseFloat(el.value) || 0;
+  calc();
+});
+roomsEl.addEventListener('click', e => {
+  if (e.target.dataset.del) {
+    rooms = rooms.filter(r => r.id !== e.target.dataset.del);
+    renderRooms();
+    calc();
+  }
+});
+$('addRoom').onclick = () => addRoom();
+
+['tileW','tileL','waste','perBox','tileUnit','roomUnit'].forEach(id => {
+  $(id).addEventListener('input', calc);
+  $(id).addEventListener('change', calc);
+});
+
+function toMetres(val, unit) {
+  if (unit === 'ft') return val * 0.3048;
+  if (unit === 'in') return val * 0.0254;
+  if (unit === 'cm') return val * 0.01;
+  return val; // already m
+}
+
+function calc() {
+  const roomUnit = $('roomUnit').value;
+  const tileW = parseFloat($('tileW').value) || 0;
+  const tileL = parseFloat($('tileL').value) || 0;
+  const tileUnit = $('tileUnit').value;
+  const waste = Math.max(0, Math.min(50, parseFloat($('waste').value) || 0));
+  const perBox = Math.max(1, parseInt($('perBox').value) || 1);
+
+  const tileWm = toMetres(tileW, tileUnit);
+  const tileLm = toMetres(tileL, tileUnit);
+  const tileArea = tileWm * tileLm;
+  if (tileArea <= 0) {
+    $('result').textContent = 'Set a valid tile size.';
+    return;
+  }
+
+  let totalArea = 0;
+  const lines = [];
+  rooms.forEach(r => {
+    const lm = toMetres(r.length, roomUnit);
+    const wm = toMetres(r.width, roomUnit);
+    const area = lm * wm;
+    if (area > 0) {
+      totalArea += area;
+      lines.push({ name: r.name, area, length: r.length, width: r.width });
+    }
+  });
+
+  if (totalArea <= 0) {
+    $('result').textContent = 'Add rooms with positive dimensions.';
+    $('breakdown').innerHTML = '';
+    return;
+  }
+
+  const rawTiles = totalArea / tileArea;
+  const withWaste = rawTiles * (1 + waste / 100);
+  const tilesNeeded = Math.ceil(withWaste);
+  const boxes = Math.ceil(tilesNeeded / perBox);
+
+  const areaUnit = roomUnit === 'ft' ? 'ft²' : 'm²';
+  const displayArea = roomUnit === 'ft' ? (totalArea / 0.092903).toFixed(1) : totalArea.toFixed(2);
+
+  $('result').innerHTML = `<strong>${boxes} box${boxes!==1?'es':''}</strong> · ${tilesNeeded} tiles · ${displayArea} ${areaUnit} total (after ${waste}% waste)`;
+
+  let bd = lines.map(l => `${l.name}: ${l.length} × ${l.width} ${roomUnit}`).join('<br>');
+  bd += `<br>Tile area: ${(tileArea*10000).toFixed(1)} cm² · raw tiles: ${rawTiles.toFixed(1)}`;
+  $('breakdown').innerHTML = bd;
+
+  save();
+}
+
+function getSummary() {
+  calc();
+  const roomUnit = $('roomUnit').value;
+  const tileW = $('tileW').value;
+  const tileL = $('tileL').value;
+  const tileUnit = $('tileUnit').value;
+  const waste = $('waste').value;
+  const perBox = $('perBox').value;
+  const res = $('result').textContent;
+  let text = `Flooring estimate\n${res}\nTile: ${tileW} × ${tileL} ${tileUnit}, ${waste}% waste, ${perBox}/box\nRooms (${roomUnit}):\n`;
+  rooms.forEach(r => text += `  ${r.name}: ${r.length} × ${r.width}\n`);
+  text += '\nApproximate. Measure carefully and confirm with supplier.';
+  return text;
+}
+
+$('copyBtn').onclick = () => {
+  navigator.clipboard.writeText(getSummary()).then(() => alert('Copied'));
+};
+$('csvBtn').onclick = () => {
+  let csv = 'Name,Length,Width,Unit\n';
+  const u = $('roomUnit').value;
+  rooms.forEach(r => csv += `"${r.name}",${r.length},${r.width},${u}\n`);
+  csv += `\nTile width,${$('tileW').value}\nTile length,${$('tileL').value}\nTile unit,${$('tileUnit').value}\nWaste %,${$('waste').value}\nTiles per box,${$('perBox').value}\n`;
+  const blob = new Blob([csv], {type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'flooring-estimate.csv';
+  a.click();
+};
+$('shareBtn').onclick = () => {
+  const data = {
+    rooms: rooms.map(({name,length,width}) => ({name,length,width})),
+    tileW: $('tileW').value, tileL: $('tileL').value, tileUnit: $('tileUnit').value,
+    waste: $('waste').value, perBox: $('perBox').value, roomUnit: $('roomUnit').value
+  };
+  const hash = '#' + encodeURIComponent(JSON.stringify(data));
+  const url = location.origin + location.pathname + hash;
+  navigator.clipboard.writeText(url).then(() => alert('Share link copied'));
+};
+
+function save() {
+  const data = {
+    rooms: rooms.map(({name,length,width}) => ({name,length,width})),
+    tileW: $('tileW').value, tileL: $('tileL').value, tileUnit: $('tileUnit').value,
+    waste: $('waste').value, perBox: $('perBox').value, roomUnit: $('roomUnit').value
+  };
+  localStorage.setItem('f626-flooring', JSON.stringify(data));
+}
+
+function load() {
+  let data = null;
+  if (location.hash.length > 1) {
+    try { data = JSON.parse(decodeURIComponent(location.hash.slice(1))); } catch(e) {}
+  }
+  if (!data) {
+    try { data = JSON.parse(localStorage.getItem('f626-flooring')); } catch(e) {}
+  }
+  if (data) {
+    rooms = (data.rooms || []).map(r => ({...r, id: uid()}));
+    if (data.tileW) $('tileW').value = data.tileW;
+    if (data.tileL) $('tileL').value = data.tileL;
+    if (data.tileUnit) $('tileUnit').value = data.tileUnit;
+    if (data.waste != null) $('waste').value = data.waste;
+    if (data.perBox) $('perBox').value = data.perBox;
+    if (data.roomUnit) $('roomUnit').value = data.roomUnit;
+  }
+  if (rooms.length === 0) addRoom({name:'Living room', length:12, width:15});
+  else { renderRooms(); calc(); }
+}
+load();
+</script>
+</body>
+</html>
