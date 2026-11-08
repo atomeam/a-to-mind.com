@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Time card — Verse</title>
+<style>
+  :root { --bg:#0f1115; --fg:#e8e8e8; --acc:#4ade80; --ot:#fbbf24; --track:#1f2937; --bar:#3b82f6; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--fg); padding:1rem; line-height:1.4; }
+  h1 { font-size:1.4rem; margin:0 0 0.5rem; }
+  .row { display:grid; grid-template-columns: 4.5rem 1fr 1fr 4rem 1fr; gap:0.4rem; align-items:center; margin-bottom:0.6rem; font-size:0.9rem; }
+  .row label, .row span { font-variant-numeric: tabular-nums; }
+  input[type="time"], input[type="number"], input[type="date"], select { background:#1a1d24; color:var(--fg); border:1px solid #333; border-radius:6px; padding:0.4rem; width:100%; }
+  .timeline { height:14px; background:var(--track); border-radius:7px; position:relative; overflow:hidden; }
+  .bar { position:absolute; top:0; height:100%; background:var(--bar); border-radius:7px; opacity:0.85; }
+  .bar.ot { background:var(--ot); }
+  .controls { display:flex; flex-wrap:wrap; gap:0.6rem; margin:1rem 0; align-items:end; }
+  .controls label { font-size:0.8rem; display:block; margin-bottom:0.2rem; }
+  button, .btn { background:var(--acc); color:#000; border:0; border-radius:6px; padding:0.5rem 0.8rem; font-weight:600; cursor:pointer; }
+  button.secondary { background:#374151; color:var(--fg); }
+  #totals { margin:1rem 0; padding:0.8rem; background:#1a1d24; border-radius:8px; }
+  #summary { white-space:pre-wrap; font-family:ui-monospace,monospace; font-size:0.85rem; }
+  .note { font-size:0.75rem; color:#9ca3af; margin-top:0.5rem; }
+  @media (max-width:600px) { .row { grid-template-columns: 3.2rem 1fr 1fr; } .row .brk, .row .hrs { grid-column:span 1; } }
+</style>
+</head>
+<body>
+<h1>Time card</h1>
+<p>Clock in and out for the week. Breaks come off. Overtime after your limit. Totals and a CSV stay on this device.</p>
+
+<div class="controls">
+  <div>
+    <label>Week of</label>
+    <input type="date" id="weekStart">
+  </div>
+  <div>
+    <label>OT after</label>
+    <select id="otMode">
+      <option value="daily">8 h / day</option>
+      <option value="weekly">40 h / week</option>
+    </select>
+  </div>
+  <div>
+    <label>Daily threshold (h)</label>
+    <input type="number" id="dailyTh" value="8" min="0" step="0.5" style="width:5rem">
+  </div>
+  <div>
+    <label>Rate $/h (optional)</label>
+    <input type="number" id="rate" value="" min="0" step="0.01" placeholder="0" style="width:5rem">
+  </div>
+</div>
+
+<div id="days"></div>
+
+<div id="totals">
+  <strong>Week totals</strong>
+  <div id="summary">—</div>
+</div>
+
+<div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+  <button id="copyBtn">Copy summary</button>
+  <button id="csvBtn" class="secondary">Download CSV</button>
+  <button id="clearBtn" class="secondary">Clear week</button>
+</div>
+<p class="note">Times are local. Overnight shifts (end before start) are counted as next day. Pay is an estimate only — not a payroll system. Numbers never leave this device.</p>
+
+<script>
+const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const KEY = 'verse-f630-timecard';
+const daysEl = document.getElementById('days');
+const weekStartEl = document.getElementById('weekStart');
+const otModeEl = document.getElementById('otMode');
+const dailyThEl = document.getElementById('dailyTh');
+const rateEl = document.getElementById('rate');
+const summaryEl = document.getElementById('summary');
+
+function todayISO() {
+  const d = new Date();
+  const day = d.getDay();
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+  const mon = new Date(d.setDate(diff));
+  return mon.toISOString().slice(0,10);
+}
+
+function minsFromTime(t) {
+  if (!t) return null;
+  const [h,m] = t.split(':').map(Number);
+  return h*60 + m;
+}
+
+function formatH(mins) {
+  if (mins == null || isNaN(mins)) return '—';
+  const h = mins / 60;
+  return h.toFixed(2) + 'h';
+}
+
+function renderDays(data = {}) {
+  daysEl.innerHTML = '';
+  DAYS.forEach((name, i) => {
+    const d = data.days?.[i] || {};
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.innerHTML = `
+      <span>${name}</span>
+      <input type="time" class="start" data-i="${i}" value="${d.start||''}">
+      <input type="time" class="end" data-i="${i}" value="${d.end||''}">
+      <input type="number" class="brk" data-i="${i}" value="${d.break||0}" min="0" step="1" placeholder="brk min" title="Break minutes">
+      <div class="timeline" data-i="${i}"><div class="bar"></div></div>
+    `;
+    daysEl.appendChild(row);
+  });
+  daysEl.querySelectorAll('input').forEach(inp => inp.addEventListener('input', recalc));
+}
+
+function collect() {
+  const days = [];
+  DAYS.forEach((_, i) => {
+    const start = daysEl.querySelector(`.start[data-i="${i}"]`)?.value || '';
+    const end = daysEl.querySelector(`.end[data-i="${i}"]`)?.value || '';
+    const brk = Number(daysEl.querySelector(`.brk[data-i="${i}"]`)?.value) || 0;
+    days.push({ start, end, break: brk });
+  });
+  return {
+    weekStart: weekStartEl.value,
+    otMode: otModeEl.value,
+    dailyTh: Number(dailyThEl.value) || 8,
+    rate: Number(rateEl.value) || 0,
+    days
+  };
+}
+
+function calcDay(d) {
+  const s = minsFromTime(d.start);
+  let e = minsFromTime(d.end);
+  if (s == null || e == null) return { worked: 0, regular: 0, ot: 0 };
+  if (e < s) e += 24*60;
+  let worked = Math.max(0, e - s - (d.break||0));
+  return { worked, raw: e - s };
+}
+
+function recalc() {
+  const data = collect();
+  let totalWorked = 0;
+  const dayResults = data.days.map(d => {
+    const c = calcDay(d);
+    totalWorked += c.worked;
+    return c;
+  });
+
+  const dailyThMins = data.dailyTh * 60;
+  let regular = 0, ot = 0;
+  if (data.otMode === 'daily') {
+    dayResults.forEach(c => {
+      regular += Math.min(c.worked, dailyThMins);
+      ot += Math.max(0, c.worked - dailyThMins);
+    });
+  } else {
+    const weekTh = 40 * 60;
+    regular = Math.min(totalWorked, weekTh);
+    ot = Math.max(0, totalWorked - weekTh);
+  }
+
+  data.days.forEach((d, i) => {
+    const bar = daysEl.querySelector(`.timeline[data-i="${i}"] .bar`);
+    const s = minsFromTime(d.start);
+    let e = minsFromTime(d.end);
+    if (s == null || e == null) { bar.style.width = '0'; return; }
+    if (e < s) e += 24*60;
+    const left = (s / (24*60)) * 100;
+    const width = ((e - s) / (24*60)) * 100;
+    bar.style.left = left + '%';
+    bar.style.width = Math.min(100 - left, width) + '%';
+    bar.classList.toggle('ot', data.otMode === 'daily' && (e - s - (d.break||0)) > dailyThMins);
+  });
+
+  const pay = data.rate ? ((regular/60)*data.rate + (ot/60)*data.rate*1.5) : 0;
+  const weekLabel = data.weekStart || 'this week';
+  const line = `Week of ${weekLabel}: ${(totalWorked/60).toFixed(2)}h total (${(regular/60).toFixed(2)} regular + ${(ot/60).toFixed(2)} OT)` +
+    (data.rate ? ` · est. $${pay.toFixed(2)}` : '');
+  summaryEl.textContent = line + (data.rate ? '\n(OT at 1.5× is an estimate only)' : '');
+
+  localStorage.setItem(KEY, JSON.stringify(data));
+  const hash = btoa(JSON.stringify(data)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  history.replaceState(null, '', '#' + hash);
+}
+
+function load() {
+  let data = {};
+  try {
+    const stored = localStorage.getItem(KEY);
+    if (stored) data = JSON.parse(stored);
+  } catch(e) {}
+  if (location.hash.length > 1) {
+    try {
+      const b64 = location.hash.slice(1).replace(/-/g,'+').replace(/_/g,'/');
+      const pad = b64.length % 4 ? '='.repeat(4 - b64.length % 4) : '';
+      data = JSON.parse(atob(b64 + pad));
+    } catch(e) {}
+  }
+  if (!data.weekStart) data.weekStart = todayISO();
+  weekStartEl.value = data.weekStart || todayISO();
+  otModeEl.value = data.otMode || 'daily';
+  dailyThEl.value = data.dailyTh || 8;
+  rateEl.value = data.rate || '';
+  renderDays(data);
+  recalc();
+}
+
+document.getElementById('copyBtn').onclick = () => {
+  const t = summaryEl.textContent.split('\n')[0];
+  navigator.clipboard?.writeText(t).then(() => alert('Copied')).catch(() => prompt('Copy:', t));
+};
+
+document.getElementById('csvBtn').onclick = () => {
+  const data = collect();
+  let csv = 'Day,Start,End,Break min,Hours,Regular h,OT h\n';
+  data.days.forEach((d, i) => {
+    const c = calcDay(d);
+    const dailyThMins = data.dailyTh * 60;
+    let reg = c.worked, ot = 0;
+    if (data.otMode === 'daily') {
+      reg = Math.min(c.worked, dailyThMins);
+      ot = Math.max(0, c.worked - dailyThMins);
+    }
+    csv += `${DAYS[i]},${d.start||''},${d.end||''},${d.break||0},${(c.worked/60).toFixed(2)},${(reg/60).toFixed(2)},${(ot/60).toFixed(2)}\n`;
+  });
+  const blob = new Blob([csv], {type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `timecard-${data.weekStart||'week'}.csv`;
+  a.click();
+};
+
+document.getElementById('clearBtn').onclick = () => {
+  if (confirm('Clear this week?')) {
+    localStorage.removeItem(KEY);
+    location.hash = '';
+    load();
+  }
+};
+
+[weekStartEl, otModeEl, dailyThEl, rateEl].forEach(el => el.addEventListener('input', recalc));
+load();
+</script>
+</body>
+</html>
