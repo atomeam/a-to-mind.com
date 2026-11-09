@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Meme maker</title>
+<style>
+  :root { --bg:#111; --fg:#eee; --accent:#4a9eff; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.4 system-ui,sans-serif; padding:12px; }
+  h1 { font-size:1.4rem; margin:0 0 8px; }
+  .row { display:flex; flex-wrap:wrap; gap:8px; margin:8px 0; align-items:center; }
+  label { font-size:0.85rem; }
+  input[type=text], input[type=number], input[type=color], select, button {
+    background:#222; color:var(--fg); border:1px solid #444; border-radius:6px; padding:6px 10px; font:inherit;
+  }
+  button { background:var(--accent); color:#000; border:none; cursor:pointer; font-weight:600; }
+  button.secondary { background:#333; color:var(--fg); }
+  #wrap { position:relative; margin:12px 0; max-width:100%; }
+  canvas { display:block; max-width:100%; height:auto; background:#000; border-radius:8px; touch-action:none; cursor:move; }
+  .hint { font-size:0.8rem; opacity:0.7; margin-top:4px; }
+  .hidden { display:none; }
+</style>
+</head>
+<body>
+<h1>Meme maker</h1>
+<p>Add a photo, write the top and bottom lines, drag them, then download the PNG. Everything stays on this device.</p>
+
+<div class="row">
+  <input type="file" id="file" accept="image/*" capture="environment">
+  <button type="button" id="camBtn" class="secondary">Use camera</button>
+  <button type="button" id="blankBtn" class="secondary">Blank canvas</button>
+</div>
+<video id="vid" class="hidden" playsinline></video>
+<canvas id="camCan" class="hidden"></canvas>
+
+<div class="row">
+  <label>Top <input type="text" id="top" placeholder="TOP TEXT" maxlength="80"></label>
+  <label>Bottom <input type="text" id="bot" placeholder="BOTTOM TEXT" maxlength="80"></label>
+</div>
+<div class="row">
+  <label>Size <input type="range" id="size" min="16" max="120" value="48"></label>
+  <span id="sizeVal">48</span>
+  <label>Colour <input type="color" id="color" value="#ffffff"></label>
+  <label>Outline <input type="color" id="outline" value="#000000"></label>
+  <label>Weight <input type="range" id="weight" min="1" max="16" value="6"></label>
+</div>
+<div class="row">
+  <button type="button" id="download">Download PNG</button>
+  <button type="button" id="copyLink" class="secondary">Copy share link</button>
+  <button type="button" id="reset" class="secondary">Reset positions</button>
+</div>
+
+<div id="wrap">
+  <canvas id="c" width="800" height="600"></canvas>
+</div>
+<p class="hint">Drag the text. Pinch or resize the window — text stays in relative place. Last captions are remembered.</p>
+
+<script>
+const c = document.getElementById('c');
+const ctx = c.getContext('2d');
+const topIn = document.getElementById('top');
+const botIn = document.getElementById('bot');
+const sizeIn = document.getElementById('size');
+const sizeVal = document.getElementById('sizeVal');
+const colorIn = document.getElementById('color');
+const outlineIn = document.getElementById('outline');
+const weightIn = document.getElementById('weight');
+const fileIn = document.getElementById('file');
+const camBtn = document.getElementById('camBtn');
+const blankBtn = document.getElementById('blankBtn');
+const downloadBtn = document.getElementById('download');
+const copyLinkBtn = document.getElementById('copyLink');
+const resetBtn = document.getElementById('reset');
+const vid = document.getElementById('vid');
+
+let img = null;
+let topPos = { x: 0.5, y: 0.15 };
+let botPos = { x: 0.5, y: 0.85 };
+let drag = null; // 'top' | 'bot' | null
+let stream = null;
+
+function loadState() {
+  try {
+    const s = JSON.parse(localStorage.getItem('f638') || '{}');
+    if (s.top) topIn.value = s.top;
+    if (s.bot) botIn.value = s.bot;
+    if (s.size) sizeIn.value = s.size;
+    if (s.color) colorIn.value = s.color;
+    if (s.outline) outlineIn.value = s.outline;
+    if (s.weight) weightIn.value = s.weight;
+    if (s.topPos) topPos = s.topPos;
+    if (s.botPos) botPos = s.botPos;
+  } catch {}
+  const params = new URLSearchParams(location.search);
+  if (params.get('t')) topIn.value = decodeURIComponent(params.get('t'));
+  if (params.get('b')) botIn.value = decodeURIComponent(params.get('b'));
+  sizeVal.textContent = sizeIn.value;
+}
+function saveState() {
+  try {
+    localStorage.setItem('f638', JSON.stringify({
+      top: topIn.value, bot: botIn.value, size: sizeIn.value,
+      color: colorIn.value, outline: outlineIn.value, weight: weightIn.value,
+      topPos, botPos
+    }));
+  } catch {}
+}
+
+function fitImage(source) {
+  const max = 1200;
+  let w = source.videoWidth || source.naturalWidth || source.width;
+  let h = source.videoHeight || source.naturalHeight || source.height;
+  if (w > max || h > max) {
+    const r = Math.min(max / w, max / h);
+    w = Math.round(w * r); h = Math.round(h * r);
+  }
+  c.width = w; c.height = h;
+  draw();
+}
+
+function draw() {
+  ctx.clearRect(0, 0, c.width, c.height);
+  if (img) {
+    const r = Math.max(c.width / img.width, c.height / img.height);
+    const nw = img.width * r, nh = img.height * r;
+    ctx.drawImage(img, (c.width - nw)/2, (c.height - nh)/2, nw, nh);
+  } else {
+    ctx.fillStyle = '#222';
+    ctx.fillRect(0, 0, c.width, c.height);
+    ctx.fillStyle = '#555';
+    ctx.font = '24px system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Drop a photo or use the camera', c.width/2, c.height/2);
+  }
+  const size = +sizeIn.value;
+  const weight = +weightIn.value;
+  ctx.font = `bold ${size}px Impact, Arial Black, sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.lineJoin = 'round';
+  ctx.miterLimit = 2;
+  ctx.strokeStyle = outlineIn.value;
+  ctx.lineWidth = weight;
+  ctx.fillStyle = colorIn.value;
+
+  function drawText(text, pos) {
+    if (!text) return;
+    const x = pos.x * c.width;
+    const y = pos.y * c.height;
+    const lines = wrap(text, c.width * 0.9);
+    const lh = size * 1.1;
+    const startY = y - (lines.length - 1) * lh / 2;
+    lines.forEach((line, i) => {
+      const ly = startY + i * lh;
+      ctx.strokeText(line, x, ly);
+      ctx.fillText(line, x, ly);
+    });
+  }
+  drawText(topIn.value.toUpperCase(), topPos);
+  drawText(botIn.value.toUpperCase(), botPos);
+}
+
+function wrap(text, maxW) {
+  const words = text.split(' ');
+  const lines = [];
+  let cur = '';
+  for (const w of words) {
+    const test = cur ? cur + ' ' + w : w;
+    if (ctx.measureText(test).width > maxW && cur) {
+      lines.push(cur);
+      cur = w;
+    } else cur = test;
+  }
+  if (cur) lines.push(cur);
+  return lines.length ? lines : [''];
+}
+
+function hit(pos, mx, my) {
+  const size = +sizeIn.value;
+  const x = pos.x * c.width;
+  const y = pos.y * c.height;
+  return Math.abs(mx - x) < size * 3 && Math.abs(my - y) < size * 1.5;
+}
+
+c.addEventListener('pointerdown', e => {
+  const rect = c.getBoundingClientRect();
+  const scaleX = c.width / rect.width;
+  const scaleY = c.height / rect.height;
+  const mx = (e.clientX - rect.left) * scaleX;
+  const my = (e.clientY - rect.top) * scaleY;
+  if (hit(topPos, mx, my)) drag = 'top';
+  else if (hit(botPos, mx, my)) drag = 'bot';
+  else drag = null;
+  if (drag) c.setPointerCapture(e.pointerId);
+});
+c.addEventListener('pointermove', e => {
+  if (!drag) return;
+  const rect = c.getBoundingClientRect();
+  const scaleX = c.width / rect.width;
+  const scaleY = c.height / rect.height;
+  const mx = (e.clientX - rect.left) * scaleX;
+  const my = (e.clientY - rect.top) * scaleY;
+  const pos = drag === 'top' ? topPos : botPos;
+  pos.x = Math.max(0.05, Math.min(0.95, mx / c.width));
+  pos.y = Math.max(0.05, Math.min(0.95, my / c.height));
+  draw();
+});
+c.addEventListener('pointerup', () => { drag = null; saveState(); });
+
+fileIn.addEventListener('change', () => {
+  const f = fileIn.files[0];
+  if (!f) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const im = new Image();
+    im.onload = () => { img = im; fitImage(im); saveState(); };
+    im.src = reader.result;
+  };
+  reader.readAsDataURL(f);
+});
+
+blankBtn.addEventListener('click', () => {
+  img = null;
+  c.width = 800; c.height = 600;
+  draw();
+});
+
+camBtn.addEventListener('click', async () => {
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+    vid.srcObject = stream;
+    vid.classList.remove('hidden');
+    await vid.play();
+    const capture = () => {
+      const cc = document.getElementById('camCan');
+      cc.width = vid.videoWidth; cc.height = vid.videoHeight;
+      cc.getContext('2d').drawImage(vid, 0, 0);
+      const im = new Image();
+      im.onload = () => { img = im; fitImage(im); };
+      im.src = cc.toDataURL('image/jpeg', 0.9);
+      stream.getTracks().forEach(t => t.stop());
+      vid.classList.add('hidden');
+    };
+    setTimeout(capture, 300); // brief live preview then snap
+  } catch (err) {
+    alert('Camera not available. Use the file picker instead.');
+  }
+});
+
+[topIn, botIn, sizeIn, colorIn, outlineIn, weightIn].forEach(el => {
+  el.addEventListener('input', () => {
+    if (el === sizeIn) sizeVal.textContent = sizeIn.value;
+    draw();
+    saveState();
+  });
+});
+
+downloadBtn.addEventListener('click', () => {
+  c.toBlob(blob => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'meme.png';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }, 'image/png');
+});
+
+copyLinkBtn.addEventListener('click', async () => {
+  const u = new URL(location.href);
+  u.searchParams.set('t', encodeURIComponent(topIn.value));
+  u.searchParams.set('b', encodeURIComponent(botIn.value));
+  try {
+    await navigator.clipboard.writeText(u.toString());
+    copyLinkBtn.textContent = 'Copied';
+    setTimeout(() => copyLinkBtn.textContent = 'Copy share link', 1500);
+  } catch {
+    prompt('Copy this link:', u.toString());
+  }
+});
+
+resetBtn.addEventListener('click', () => {
+  topPos = { x: 0.5, y: 0.15 };
+  botPos = { x: 0.5, y: 0.85 };
+  draw();
+  saveState();
+});
+
+loadState();
+draw();
+window.addEventListener('resize', draw);
+</script>
+</body>
+</html>
