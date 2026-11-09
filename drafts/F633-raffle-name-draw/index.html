@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Raffle and name draw — Verse</title>
+<style>
+:root { --bg:#0f1115; --fg:#e8e8ea; --accent:#7aa2ff; --card:#1a1d24; --border:#2a2e38; --good:#4ade80; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--fg); line-height:1.4; }
+header { padding:1.2rem 1rem; border-bottom:1px solid var(--border); }
+h1 { margin:0; font-size:1.4rem; }
+.sub { color:#999; font-size:0.9rem; margin-top:0.3rem; }
+main { max-width:720px; margin:0 auto; padding:1rem; display:grid; gap:1rem; }
+label { display:block; font-weight:600; margin-bottom:0.3rem; }
+textarea, input[type=number], input[type=text] { width:100%; background:var(--card); color:var(--fg); border:1px solid var(--border); border-radius:8px; padding:0.6rem; font:inherit; }
+textarea { min-height:140px; resize:vertical; }
+.row { display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; }
+button { background:var(--accent); color:#000; border:0; border-radius:8px; padding:0.7rem 1rem; font-weight:600; cursor:pointer; }
+button.secondary { background:#333; color:var(--fg); }
+button:disabled { opacity:0.5; cursor:not-allowed; }
+.actions { display:flex; flex-wrap:wrap; gap:0.5rem; }
+.card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1rem; }
+.winners { font-size:1.1rem; }
+.winner { background:#222; border-left:3px solid var(--good); padding:0.4rem 0.6rem; margin:0.3rem 0; border-radius:4px; }
+.seed { font-family:ui-monospace,monospace; background:#111; padding:0.4rem 0.6rem; border-radius:6px; word-break:break-all; }
+.remaining { font-size:0.85rem; color:#aaa; max-height:120px; overflow:auto; }
+.note { font-size:0.8rem; color:#888; }
+@media (max-width:600px) { .row { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Raffle and name draw</h1>
+  <div class="sub">Paste names, draw winners without repeats, keep the seed so anyone can check the result.</div>
+</header>
+<main>
+  <div>
+    <label for="names">Names (one per line)</label>
+    <textarea id="names" placeholder="Alice&#10;Bob&#10;Carol&#10;..."></textarea>
+  </div>
+  <div class="row">
+    <div>
+      <label for="count">How many winners?</label>
+      <input type="number" id="count" min="1" value="1">
+    </div>
+    <div>
+      <label for="seed">Seed (leave blank for random)</label>
+      <input type="text" id="seed" placeholder="auto">
+    </div>
+  </div>
+  <div class="actions">
+    <button id="draw">Draw winners</button>
+    <button id="reset" class="secondary">Reset pool</button>
+    <button id="copy" class="secondary" disabled>Copy results</button>
+    <button id="csv" class="secondary" disabled>Download CSV</button>
+  </div>
+  <div class="card" id="result" hidden>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;">
+      <strong>Winners</strong>
+      <span class="note" id="when"></span>
+    </div>
+    <div class="winners" id="winners"></div>
+    <div style="margin-top:0.8rem;">
+      <div class="note">Seed (re-enter this exact seed with the same names to get the same order)</div>
+      <div class="seed" id="showSeed"></div>
+    </div>
+    <div style="margin-top:0.8rem;">
+      <div class="note">Remaining in pool</div>
+      <div class="remaining" id="remaining"></div>
+    </div>
+  </div>
+  <p class="note">Everything stays on this device. Same seed + same names always produces the same draw order. No network, no account.</p>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const KEY = 'verse-f633-raffle';
+
+function mulberry32(a) {
+  return function() {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+function hashSeed(s) {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+function load() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return;
+    const d = JSON.parse(raw);
+    if (d.names) $('names').value = d.names;
+    if (d.count) $('count').value = d.count;
+    if (d.seed) $('seed').value = d.seed;
+  } catch {}
+}
+
+function save() {
+  const d = {
+    names: $('names').value,
+    count: $('count').value,
+    seed: $('seed').value
+  };
+  localStorage.setItem(KEY, JSON.stringify(d));
+}
+
+function parseNames(text) {
+  return text.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+}
+
+let currentPool = [];
+let lastWinners = [];
+let lastSeed = '';
+let lastWhen = '';
+
+function draw() {
+  const names = parseNames($('names').value);
+  if (!names.length) {
+    alert('Add at least one name.');
+    return;
+  }
+  const n = Math.max(1, parseInt($('count').value, 10) || 1);
+  if (n > names.length) {
+    alert('Cannot draw more winners than names.');
+    return;
+  }
+  let seedStr = $('seed').value.trim();
+  if (!seedStr) {
+    seedStr = Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
+    $('seed').value = seedStr;
+  }
+  const rng = mulberry32(hashSeed(seedStr));
+  const pool = names.slice();
+  // Fisher-Yates
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  lastWinners = pool.slice(0, n);
+  currentPool = pool.slice(n);
+  lastSeed = seedStr;
+  lastWhen = new Date().toISOString();
+
+  $('winners').innerHTML = lastWinners.map((w, i) => `<div class="winner">${i + 1}. ${escapeHtml(w)}</div>`).join('');
+  $('showSeed').textContent = lastSeed;
+  $('when').textContent = new Date(lastWhen).toLocaleString();
+  $('remaining').textContent = currentPool.length ? currentPool.join(', ') : '(none)';
+  $('result').hidden = false;
+  $('copy').disabled = false;
+  $('csv').disabled = false;
+  save();
+}
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function resetPool() {
+  currentPool = [];
+  lastWinners = [];
+  $('result').hidden = true;
+  $('copy').disabled = true;
+  $('csv').disabled = true;
+  // keep names and seed
+}
+
+function copyResults() {
+  const text = `Raffle winners (${lastWhen})\nSeed: ${lastSeed}\n\n${lastWinners.map((w,i)=>`${i+1}. ${w}`).join('\n')}\n\nRemaining: ${currentPool.join(', ') || 'none'}`;
+  navigator.clipboard.writeText(text).then(() => {
+    const b = $('copy');
+    const old = b.textContent;
+    b.textContent = 'Copied';
+    setTimeout(() => b.textContent = old, 1500);
+  }).catch(() => alert('Could not copy. Select the text manually.'));
+}
+
+function downloadCSV() {
+  const lines = [
+    'position,name,seed,drawn_at',
+    ...lastWinners.map((w, i) => `${i+1},"${w.replace(/"/g,'""')}",${lastSeed},${lastWhen}`)
+  ];
+  const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `raffle-${lastSeed}.csv`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+$('draw').onclick = draw;
+$('reset').onclick = resetPool;
+$('copy').onclick = copyResults;
+$('csv').onclick = downloadCSV;
+['names','count','seed'].forEach(id => $(id).addEventListener('input', save));
+
+load();
+// initial pool display if wanted
+</script>
+</body>
+</html>
