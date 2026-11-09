@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Subscription Tracker</title>
+<style>
+:root { --bg:#0f1115; --card:#1a1d24; --text:#e6e6e6; --accent:#4a9eff; --muted:#888; --ok:#3dd68c; --warn:#f0b429; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--text); line-height:1.4; }
+header { padding:1rem; text-align:center; border-bottom:1px solid #2a2e36; }
+h1 { margin:0; font-size:1.4rem; }
+.container { max-width:900px; margin:0 auto; padding:1rem; }
+.form-card, .summary-card, .table-wrap { background:var(--card); border-radius:12px; padding:1rem; margin-bottom:1rem; }
+label { display:block; margin:0.5rem 0 0.2rem; font-size:0.85rem; color:var(--muted); }
+input, select, button { width:100%; padding:0.6rem; border-radius:8px; border:1px solid #333; background:#111; color:var(--text); font-size:1rem; }
+button { background:var(--accent); border:none; cursor:pointer; font-weight:600; margin-top:0.5rem; }
+button.secondary { background:#333; }
+button.danger { background:#c44; }
+.row { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; }
+@media (max-width:600px) { .row { grid-template-columns:1fr; } }
+.summary { display:flex; justify-content:space-around; text-align:center; flex-wrap:wrap; gap:1rem; }
+.summary div { font-size:1.3rem; font-weight:700; }
+.summary small { display:block; font-size:0.75rem; color:var(--muted); font-weight:400; }
+table { width:100%; border-collapse:collapse; font-size:0.9rem; }
+th, td { padding:0.6rem 0.4rem; text-align:left; border-bottom:1px solid #2a2e36; }
+th { color:var(--muted); font-weight:500; }
+.empty { text-align:center; padding:2rem; color:var(--muted); }
+.actions { display:flex; gap:0.5rem; margin-top:1rem; }
+.actions button { flex:1; }
+.status-active { color:var(--ok); }
+.status-cancelled { color:var(--warn); text-decoration:line-through; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Subscription Tracker</h1>
+  <p style="margin:0.3rem 0 0; color:var(--muted); font-size:0.9rem;">Track services, see totals, export CSV or calendar reminders. Works offline.</p>
+</header>
+<div class="container">
+  <div class="form-card">
+    <h2 style="margin-top:0; font-size:1.1rem;">Add / Edit</h2>
+    <form id="form">
+      <input type="hidden" id="editId">
+      <label>Service name</label>
+      <input id="name" required placeholder="Netflix, Spotify…">
+      <div class="row">
+        <div>
+          <label>Price</label>
+          <input id="price" type="number" step="0.01" min="0" required placeholder="15.99">
+        </div>
+        <div>
+          <label>Billing cycle</label>
+          <select id="cycle">
+            <option value="monthly">Monthly</option>
+            <option value="yearly">Yearly</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Next renewal date</label>
+          <input id="renewal" type="date" required>
+        </div>
+        <div>
+          <label>Status</label>
+          <select id="status">
+            <option value="active">Active</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+      </div>
+      <label>Notes (optional)</label>
+      <input id="notes" placeholder="Family plan, etc.">
+      <button type="submit" id="saveBtn">Add subscription</button>
+      <button type="button" id="cancelEdit" class="secondary" style="display:none;">Cancel edit</button>
+    </form>
+  </div>
+
+  <div class="summary-card">
+    <div class="summary">
+      <div><span id="monthlyTotal">0.00</span><small>Monthly equivalent</small></div>
+      <div><span id="yearlyTotal">0.00</span><small>Yearly total</small></div>
+      <div><span id="count">0</span><small>Active subscriptions</small></div>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <div id="empty" class="empty">No subscriptions yet. Add one above.</div>
+    <table id="table" style="display:none;">
+      <thead>
+        <tr><th>Service</th><th>Price</th><th>Cycle</th><th>Next</th><th>Status</th><th></th></tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <div class="actions">
+    <button id="csvBtn" class="secondary">Download CSV</button>
+    <button id="icsBtn" class="secondary">Download .ics reminders</button>
+  </div>
+</div>
+
+<script>
+const KEY = 'verse-f641-subs';
+let items = [];
+let editing = null;
+
+function load() {
+  try { items = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch { items = []; }
+  render();
+}
+function save() {
+  localStorage.setItem(KEY, JSON.stringify(items));
+  render();
+}
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+function monthlyEq(item) {
+  if (item.status !== 'active') return 0;
+  return item.cycle === 'monthly' ? Number(item.price) : Number(item.price) / 12;
+}
+
+function render() {
+  const tbody = document.getElementById('tbody');
+  const table = document.getElementById('table');
+  const empty = document.getElementById('empty');
+  tbody.innerHTML = '';
+  const active = items.filter(i => i.status === 'active');
+  const monthly = active.reduce((s, i) => s + monthlyEq(i), 0);
+  const yearly = monthly * 12;
+  document.getElementById('monthlyTotal').textContent = monthly.toFixed(2);
+  document.getElementById('yearlyTotal').textContent = yearly.toFixed(2);
+  document.getElementById('count').textContent = active.length;
+
+  if (!items.length) {
+    table.style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  table.style.display = 'table';
+  const sorted = [...items].sort((a,b) => (a.renewal || '').localeCompare(b.renewal || ''));
+  sorted.forEach(item => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${esc(item.name)}${item.notes ? '<br><small style="color:var(--muted)">'+esc(item.notes)+'</small>' : ''}</td>
+      <td>${Number(item.price).toFixed(2)}</td>
+      <td>${item.cycle}</td>
+      <td>${item.renewal || '—'}</td>
+      <td class="status-${item.status}">${item.status}</td>
+      <td>
+        <button type="button" data-edit="${item.id}" style="width:auto;padding:0.3rem 0.6rem;margin:0;background:#333">Edit</button>
+        <button type="button" data-del="${item.id}" class="danger" style="width:auto;padding:0.3rem 0.6rem;margin:0">Del</button>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function esc(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+document.getElementById('form').onsubmit = e => {
+  e.preventDefault();
+  const data = {
+    id: editing || uid(),
+    name: document.getElementById('name').value.trim(),
+    price: parseFloat(document.getElementById('price').value) || 0,
+    cycle: document.getElementById('cycle').value,
+    renewal: document.getElementById('renewal').value,
+    status: document.getElementById('status').value,
+    notes: document.getElementById('notes').value.trim()
+  };
+  if (!data.name || data.price < 0) return;
+  if (editing) {
+    const idx = items.findIndex(i => i.id === editing);
+    if (idx >= 0) items[idx] = data;
+  } else {
+    items.push(data);
+  }
+  editing = null;
+  document.getElementById('form').reset();
+  document.getElementById('editId').value = '';
+  document.getElementById('saveBtn').textContent = 'Add subscription';
+  document.getElementById('cancelEdit').style.display = 'none';
+  save();
+};
+
+document.getElementById('cancelEdit').onclick = () => {
+  editing = null;
+  document.getElementById('form').reset();
+  document.getElementById('saveBtn').textContent = 'Add subscription';
+  document.getElementById('cancelEdit').style.display = 'none';
+};
+
+document.getElementById('tbody').onclick = e => {
+  const edit = e.target.closest('[data-edit]');
+  const del = e.target.closest('[data-del]');
+  if (edit) {
+    const item = items.find(i => i.id === edit.dataset.edit);
+    if (!item) return;
+    editing = item.id;
+    document.getElementById('name').value = item.name;
+    document.getElementById('price').value = item.price;
+    document.getElementById('cycle').value = item.cycle;
+    document.getElementById('renewal').value = item.renewal;
+    document.getElementById('status').value = item.status;
+    document.getElementById('notes').value = item.notes || '';
+    document.getElementById('saveBtn').textContent = 'Update';
+    document.getElementById('cancelEdit').style.display = 'block';
+    window.scrollTo(0,0);
+  }
+  if (del) {
+    if (confirm('Delete this subscription?')) {
+      items = items.filter(i => i.id !== del.dataset.del);
+      save();
+    }
+  }
+};
+
+function download(filename, text, type='text/plain') {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], {type}));
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+document.getElementById('csvBtn').onclick = () => {
+  const headers = ['Name','Price','Cycle','Next Renewal','Status','Notes','Monthly Eq'];
+  const rows = items.map(i => [
+    `"${i.name.replace(/"/g,'""')}"`,
+    i.price,
+    i.cycle,
+    i.renewal,
+    i.status,
+    `"${(i.notes||'').replace(/"/g,'""')}"`,
+    monthlyEq(i).toFixed(2)
+  ].join(','));
+  const monthly = items.filter(i=>i.status==='active').reduce((s,i)=>s+monthlyEq(i),0);
+  const summary = `\nTOTALS,,Monthly equivalent,${monthly.toFixed(2)},Yearly,${(monthly*12).toFixed(2)}`;
+  download('subscriptions.csv', [headers.join(','), ...rows, summary].join('\n'), 'text/csv');
+};
+
+document.getElementById('icsBtn').onclick = () => {
+  const now = new Date().toISOString().replace(/[-:]/g,'').slice(0,15)+'Z';
+  let ics = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Verse//Subscription Tracker//EN\r\n';
+  items.filter(i => i.status === 'active' && i.renewal).forEach(item => {
+    const dt = item.renewal.replace(/-/g,'');
+    ics += 'BEGIN:VEVENT\r\n';
+    ics += `UID:${item.id}@verse\r\n`;
+    ics += `DTSTAMP:${now}\r\n`;
+    ics += `DTSTART;VALUE=DATE:${dt}\r\n`;
+    ics += `SUMMARY:${item.name} renewal (${item.price} ${item.cycle})\r\n`;
+    if (item.notes) ics += `DESCRIPTION:${item.notes.replace(/\n/g,' ')}\r\n`;
+    if (item.cycle === 'yearly') ics += 'RRULE:FREQ=YEARLY\r\n';
+    else ics += 'RRULE:FREQ=MONTHLY\r\n';
+    ics += 'END:VEVENT\r\n';
+  });
+  ics += 'END:VCALENDAR\r\n';
+  download('subscription-reminders.ics', ics, 'text/calendar');
+};
+
+load();
+</script>
+</body>
+</html>
