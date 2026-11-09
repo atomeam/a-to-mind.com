@@ -10788,3 +10788,17 @@ Keeps: Copy the final standings as text; download CSV of all rounds and totals; 
 Not on Verse yet: checked against llms.txt and GAPS.md — wheel of names, random teams and tournament brackets exist, but no general offline multi-round scoreboard with running totals, visual bars, drag-reorder, CSV and share link.
 
 **Files**: drafts/F634-scoreboard/SPEC.md
+
+## Frontier Engine F-635 (2026-11-09)
+
+**F635-teleprompter**
+
+Entry added by ledger-guard from drafts/F635-teleprompter/SPEC.md, after a full-file write dropped it.
+
+Plain name: Teleprompter
+Job: Paste a script, set scroll speed, font size and optional mirror mode, then run it full-screen while speaking; copy the script, download it as text, share a link that restores it, and the last script stays on this device.
+Input: A text box for the script; number controls for speed (words per minute) and font size; a mirror toggle; play/pause and full-screen buttons.
+Keeps: Copy the script as text; download as .txt; share link carries the script and settings via URL hash; last session saved in localStorage (`verse-f635-teleprompter`).
+Not on Verse yet: checked against llms.txt and GAPS.md — no general offline teleprompter with speed, mirror, full-screen, copy, download and share link.
+
+**Files**: drafts/F635-teleprompter/SPEC.md, drafts/F635-teleprompter/index.html
