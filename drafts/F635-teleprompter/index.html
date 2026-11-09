@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Teleprompter — Verse</title>
+<style>
+:root { --bg:#0f1115; --fg:#e8e8e8; --accent:#4a9eff; --panel:#1a1d24; }
+* { box-sizing:border-box; }
+body { margin:0; font-family:system-ui,sans-serif; background:var(--bg); color:var(--fg); }
+.controls { padding:1rem; background:var(--panel); display:flex; flex-wrap:wrap; gap:0.75rem; align-items:center; }
+.controls label { display:flex; align-items:center; gap:0.4rem; font-size:0.9rem; }
+.controls input[type=number], .controls input[type=range] { width:5rem; }
+textarea { width:100%; min-height:120px; padding:0.75rem; background:#12141a; color:var(--fg); border:1px solid #333; border-radius:6px; font:1rem/1.4 system-ui,sans-serif; resize:vertical; }
+.viewport { position:relative; height:60vh; overflow:hidden; background:#000; border-top:1px solid #333; }
+.scroll { position:absolute; left:0; right:0; top:0; padding:2rem 1.5rem; white-space:pre-wrap; font-weight:500; line-height:1.4; transition:transform 0.05s linear; }
+.scroll.mirror { transform:scaleX(-1); }
+.actions { padding:0.75rem 1rem; display:flex; gap:0.5rem; flex-wrap:wrap; }
+button { background:var(--accent); color:#fff; border:none; padding:0.5rem 1rem; border-radius:6px; cursor:pointer; font:inherit; }
+button:disabled { opacity:0.5; }
+button.secondary { background:#333; }
+.full { position:fixed; inset:0; z-index:10; background:#000; }
+.full .scroll { padding:8vh 8vw; }
+@media (max-width:600px) { .viewport { height:50vh; } .controls { font-size:0.85rem; } }
+</style>
+</head>
+<body>
+<div class="controls" id="controls">
+  <label>Speed <input type="number" id="wpm" min="40" max="300" value="140"> WPM</label>
+  <label>Font <input type="range" id="font" min="24" max="120" value="48"> <span id="fontVal">48px</span></label>
+  <label><input type="checkbox" id="mirror"> Mirror</label>
+  <button id="play">Play</button>
+  <button id="pause" disabled>Pause</button>
+  <button id="fs">Full screen</button>
+</div>
+<textarea id="script" placeholder="Paste your script here…"></textarea>
+<div class="viewport" id="viewport">
+  <div class="scroll" id="scroll">Your script will appear here when you press Play.</div>
+</div>
+<div class="actions">
+  <button id="copy">Copy script</button>
+  <button id="download" class="secondary">Download .txt</button>
+  <button id="share" class="secondary">Share link</button>
+  <span id="status" style="margin-left:auto;font-size:0.85rem;opacity:0.7"></span>
+</div>
+<script>
+const $ = id => document.getElementById(id);
+const KEY = 'verse-f635-teleprompter';
+let playing = false, offset = 0, last = 0, raf;
+const wordsPerLine = 10; // rough for WPM	o px
+
+function save() {
+  const data = { script: $('script').value, wpm: +$('wpm').value, font: +$('font').value, mirror: $('mirror').checked };
+  try { localStorage.setItem(KEY, JSON.stringify(data)); } catch {}
+  setStatus('Saved on this device');
+}
+function load() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) {
+      const d = JSON.parse(raw);
+      $('script').value = d.script || '';
+      $('wpm').value = d.wpm || 140;
+      $('font').value = d.font || 48;
+      $('mirror').checked = !!d.mirror;
+    }
+  } catch {}
+  if (location.hash.length > 1) {
+    try {
+      const d = JSON.parse(decodeURIComponent(location.hash.slice(1)));
+      if (d.script) $('script').value = d.script;
+      if (d.wpm) $('wpm').value = d.wpm;
+      if (d.font) $('font').value = d.font;
+      if (d.mirror !== undefined) $('mirror').checked = d.mirror;
+    } catch {}
+  }
+  updatePreview();
+}
+function updatePreview() {
+  const text = $('script').value || 'Your script will appear here when you press Play.';
+  $('scroll').textContent = text;
+  $('scroll').style.fontSize = $('font').value + 'px';
+  $('scroll').classList.toggle('mirror', $('mirror').checked);
+  $('fontVal').textContent = $('font').value + 'px';
+}
+function speedPxPerMs() {
+  const wpm = +$('wpm').value || 140;
+  const font = +$('font').value || 48;
+  // approximate: average 5 chars/word, line height ~1.4*font, words per line ~ (viewport width / (0.5*font))
+  const charsPerWord = 5;
+  const lineHeight = font * 1.4;
+  const approxWordsPerLine = Math.max(4, Math.floor(window.innerWidth / (font * 0.55)));
+  const linesPerMin = wpm / approxWordsPerLine;
+  return (linesPerMin * lineHeight) / 60000; // px per ms
+}
+function tick(ts) {
+  if (!playing) return;
+  if (!last) last = ts;
+  const dt = ts - last;
+  last = ts;
+  offset += speedPxPerMs() * dt;
+  const h = $('scroll').scrollHeight;
+  if (offset > h + 100) { stop(); return; }
+  $('scroll').style.transform = `translateY(${-offset}px)` + ($('mirror').checked ? ' scaleX(-1)' : '');
+  raf = requestAnimationFrame(tick);
+}
+function play() {
+  if (playing) return;
+  playing = true;
+  last = 0;
+  $('play').disabled = true;
+  $('pause').disabled = false;
+  updatePreview();
+  raf = requestAnimationFrame(tick);
+  setStatus('Playing');
+}
+function stop() {
+  playing = false;
+  cancelAnimationFrame(raf);
+  $('play').disabled = false;
+  $('pause').disabled = true;
+  setStatus('Paused');
+}
+function resetOffset() { offset = 0; $('scroll').style.transform = ''; }
+
+$('play').onclick = () => { if (!playing) { resetOffset(); play(); } else play(); };
+$('pause').onclick = stop;
+$('fs').onclick = () => {
+  const v = $('viewport');
+  if (!document.fullscreenElement) v.requestFullscreen?.() || v.classList.add('full');
+  else document.exitFullscreen?.() || v.classList.remove('full');
+};
+$('script').oninput = () => { updatePreview(); save(); };
+$('wpm').onchange = () => { updatePreview(); save(); };
+$('font').oninput = () => { updatePreview(); save(); };
+$('mirror').onchange = () => { updatePreview(); save(); };
+
+$('copy').onclick = async () => {
+  try { await navigator.clipboard.writeText($('script').value); setStatus('Copied'); } catch { setStatus('Copy failed'); }
+};
+$('download').onclick = () => {
+  const blob = new Blob([$('script').value], {type:'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'script.txt';
+  a.click();
+  setStatus('Downloaded');
+};
+$('share').onclick = () => {
+  const data = { script: $('script').value, wpm: +$('wpm').value, font: +$('font').value, mirror: $('mirror').checked };
+  const url = location.origin + location.pathname + '#' + encodeURIComponent(JSON.stringify(data));
+  navigator.clipboard.writeText(url).then(() => setStatus('Share link copied')).catch(() => setStatus('Link ready: ' + url.slice(0,60) + '…'));
+};
+function setStatus(s) { $('status').textContent = s; setTimeout(() => { if ($('status').textContent === s) $('status').textContent = ''; }, 2500); }
+
+load();
+window.addEventListener('beforeunload', save);
+</script>
+</body>
+</html>
