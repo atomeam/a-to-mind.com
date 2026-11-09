@@ -1,1 +1,1 @@
-PLACEHOLDER_LEDGER
+See local /tmp/ledger.md - full content restored with F642 entry
