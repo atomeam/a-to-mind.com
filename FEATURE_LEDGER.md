@@ -10857,3 +10857,12 @@ Expected outcome: interactive spatial wave field whose parameters evolve under u
 Mechanics: online EA selection/mutation, WebGPU wave kernel, DOM-field coupling, BroadcastChannel genome exchange.
 
 **Files**: drafts/F636-webgpu-wave-dom-riders/SPEC.md, drafts/F636-webgpu-wave-dom-riders/index.html
+
+## Frontier Engine F-637 (2026-11-09)
+
+**F637-morse-code**
+
+Entry added by ledger-guard from drafts/F637-morse-code/SPEC.md, after a full-file write dropped it.
+
+
+**Files**: drafts/F637-morse-code/SPEC.md, drafts/F637-morse-code/index.html
