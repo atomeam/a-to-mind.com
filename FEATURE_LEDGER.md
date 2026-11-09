@@ -10769,3 +10769,22 @@ Expected outcome: a usable fair-draw tool whose winners can be independently ver
 Mechanics: mulberry32 PRNG, in-place shuffle, localStorage, clipboard and file export.
 
 **Files**: drafts/F633-raffle-name-draw/SPEC.md, drafts/F633-raffle-name-draw/index.html
+
+## Frontier Engine F-634 (2026-11-08)
+
+**F634-scoreboard**
+
+Entry added by ledger-guard from drafts/F634-scoreboard/SPEC.md, after a full-file write dropped it.
+
+
+Plain name: Scoreboard
+
+Job: Enter the players and their scores for each round of any game; see the running totals update live in a visual bar chart, drag to reorder, then copy the standings, download a CSV, or share a link that restores the whole board; the last board stays on this device.
+
+Input: Add player names; for each round, enter a score for every player (or add a quick score); optional round names.
+
+Keeps: Copy the final standings as text; download CSV of all rounds and totals; share link carries the players, scores and order via URL hash; last board saved in localStorage (`verse-f634-scoreboard`).
+
+Not on Verse yet: checked against llms.txt and GAPS.md — wheel of names, random teams and tournament brackets exist, but no general offline multi-round scoreboard with running totals, visual bars, drag-reorder, CSV and share link.
+
+**Files**: drafts/F634-scoreboard/SPEC.md
