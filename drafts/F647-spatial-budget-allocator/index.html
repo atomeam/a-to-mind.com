@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monthly budget allocator</title>
+<style>
+:root { --bg:#0f1115; --fg:#e8e8e8; --acc:#4ade80; --warn:#f87171; --muted:#888; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: system-ui, sans-serif; background:var(--bg); color:var(--fg); padding:16px; max-width:720px; margin-inline:auto; }
+h1 { font-size:1.4rem; margin:0 0 8px; }
+p.job { color:var(--muted); margin:0 0 16px; font-size:0.95rem; }
+label { display:block; margin:12px 0 4px; font-weight:600; }
+input, button { font:inherit; padding:8px 10px; border-radius:6px; border:1px solid #333; background:#1a1d24; color:var(--fg); }
+input[type=number] { width:140px; }
+.row { display:flex; gap:8px; align-items:center; margin:6px 0; }
+.row input[type=text] { flex:1; }
+.row button { background:#333; }
+#bars { margin:16px 0; }
+.bar-row { display:flex; align-items:center; gap:8px; margin:8px 0; }
+.bar-track { flex:1; height:28px; background:#222; border-radius:4px; position:relative; overflow:hidden; }
+.bar-fill { height:100%; background:var(--acc); width:0%; transition:width .15s; position:relative; }
+.bar-fill.over { background:var(--warn); }
+.handle { position:absolute; right:0; top:0; width:12px; height:100%; background:#fff3; cursor:ew-resize; touch-action:none; }
+.bar-label { min-width:100px; font-size:0.9rem; }
+.bar-amt { min-width:70px; text-align:right; font-variant-numeric:tabular-nums; }
+.totals { background:#1a1d24; padding:12px; border-radius:8px; margin:12px 0; }
+.totals .remain { font-size:1.3rem; font-weight:700; }
+.remain.neg { color:var(--warn); }
+.actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+button.primary { background:var(--acc); color:#000; border:none; font-weight:600; }
+.note { font-size:0.8rem; color:var(--muted); margin-top:8px; }
+</style>
+</head>
+<body>
+<h1>Monthly budget allocator</h1>
+<p class="job">Enter income and categories. Drag the right edge of any bar to reallocate. Remaining updates live. Everything stays on this device.</p>
+
+<label>Monthly take-home income</label>
+<div class="row">
+  <input type="number" id="income" min="0" step="0.01" placeholder="4000" value="4000">
+  <span>currency units</span>
+</div>
+
+<label>Categories</label>
+<div id="cats"></div>
+<button id="add">+ Add category</button>
+
+<div class="totals">
+  <div>Spent: <span id="spent">0</span></div>
+  <div class="remain" id="remain">Remaining: 0</div>
+  <div id="pct"></div>
+</div>
+
+<div id="bars"></div>
+
+<div class="actions">
+  <button class="primary" id="copy">Copy summary</button>
+  <button id="csv">Download CSV</button>
+  <button id="clear">Clear all</button>
+</div>
+<p class="note">Honest: this is a planning tool only. Numbers are what you type. Drag handles to rebalance; remaining cannot go negative unless you force over-budget. Share link copies the current budget.</p>
+<p class="note" id="status"></p>
+
+<script>
+const KEY = 'verse-f647-budget';
+let cats = [];
+let income = 4000;
+
+function load() {
+  const hash = location.hash.slice(1);
+  if (hash) {
+    try {
+      const data = JSON.parse(decodeURIComponent(hash));
+      if (data.income) income = +data.income;
+      if (Array.isArray(data.cats)) cats = data.cats;
+    } catch(e) {}
+  } else {
+    const s = localStorage.getItem(KEY);
+    if (s) {
+      try { const d = JSON.parse(s); income = d.income || 4000; cats = d.cats || []; } catch(e) {}
+    }
+  }
+  if (!cats.length) {
+    cats = [
+      {name:'Rent / mortgage', amt:1400},
+      {name:'Food', amt:400},
+      {name:'Transport', amt:200},
+      {name:'Utilities', amt:150}
+    ];
+  }
+  document.getElementById('income').value = income;
+}
+
+function save() {
+  const data = {income, cats};
+  localStorage.setItem(KEY, JSON.stringify(data));
+  history.replaceState(null, '', '#' + encodeURIComponent(JSON.stringify(data)));
+}
+
+function spent() { return cats.reduce((s,c) => s + (+c.amt||0), 0); }
+
+function render() {
+  const box = document.getElementById('cats');
+  box.innerHTML = '';
+  cats.forEach((c,i) => {
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.innerHTML = `<input type="text" value="${c.name.replace(/"/g,'&quot;')}" data-i="${i}" class="name">
+      <input type="number" value="${c.amt}" step="0.01" min="0" data-i="${i}" class="amt">
+      <button data-i="${i}" class="del">×</button>`;
+    box.appendChild(row);
+  });
+  const bars = document.getElementById('bars');
+  bars.innerHTML = '';
+  const max = Math.max(income, spent(), 1);
+  cats.forEach((c,i) => {
+    const pct = (c.amt / max) * 100;
+    const row = document.createElement('div');
+    row.className = 'bar-row';
+    row.innerHTML = `<div class="bar-label">${c.name}</div>
+      <div class="bar-track"><div class="bar-fill ${c.amt > income ? 'over' : ''}" style="width:${pct}%"><div class="handle" data-i="${i}"></div></div></div>
+      <div class="bar-amt">${(+c.amt).toFixed(2)}</div>`;
+    bars.appendChild(row);
+  });
+  const sp = spent();
+  const rem = income - sp;
+  document.getElementById('spent').textContent = sp.toFixed(2);
+  const remEl = document.getElementById('remain');
+  remEl.textContent = 'Remaining: ' + rem.toFixed(2);
+  remEl.className = 'remain' + (rem < 0 ? ' neg' : '');
+  document.getElementById('pct').textContent = income ? `Used ${(sp/income*100).toFixed(1)}% of income` : '';
+  save();
+}
+
+function addCat(name='New', amt=0) {
+  cats.push({name, amt:+amt||0});
+  render();
+}
+
+document.getElementById('add').onclick = () => addCat();
+document.getElementById('income').oninput = e => { income = +e.target.value || 0; render(); };
+document.getElementById('cats').onclick = e => {
+  if (e.target.classList.contains('del')) {
+    cats.splice(+e.target.dataset.i, 1);
+    render();
+  }
+};
+document.getElementById('cats').oninput = e => {
+  const i = +e.target.dataset.i;
+  if (e.target.classList.contains('name')) cats[i].name = e.target.value;
+  if (e.target.classList.contains('amt')) cats[i].amt = +e.target.value || 0;
+  render();
+};
+
+let drag = null;
+function startDrag(e, i) {
+  e.preventDefault();
+  drag = {i, startX: e.clientX || e.touches[0].clientX, startAmt: cats[i].amt};
+  window.addEventListener('pointermove', onDrag);
+  window.addEventListener('pointerup', endDrag);
+  window.addEventListener('touchmove', onDrag, {passive:false});
+  window.addEventListener('touchend', endDrag);
+}
+function onDrag(e) {
+  if (!drag) return;
+  e.preventDefault();
+  const x = e.clientX || e.touches[0].clientX;
+  const dx = x - drag.startX;
+  const scale = income / 400;
+  let newAmt = drag.startAmt + dx / Math.max(scale, 2);
+  newAmt = Math.max(0, Math.round(newAmt * 100) / 100);
+  cats[drag.i].amt = newAmt;
+  render();
+}
+function endDrag() {
+  drag = null;
+  window.removeEventListener('pointermove', onDrag);
+  window.removeEventListener('pointerup', endDrag);
+  window.removeEventListener('touchmove', onDrag);
+  window.removeEventListener('touchend', endDrag);
+}
+document.getElementById('bars').addEventListener('pointerdown', e => {
+  if (e.target.classList.contains('handle')) startDrag(e, +e.target.dataset.i);
+});
+document.getElementById('bars').addEventListener('touchstart', e => {
+  if (e.target.classList.contains('handle')) startDrag(e, +e.target.dataset.i);
+}, {passive:false});
+
+document.getElementById('copy').onclick = () => {
+  const lines = cats.map(c => `${c.name}: ${(+c.amt).toFixed(2)}`).join('\n');
+  const text = `Income: ${income.toFixed(2)}\n${lines}\nSpent: ${spent().toFixed(2)}\nRemaining: ${(income-spent()).toFixed(2)}`;
+  navigator.clipboard.writeText(text).then(() => {
+    document.getElementById('status').textContent = 'Summary copied.';
+  }).catch(() => {
+    document.getElementById('status').textContent = 'Copy failed (permission).';
+  });
+};
+document.getElementById('csv').onclick = () => {
+  let csv = 'Category,Amount,PercentOfIncome\n';
+  cats.forEach(c => {
+    const p = income ? (c.amt/income*100).toFixed(1) : 0;
+    csv += `"${c.name.replace(/"/g,'""')}",${(+c.amt).toFixed(2)},${p}\n`;
+  });
+  csv += `Total spent,${spent().toFixed(2)},\nRemaining,${(income-spent()).toFixed(2)},\n`;
+  const blob = new Blob([csv], {type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'budget.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+};
+document.getElementById('clear').onclick = () => {
+  if (confirm('Clear all categories and reset?')) {
+    cats = [];
+    income = 0;
+    document.getElementById('income').value = '';
+    render();
+  }
+};
+
+load();
+render();
+</script>
+</body>
+</html>
