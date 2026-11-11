@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Project dependency planner</title>
+<style>
+  :root { --bg:#0f1115; --card:#1a1d24; --accent:#4cc9f0; --crit:#f72585; --text:#e8e8e8; --muted:#888; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, sans-serif; background:var(--bg); color:var(--text); }
+  header { padding:1rem 1.2rem; border-bottom:1px solid #222; }
+  h1 { margin:0; font-size:1.4rem; }
+  .sub { color:var(--muted); font-size:.9rem; margin:.3rem 0 0; }
+  main { display:grid; grid-template-columns: 320px 1fr; min-height: calc(100vh - 80px); }
+  @media (max-width:800px) { main { grid-template-columns:1fr; } }
+  aside { padding:1rem; border-right:1px solid #222; background:#12141a; }
+  textarea { width:100%; height:180px; background:#0d0f14; color:var(--text); border:1px solid #333; border-radius:6px; padding:.6rem; font:13px ui-monospace,monospace; }
+  label { display:block; margin:.8rem 0 .3rem; font-size:.85rem; color:var(--muted); }
+  button, .btn { background:var(--accent); color:#000; border:0; padding:.5rem 1rem; border-radius:6px; font-weight:600; cursor:pointer; margin:.3rem .3rem 0 0; }
+  button.secondary { background:#333; color:var(--text); }
+  #timeline { position:relative; height:420px; background:#0d0f14; border:1px solid #222; border-radius:8px; overflow:auto; margin:1rem; }
+  .bar { position:absolute; height:28px; border-radius:4px; display:flex; align-items:center; padding:0 8px; font-size:12px; color:#000; cursor:grab; user-select:none; white-space:nowrap; overflow:hidden; }
+  .bar.critical { background:var(--crit); color:#fff; }
+  .bar.normal { background:var(--accent); }
+  .bar:active { cursor:grabbing; }
+  #stats { padding:0 1rem; font-size:.9rem; color:var(--muted); }
+  #output { margin:1rem; white-space:pre-wrap; font:13px ui-monospace,monospace; background:#0d0f14; padding:1rem; border-radius:8px; min-height:80px; }
+  .toast { position:fixed; bottom:1rem; right:1rem; background:#333; padding:.6rem 1rem; border-radius:6px; display:none; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Project dependency planner</h1>
+  <p class="sub">Paste tasks (name | days | predecessors). Drag bars. Download the chart or copy the schedule. Saved on this device.</p>
+</header>
+<main>
+  <aside>
+    <label>Tasks (one per line: name | days | pred1, pred2)</label>
+    <textarea id="input" placeholder="Design | 3 |
+Build | 5 | Design
+Test | 2 | Build
+Review | 1 | Test
+Deploy | 1 | Review
+Docs | 2 | Design"></textarea>
+    <button id="plan">Plan</button>
+    <button id="reset" class="secondary">Reset</button>
+    <div style="margin-top:1rem">
+      <button id="png">Download PNG</button>
+      <button id="copy" class="secondary">Copy schedule</button>
+    </div>
+    <p style="font-size:.8rem;color:var(--muted);margin-top:1rem">Critical path is pink. Drag a bar to adjust its start (snaps if it would break a dependency).</p>
+  </aside>
+  <section>
+    <div id="stats"></div>
+    <div id="timeline"></div>
+    <div id="output"></div>
+  </section>
+</main>
+<div class="toast" id="toast"></div>
+<script>
+const $ = id => document.getElementById(id);
+const tasks = [];
+let dayWidth = 28;
+let totalDays = 20;
+
+function toast(msg) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 2500);
+}
+
+function parseInput() {
+  const lines = $('input').value.split('\n').map(l => l.trim()).filter(Boolean);
+  tasks.length = 0;
+  const nameToId = {};
+  lines.forEach((line, i) => {
+    const parts = line.split('|').map(p => p.trim());
+    const name = parts[0] || `Task ${i+1}`;
+    const duration = Math.max(1, parseInt(parts[1]) || 1);
+    const preds = (parts[2] || '').split(',').map(p => p.trim()).filter(Boolean);
+    tasks.push({ id: i, name, duration, preds, es:0, ef:0, ls:0, lf:0, slack:0, critical:false, userStart:null });
+    nameToId[name.toLowerCase()] = i;
+  });
+  // resolve preds to ids
+  tasks.forEach(t => {
+    t.predIds = t.preds.map(p => nameToId[p.toLowerCase()]).filter(id => id !== undefined && id !== t.id);
+  });
+  return tasks;
+}
+
+function hasCycle() {
+  const visited = new Set(), stack = new Set();
+  function dfs(id) {
+    if (stack.has(id)) return true;
+    if (visited.has(id)) return false;
+    visited.add(id); stack.add(id);
+    for (const p of tasks[id].predIds) if (dfs(p)) return true;
+    stack.delete(id);
+    return false;
+  }
+  for (let i = 0; i < tasks.length; i++) if (dfs(i)) return true;
+  return false;
+}
+
+function computeSchedule() {
+  if (!tasks.length) return;
+  if (hasCycle()) { toast('Cycle detected — some dependencies ignored'); }
+  // forward pass
+  const order = topoSort();
+  for (const id of order) {
+    const t = tasks[id];
+    let es = 0;
+    for (const p of t.predIds) es = Math.max(es, tasks[p].ef);
+    t.es = t.userStart !== null ? Math.max(t.userStart, es) : es;
+    t.ef = t.es + t.duration;
+  }
+  // total duration
+  const maxEf = Math.max(0, ...tasks.map(t => t.ef));
+  // backward
+  for (const id of order.slice().reverse()) {
+    const t = tasks[id];
+    let lf = maxEf;
+    const successors = tasks.filter(s => s.predIds.includes(id));
+    if (successors.length) lf = Math.min(...successors.map(s => s.ls));
+    t.lf = lf;
+    t.ls = t.lf - t.duration;
+    t.slack = t.ls - t.es;
+    t.critical = t.slack <= 0;
+  }
+  totalDays = Math.max(10, maxEf + 2);
+}
+
+function topoSort() {
+  const indeg = tasks.map(t => t.predIds.length);
+  const q = tasks.map((t,i) => i).filter(i => indeg[i] === 0);
+  const order = [];
+  while (q.length) {
+    const id = q.shift();
+    order.push(id);
+    tasks.forEach((t, i) => {
+      if (t.predIds.includes(id)) {
+        indeg[i]--;
+        if (indeg[i] === 0) q.push(i);
+      }
+    });
+  }
+  return order.length === tasks.length ? order : tasks.map((_,i) => i); // fallback
+}
+
+function render() {
+  const tl = $('timeline');
+  tl.innerHTML = '';
+  tl.style.width = (totalDays * dayWidth + 40) + 'px';
+  tasks.forEach((t, i) => {
+    const bar = document.createElement('div');
+    bar.className = 'bar ' + (t.critical ? 'critical' : 'normal');
+    bar.style.left = (t.es * dayWidth + 8) + 'px';
+    bar.style.top = (i * 36 + 8) + 'px';
+    bar.style.width = Math.max(20, t.duration * dayWidth - 4) + 'px';
+    bar.textContent = t.name + ' (' + t.duration + 'd)';
+    bar.dataset.id = i;
+    bar.addEventListener('pointerdown', startDrag);
+    tl.appendChild(bar);
+  });
+  const maxEf = Math.max(0, ...tasks.map(t => t.ef));
+  const crit = tasks.filter(t => t.critical).map(t => t.name).join(', ') || 'none';
+  $('stats').textContent = `Total duration: ${maxEf} days · Critical path: ${crit} · ${tasks.length} tasks`;
+  updateOutput();
+  save();
+}
+
+let drag = null;
+function startDrag(e) {
+  const bar = e.currentTarget;
+  const id = +bar.dataset.id;
+  drag = { id, startX: e.clientX, origEs: tasks[id].es, bar };
+  bar.setPointerCapture(e.pointerId);
+  bar.addEventListener('pointermove', onDrag);
+  bar.addEventListener('pointerup', endDrag);
+}
+function onDrag(e) {
+  if (!drag) return;
+  const dx = e.clientX - drag.startX;
+  const newEs = Math.max(0, Math.round(drag.origEs + dx / dayWidth));
+  const t = tasks[drag.id];
+  // respect preds
+  let minEs = 0;
+  for (const p of t.predIds) minEs = Math.max(minEs, tasks[p].ef);
+  t.userStart = Math.max(newEs, minEs);
+  computeSchedule();
+  render();
+}
+function endDrag() {
+  if (drag) {
+    drag.bar.removeEventListener('pointermove', onDrag);
+    drag.bar.removeEventListener('pointerup', endDrag);
+    drag = null;
+  }
+}
+
+function updateOutput() {
+  const lines = tasks.map(t => `- **${t.name}**: start day ${t.es}, finish ${t.ef}, duration ${t.duration}d${t.critical ? ' (critical)' : ''}`);
+  $('output').textContent = lines.join('\n');
+}
+
+function toPNG() {
+  const canvas = document.createElement('canvas');
+  const w = totalDays * dayWidth + 60;
+  const h = tasks.length * 36 + 40;
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#0f1115'; ctx.fillRect(0,0,w,h);
+  ctx.font = '12px system-ui';
+  tasks.forEach((t, i) => {
+    const x = t.es * dayWidth + 20;
+    const y = i * 36 + 20;
+    const bw = Math.max(20, t.duration * dayWidth - 4);
+    ctx.fillStyle = t.critical ? '#f72585' : '#4cc9f0';
+    ctx.fillRect(x, y, bw, 28);
+    ctx.fillStyle = '#000';
+    ctx.fillText(t.name, x + 6, y + 18);
+  });
+  const a = document.createElement('a');
+  a.href = canvas.toDataURL('image/png');
+  a.download = 'project-plan.png';
+  a.click();
+  toast('PNG downloaded');
+}
+
+function save() {
+  try {
+    const data = { input: $('input').value, userStarts: tasks.map(t => t.userStart) };
+    localStorage.setItem('f665-plan', JSON.stringify(data));
+    location.hash = encodeURIComponent(JSON.stringify({ i: $('input').value }));
+  } catch(e) {}
+}
+
+function load() {
+  try {
+    const h = location.hash.slice(1);
+    if (h) {
+      const d = JSON.parse(decodeURIComponent(h));
+      if (d.i) $('input').value = d.i;
+    } else {
+      const s = localStorage.getItem('f665-plan');
+      if (s) {
+        const d = JSON.parse(s);
+        $('input').value = d.input || '';
+      }
+    }
+  } catch(e) {}
+  if ($('input').value.trim()) plan();
+}
+
+function plan() {
+  parseInput();
+  computeSchedule();
+  render();
+}
+
+$('plan').onclick = plan;
+$('reset').onclick = () => { $('input').value = ''; tasks.length = 0; render(); };
+$('png').onclick = toPNG;
+$('copy').onclick = () => {
+  navigator.clipboard.writeText($('output').textContent).then(() => toast('Copied'));
+};
+load();
+</script>
+</body>
+</html>
