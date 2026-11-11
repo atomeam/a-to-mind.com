@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F664 Orientation L-System SVG Genome Swarm</title>
+<style>
+body { margin:0; background:#0a0a12; color:#eee; font-family:system-ui; overflow:hidden; }
+#chrome { position:fixed; top:8px; left:8px; z-index:10; background:rgba(0,0,0,.6); padding:8px 12px; border-radius:8px; font-size:13px; }
+#status { position:fixed; bottom:8px; left:8px; font-size:12px; opacity:.8; }
+.card { position:absolute; width:180px; height:180px; background:rgba(20,20,40,.7); border:2px solid #4af; border-radius:12px; cursor:grab; overflow:hidden; }
+.card svg { width:100%; height:100%; }
+.card path { fill:none; stroke:#8cf; stroke-width:1.5; }
+button { margin:4px; padding:4px 8px; background:#246; color:#fff; border:none; border-radius:4px; cursor:pointer; }
+</style>
+</head>
+<body>
+<div id="chrome">
+  F664 L-System SVG Genome — tilt or move pointer | S seal | R reward
+  <button id="seal">Seal Genome</button>
+  <button id="reward">Reward Dominant</button>
+</div>
+<div id="status">init</div>
+<script>
+const N = 6;
+const cards = [];
+let mlp = { w1: Array(6).fill(0).map(()=>Array(4).fill(0).map(()=>Math.random()*0.4-0.2)),
+            b1: Array(6).fill(0),
+            w2: Array(3).fill(0).map(()=>Array(6).fill(0).map(()=>Math.random()*0.4-0.2)),
+            b2: Array(3).fill(0) };
+let orient = { beta:0, gamma:0 };
+let ptr = { x:0, y:0, vx:0, vy:0 };
+let bestFitness = -1;
+let bestRules = null;
+
+function sigmoid(x) { return 1/(1+Math.exp(-x)); }
+function mlpForward(inp) {
+  const h = mlp.b1.map((b,i)=>sigmoid(b + mlp.w1[i].reduce((s,w,j)=>s+w*inp[j],0)));
+  return mlp.b2.map((b,i)=>sigmoid(b + mlp.w2[i].reduce((s,w,j)=>s+w*h[j],0)));
+}
+
+function randomRules() {
+  const axiom = 'F';
+  const rules = { F: 'F[+F]F[-F]F' };
+  if (Math.random()<0.5) rules.F = 'FF+[+F-F-F]-[-F+F+F]';
+  return { axiom, rules, angle: 25, step: 4, string: axiom, depth: 3 };
+}
+
+function rewrite(sys) {
+  let s = sys.axiom;
+  for (let d=0; d<sys.depth; d++) {
+    let ns = '';
+    for (let c of s) ns += sys.rules[c] || c;
+    s = ns;
+    if (s.length > 800) break;
+  }
+  sys.string = s;
+}
+
+function turtle(sys) {
+  let x=90, y=160, a=-90;
+  const rad = Math.PI/180;
+  let path = `M${x},${y}`;
+  const stack = [];
+  for (let c of sys.string) {
+    if (c==='F') {
+      x += Math.cos(a*rad)*sys.step;
+      y += Math.sin(a*rad)*sys.step;
+      path += `L${x.toFixed(1)},${y.toFixed(1)}`;
+    } else if (c==='+') a += sys.angle;
+    else if (c==='-') a -= sys.angle;
+    else if (c==='[') stack.push([x,y,a]);
+    else if (c===']') { if (stack.length) [x,y,a] = stack.pop(); path += `M${x},${y}`; }
+  }
+  return path;
+}
+
+function mutate(sys, rate) {
+  if (Math.random() > rate) return;
+  const keys = Object.keys(sys.rules);
+  const k = keys[Math.floor(Math.random()*keys.length)];
+  let r = sys.rules[k];
+  const pos = Math.floor(Math.random()*r.length);
+  const chars = 'F+-[]';
+  r = r.slice(0,pos) + chars[Math.floor(Math.random()*chars.length)] + r.slice(pos+1);
+  sys.rules[k] = r;
+  sys.angle = Math.max(10, Math.min(40, sys.angle + (Math.random()-0.5)*4));
+}
+
+function makeCard(i) {
+  const el = document.createElement('div');
+  el.className = 'card';
+  el.style.left = (40 + (i%3)*220) + 'px';
+  el.style.top = (60 + Math.floor(i/3)*220) + 'px';
+  const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+  svg.appendChild(path);
+  el.appendChild(svg);
+  document.body.appendChild(el);
+  const sys = randomRules();
+  rewrite(sys);
+  path.setAttribute('d', turtle(sys));
+  el.addEventListener('pointerdown', e => { el.style.zIndex=100; });
+  el.addEventListener('pointermove', e => {
+    if (e.buttons) {
+      el.style.left = (parseFloat(el.style.left)+e.movementX)+'px';
+      el.style.top = (parseFloat(el.style.top)+e.movementY)+'px';
+    }
+  });
+  el.addEventListener('click', () => { sys.fitness = (sys.fitness||0)+5; el.style.borderColor='#f84'; });
+  return { el, path, sys, fitness: 0 };
+}
+
+for (let i=0; i<N; i++) cards.push(makeCard(i));
+
+window.addEventListener('deviceorientation', e => {
+  orient.beta = e.beta || 0;
+  orient.gamma = e.gamma || 0;
+});
+window.addEventListener('pointermove', e => {
+  ptr.vx = e.movementX || 0;
+  ptr.vy = e.movementY || 0;
+  ptr.x = e.clientX; ptr.y = e.clientY;
+});
+
+const bc = new BroadcastChannel('f664-genome');
+bc.onmessage = e => {
+  const msg = e.data;
+  if (msg.fitness > bestFitness) {
+    bestFitness = msg.fitness;
+    bestRules = msg.rules;
+    let min = cards[0];
+    cards.forEach(c => { if ((c.sys.fitness||0) < (min.sys.fitness||0)) min = c; });
+    Object.assign(min.sys.rules, msg.rules);
+    min.sys.axiom = msg.axiom;
+    min.el.style.borderColor = '#4f8';
+    setTimeout(()=>min.el.style.borderColor='#4af', 800);
+  }
+};
+
+function seal() {
+  let best = cards[0];
+  cards.forEach(c => { if ((c.sys.fitness||0) > (best.sys.fitness||0)) best = c; });
+  const data = { rules: best.sys.rules, axiom: best.sys.axiom, fitness: best.sys.fitness||0, mlp };
+  const req = indexedDB.open('verse-f664', 1);
+  req.onupgradeneeded = () => req.result.createObjectStore('genomes');
+  req.onsuccess = () => {
+    const tx = req.result.transaction('genomes','readwrite');
+    tx.objectStore('genomes').put(data, 'best');
+  };
+  bc.postMessage(data);
+  document.getElementById('status').textContent = 'sealed fitness ' + (best.sys.fitness||0).toFixed(1);
+}
+
+document.getElementById('seal').onclick = seal;
+document.getElementById('reward').onclick = () => {
+  let best = cards[0];
+  cards.forEach(c => { if ((c.sys.fitness||0) > (best.sys.fitness||0)) best = c; });
+  best.sys.fitness = (best.sys.fitness||0)+10;
+};
+
+const req = indexedDB.open('verse-f664', 1);
+req.onsuccess = () => {
+  const tx = req.result.transaction('genomes','readonly');
+  const g = tx.objectStore('genomes').get('best');
+  g.onsuccess = () => {
+    if (g.result) {
+      bestRules = g.result.rules;
+      cards[0].sys.rules = {...g.result.rules};
+      cards[0].sys.axiom = g.result.axiom;
+      if (g.result.mlp) mlp = g.result.mlp;
+    }
+  };
+};
+
+function loop() {
+  const inp = [orient.beta/90, orient.gamma/90, ptr.vx/20, ptr.vy/20];
+  const out = mlpForward(inp);
+  const mutateRate = out[0]*0.15;
+  cards.forEach(c => {
+    mutate(c.sys, mutateRate);
+    if (Math.random()<0.05) { rewrite(c.sys); c.path.setAttribute('d', turtle(c.sys)); }
+    c.sys.fitness = (c.sys.fitness||0) * 0.995 + c.sys.string.length * 0.01;
+    const r = c.el.getBoundingClientRect();
+    cards.forEach(o => {
+      if (o===c) return;
+      const or = o.el.getBoundingClientRect();
+      if (r.left < or.right && r.right > or.left && r.top < or.bottom && r.bottom > or.top) {
+        if ((c.sys.fitness||0) > (o.sys.fitness||0)+2) {
+          bc.postMessage({ rules: c.sys.rules, axiom: c.sys.axiom, fitness: c.sys.fitness });
+        }
+      }
+    });
+  });
+  document.getElementById('status').textContent = `mutate ${(mutateRate*100).toFixed(0)}% | best ${(bestFitness||0).toFixed(1)} | agents ${N}`;
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
+</body>
+</html>
