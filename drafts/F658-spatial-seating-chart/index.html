@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seating Chart</title>
+<style>
+  :root { --bg: #0f1419; --card: #1a2332; --accent: #3d8bfd; --warn: #e05d44; --ok: #2ecc71; --text: #e8eef6; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.4; }
+  header { padding: 1rem 1.2rem; border-bottom: 1px solid #2a3544; }
+  h1 { margin: 0 0 0.3rem; font-size: 1.4rem; }
+  .sub { opacity: 0.75; font-size: 0.9rem; }
+  .wrap { display: grid; grid-template-columns: 280px 1fr; min-height: calc(100vh - 80px); }
+  @media (max-width: 800px) { .wrap { grid-template-columns: 1fr; } }
+  aside { padding: 1rem; border-right: 1px solid #2a3544; background: #121820; overflow-y: auto; }
+  main { padding: 1rem; overflow: auto; }
+  label { display: block; font-size: 0.85rem; margin: 0.8rem 0 0.3rem; opacity: 0.9; }
+  textarea, input { width: 100%; background: #0d1218; border: 1px solid #2a3544; color: var(--text); padding: 0.5rem; border-radius: 6px; font: inherit; }
+  button { background: var(--accent); color: #fff; border: 0; padding: 0.55rem 0.9rem; border-radius: 6px; cursor: pointer; font: inherit; margin: 0.3rem 0.3rem 0.3rem 0; }
+  button.secondary { background: #2a3544; }
+  button:active { transform: scale(0.98); }
+  .guests { display: flex; flex-wrap: wrap; gap: 0.4rem; min-height: 60px; padding: 0.5rem; background: #0d1218; border-radius: 8px; margin: 0.5rem 0; }
+  .guest { background: var(--card); border: 1px solid #3a4a5c; padding: 0.4rem 0.7rem; border-radius: 20px; cursor: grab; user-select: none; font-size: 0.9rem; }
+  .guest:active { cursor: grabbing; }
+  .guest.conflict { border-color: var(--warn); box-shadow: 0 0 0 2px var(--warn); }
+  .tables { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+  .table { background: #151c26; border: 2px dashed #3a4a5c; border-radius: 12px; padding: 0.8rem; min-height: 140px; }
+  .table.over { border-color: var(--accent); background: #1a2a3a; }
+  .table h3 { margin: 0 0 0.5rem; font-size: 1rem; }
+  .table .seats { display: flex; flex-wrap: wrap; gap: 0.35rem; min-height: 40px; }
+  .status { margin: 0.5rem 0; font-size: 0.85rem; }
+  .status.ok { color: var(--ok); }
+  .status.warn { color: var(--warn); }
+  #exportCanvas { display: none; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Seating Chart</h1>
+  <div class="sub">Drag guests onto tables. Constraints highlight conflicts. Download PNG or copy the list. Saved on this device.</div>
+</header>
+<div class="wrap">
+  <aside>
+    <label>Guests (one name per line)</label>
+    <textarea id="guestInput" rows="8" placeholder="Alice&#10;Bob&#10;Carol&#10;..."></textarea>
+    <label>Keep together (pairs, one per line: Name1, Name2)</label>
+    <textarea id="togetherInput" rows="3" placeholder="Alice, Bob"></textarea>
+    <label>Keep apart (pairs, one per line: Name1, Name2)</label>
+    <textarea id="apartInput" rows="3" placeholder="Carol, Dave"></textarea>
+    <button id="applyBtn">Apply list</button>
+    <button id="copyBtn" class="secondary">Copy assignments</button>
+    <button id="pngBtn" class="secondary">Download PNG</button>
+    <button id="shareBtn" class="secondary">Copy share link</button>
+    <div class="status" id="status">Ready</div>
+    <label>Unassigned guests</label>
+    <div class="guests" id="unassigned"></div>
+  </aside>
+  <main>
+    <div class="tables" id="tables"></div>
+  </main>
+</div>
+<canvas id="exportCanvas"></canvas>
+<script>
+const NUM_TABLES = 6;
+const SEATS_PER = 8;
+const STORAGE_KEY = 'verse-f658-seating';
+
+let guests = []; // {id, name}
+let assignments = {}; // guestId -> tableIndex or null
+let together = []; // [[a,b], ...]
+let apart = [];
+let dragId = null;
+
+const $ = id => document.getElementById(id);
+const guestInput = $('guestInput');
+const togetherInput = $('togetherInput');
+const apartInput = $('apartInput');
+const unassigned = $('unassigned');
+const tablesEl = $('tables');
+const statusEl = $('status');
+
+function uid() { return Math.random().toString(36).slice(2, 9); }
+
+function parseNames(text) {
+  return text.split(/\n/).map(s => s.trim()).filter(Boolean);
+}
+
+function parsePairs(text) {
+  return text.split(/\n/).map(line => {
+    const parts = line.split(/[,|]/).map(s => s.trim()).filter(Boolean);
+    return parts.length >= 2 ? [parts[0], parts[1]] : null;
+  }).filter(Boolean);
+}
+
+function loadState() {
+  try {
+    const hash = location.hash.slice(1);
+    if (hash) {
+      const data = JSON.parse(decodeURIComponent(hash));
+      applyData(data);
+      return;
+    }
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) applyData(JSON.parse(saved));
+    else seedSample();
+  } catch (e) { seedSample(); }
+}
+
+function seedSample() {
+  guestInput.value = 'Alice\nBob\nCarol\nDave\nEve\nFrank\nGrace\nHank';
+  togetherInput.value = 'Alice, Bob';
+  apartInput.value = 'Carol, Dave';
+  applyList();
+}
+
+function applyData(data) {
+  guests = data.guests || [];
+  assignments = data.assignments || {};
+  guestInput.value = guests.map(g => g.name).join('\n');
+  togetherInput.value = (data.together || []).map(p => p.join(', ')).join('\n');
+  apartInput.value = (data.apart || []).map(p => p.join(', ')).join('\n');
+  together = data.together || [];
+  apart = data.apart || [];
+  render();
+}
+
+function saveState() {
+  const data = { guests, assignments, together, apart };
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) {}
+  history.replaceState(null, '', '#' + encodeURIComponent(JSON.stringify(data)));
+}
+
+function applyList() {
+  const names = parseNames(guestInput.value);
+  const nameToId = {};
+  guests.forEach(g => { nameToId[g.name] = g.id; });
+  const newGuests = [];
+  names.forEach(name => {
+    let id = nameToId[name];
+    if (!id) { id = uid(); }
+    newGuests.push({ id, name });
+    if (!(id in assignments)) assignments[id] = null;
+  });
+  const keepIds = new Set(newGuests.map(g => g.id));
+  guests = newGuests;
+  Object.keys(assignments).forEach(id => { if (!keepIds.has(id)) delete assignments[id]; });
+  together = parsePairs(togetherInput.value);
+  apart = parsePairs(apartInput.value);
+  saveState();
+  render();
+  statusEl.textContent = 'List applied';
+  statusEl.className = 'status ok';
+}
+
+function render() {
+  unassigned.innerHTML = '';
+  guests.filter(g => assignments[g.id] == null).forEach(g => {
+    const el = document.createElement('div');
+    el.className = 'guest';
+    el.textContent = g.name;
+    el.draggable = true;
+    el.dataset.id = g.id;
+    el.addEventListener('dragstart', onDragStart);
+    unassigned.appendChild(el);
+  });
+
+  tablesEl.innerHTML = '';
+  for (let t = 0; t < NUM_TABLES; t++) {
+    const table = document.createElement('div');
+    table.className = 'table';
+    table.dataset.table = t;
+    table.innerHTML = `<h3>Table ${t + 1}</h3><div class="seats"></div>`;
+    const seats = table.querySelector('.seats');
+    guests.filter(g => assignments[g.id] === t).forEach(g => {
+      const el = document.createElement('div');
+      el.className = 'guest';
+      el.textContent = g.name;
+      el.draggable = true;
+      el.dataset.id = g.id;
+      el.addEventListener('dragstart', onDragStart);
+      seats.appendChild(el);
+    });
+    table.addEventListener('dragover', e => { e.preventDefault(); table.classList.add('over'); });
+    table.addEventListener('dragleave', () => table.classList.remove('over'));
+    table.addEventListener('drop', onDrop);
+    tablesEl.appendChild(table);
+  }
+  unassigned.addEventListener('dragover', e => e.preventDefault());
+  unassigned.addEventListener('drop', e => {
+    e.preventDefault();
+    if (dragId) { assignments[dragId] = null; dragId = null; saveState(); render(); }
+  });
+
+  checkConflicts();
+}
+
+function onDragStart(e) {
+  dragId = e.target.dataset.id;
+  e.dataTransfer.effectAllowed = 'move';
+}
+
+function onDrop(e) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('over');
+  if (!dragId) return;
+  const tableIdx = parseInt(e.currentTarget.dataset.table, 10);
+  const currentCount = guests.filter(g => assignments[g.id] === tableIdx).length;
+  if (currentCount >= SEATS_PER && assignments[dragId] !== tableIdx) {
+    statusEl.textContent = `Table ${tableIdx + 1} is full`;
+    statusEl.className = 'status warn';
+    return;
+  }
+  assignments[dragId] = tableIdx;
+  dragId = null;
+  saveState();
+  render();
+}
+
+function checkConflicts() {
+  document.querySelectorAll('.guest').forEach(el => el.classList.remove('conflict'));
+  let issues = [];
+  together.forEach(([a, b]) => {
+    const ga = guests.find(g => g.name === a);
+    const gb = guests.find(g => g.name === b);
+    if (!ga || !gb) return;
+    if (assignments[ga.id] != null && assignments[gb.id] != null && assignments[ga.id] !== assignments[gb.id]) {
+      issues.push(`${a} and ${b} should be together`);
+      document.querySelectorAll(`.guest`).forEach(el => {
+        if (el.textContent === a || el.textContent === b) el.classList.add('conflict');
+      });
+    }
+  });
+  apart.forEach(([a, b]) => {
+    const ga = guests.find(g => g.name === a);
+    const gb = guests.find(g => g.name === b);
+    if (!ga || !gb) return;
+    if (assignments[ga.id] != null && assignments[ga.id] === assignments[gb.id]) {
+      issues.push(`${a} and ${b} should be apart`);
+      document.querySelectorAll(`.guest`).forEach(el => {
+        if (el.textContent === a || el.textContent === b) el.classList.add('conflict');
+      });
+    }
+  });
+  if (issues.length) {
+    statusEl.textContent = issues.join('; ');
+    statusEl.className = 'status warn';
+  } else if (guests.length) {
+    statusEl.textContent = 'No conflicts';
+    statusEl.className = 'status ok';
+  }
+}
+
+function getAssignmentsText() {
+  let lines = [];
+  for (let t = 0; t < NUM_TABLES; t++) {
+    const names = guests.filter(g => assignments[g.id] === t).map(g => g.name);
+    if (names.length) lines.push(`Table ${t + 1}: ${names.join(', ')}`);
+  }
+  const un = guests.filter(g => assignments[g.id] == null).map(g => g.name);
+  if (un.length) lines.push(`Unassigned: ${un.join(', ')}`);
+  return lines.join('\n') || 'No assignments yet';
+}
+
+$('applyBtn').onclick = applyList;
+$('copyBtn').onclick = () => {
+  navigator.clipboard.writeText(getAssignmentsText()).then(() => {
+    statusEl.textContent = 'Assignments copied';
+    statusEl.className = 'status ok';
+  });
+};
+$('shareBtn').onclick = () => {
+  navigator.clipboard.writeText(location.href).then(() => {
+    statusEl.textContent = 'Share link copied';
+    statusEl.className = 'status ok';
+  });
+};
+$('pngBtn').onclick = downloadPNG;
+
+function downloadPNG() {
+  const canvas = $('exportCanvas');
+  const w = 800, h = 600;
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#0f1419';
+  ctx.fillRect(0, 0, w, h);
+  ctx.fillStyle = '#e8eef6';
+  ctx.font = 'bold 24px system-ui';
+  ctx.fillText('Seating Chart', 30, 40);
+  ctx.font = '16px system-ui';
+  let y = 80;
+  for (let t = 0; t < NUM_TABLES; t++) {
+    const names = guests.filter(g => assignments[g.id] === t).map(g => g.name);
+    if (!names.length) continue;
+    ctx.fillStyle = '#3d8bfd';
+    ctx.fillText(`Table ${t + 1}`, 30, y);
+    ctx.fillStyle = '#e8eef6';
+    ctx.fillText(names.join(', '), 140, y);
+    y += 36;
+  }
+  const un = guests.filter(g => assignments[g.id] == null).map(g => g.name);
+  if (un.length) {
+    ctx.fillStyle = '#e05d44';
+    ctx.fillText('Unassigned', 30, y);
+    ctx.fillStyle = '#e8eef6';
+    ctx.fillText(un.join(', '), 140, y);
+  }
+  const a = document.createElement('a');
+  a.href = canvas.toDataURL('image/png');
+  a.download = 'seating-chart.png';
+  a.click();
+  statusEl.textContent = 'PNG downloaded';
+  statusEl.className = 'status ok';
+}
+
+document.addEventListener('touchstart', e => {
+  const t = e.target.closest('.guest');
+  if (t) dragId = t.dataset.id;
+}, { passive: true });
+
+loadState();
+</script>
+</body>
+</html>
