@@ -80,6 +80,7 @@ function mlpForward(inputs) {
   return mlp.b2.map((b,i) => Math.tanh(b + h.reduce((s,v,j)=>s+v*mlp.w2[j*3+i],0)));
 }
 function reward(r) {
+  // simple mutation toward higher reward
   for (let i=0;i<mlp.w2.length;i++) mlp.w2[i] += (Math.random()-0.5)*0.01*r;
 }
 
@@ -102,6 +103,7 @@ function step() {
     notes[i].y = Math.max(20, Math.min(H-60, notes[i].y));
     notes[i].el.style.left = notes[i].x+'px'; notes[i].el.style.top = notes[i].y+'px';
   }
+  // draw trails
   ctx.fillStyle = 'rgba(10,10,18,0.15)'; ctx.fillRect(0,0,W,H);
   ctx.strokeStyle = '#4af'; ctx.lineWidth=1;
   for (const n of notes) {
@@ -142,6 +144,7 @@ document.getElementById('export').onclick = () => {
 
 document.getElementById('reset').onclick = () => { notes.forEach(n=>n.el.remove()); notes.length=0; updateStatus(); };
 
+// load sealed
 (async () => {
   try {
     const db = await new Promise((res,rej)=>{ const r=indexedDB.open('verse-f689',1); r.onsuccess=e=>res(e.target.result); r.onerror=()=>res(null); });
@@ -158,6 +161,7 @@ document.getElementById('reset').onclick = () => { notes.forEach(n=>n.el.remove(
   } catch(e) {}
 })();
 
+// initial notes
 addNote('The Verse is a living canvas of thought');
 addNote('Semantic clusters form by embedding affinity');
 addNote('Tilt or drag to reshape the mind');

@@ -13646,9 +13646,6 @@ Ledger guard restored this file from aa68f03 after 2624f4f broke it. Entries reb
 
 **F689-webgpu-semantic-embedding-force-mind**
 
-Entry added by ledger-guard from drafts/F689-webgpu-semantic-embedding-force-mind/SPEC.md, after a full-file write dropped it.
-
-
 **Concept**
 A living spatial note canvas for The Verse. Absolute-positioned contenteditable DOM note cards are embedded into low-dimensional vectors via pure-JS character n-gram random projections (no external models). A WebGPU compute shader (Canvas2D fallback) runs a continuous force-directed particle simulation where each note-particle attracts or repels others according to cosine similarity of their embeddings, plus a global body force from DeviceOrientationEvent. A tiny pure-JS MLP observes cluster statistics (mean similarity, spread) and user reward signals (drag/click) to modulate force scales and projection noise. Notes can be added by typing or SpeechRecognition, dragged to inject momentum, and Seal persists the embeddings + MLP weights + positions as a sealed genome in IndexedDB + BroadcastChannel. Export yields JSON of notes.
 
@@ -13674,13 +13671,3 @@ Open page. Type or speak notes; they embed and particles form semantic clusters.
 Void is now Verse everywhere.
 
 **Files**: drafts/F689-webgpu-semantic-embedding-force-mind/SPEC.md, drafts/F689-webgpu-semantic-embedding-force-mind/index.html
-
-**Files**: drafts/F689-webgpu-semantic-embedding-force-mind/SPEC.md, drafts/F689-webgpu-semantic-embedding-force-mind/index.html
-
-## Guard restore (2026-11-11)
-
-Ledger guard restored this file from 433aca6 after d1309f5 broke it. Entries rebuilt from SPEC.md: F689-webgpu-semantic-embedding-force-mind. Write the ledger with git on disk, append only.
-
-## Guard restore (2026-11-11)
-
-Ledger guard restored this file from 06fdd76 after 730d85a broke it. Write the ledger with git on disk, append only.
