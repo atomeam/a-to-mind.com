@@ -15046,3 +15046,12 @@ Entry added by ledger-guard from drafts/F717-webgpu-gaussian-dom-splats-mind/SPE
 ## Guard restore (2026-11-12)
 
 Ledger guard restored this file from 23a7da8 after 0c5e804 broke it. Entries rebuilt from SPEC.md: F717-webgpu-gaussian-dom-splats-mind. Write the ledger with git on disk, append only.
+
+## Frontier Engine F-718 (2026-11-12)
+
+**F718-spatial-room-material-estimator**
+
+Entry added by ledger-guard from drafts/F718-spatial-room-material-estimator/SPEC.md, after a full-file write dropped it.
+
+
+**Files**: drafts/F718-spatial-room-material-estimator/SPEC.md, drafts/F718-spatial-room-material-estimator/index.html
