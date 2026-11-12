@@ -1,1 +1,178 @@
-PLACEHOLDER_HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F703 WebXR Hand Spring-Lattice Genome Mind — Verse</title>
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui; overflow:hidden; }
+#stage { position:relative; width:100vw; height:100vh; }
+.agent { position:absolute; width:72px; height:72px; border-radius:12px; background:rgba(80,120,255,0.25); border:1px solid #88aaff; display:flex; align-items:center; justify-content:center; font-size:11px; cursor:grab; user-select:none; backdrop-filter:blur(4px); transition:background .2s; }
+.agent:active { cursor:grabbing; }
+.agent.rewarded { background:rgba(80,255,160,0.4); }
+#controls { position:fixed; top:12px; left:12px; z-index:10; background:rgba(0,0,0,.5); padding:8px 12px; border-radius:8px; }
+button { margin:2px; padding:6px 10px; background:#223; color:#fff; border:1px solid #446; border-radius:4px; cursor:pointer; }
+canvas { position:absolute; top:0; left:0; pointer-events:none; }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<canvas id="springs"></canvas>
+<div id="controls">
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset</button>
+  <button id="xr">Enter XR (if available)</button>
+  <span id="status">Verse F703 — drag agents, click to reward</span>
+</div>
+<script>
+const N = 7;
+const agents = [];
+const springs = [];
+let sealed = null;
+const dbName = 'verse-f703';
+const ch = new BroadcastChannel('f703-genome');
+
+function rand(a,b){return a+Math.random()*(b-a);}
+function mlp(w, x){ // tiny 4-6-2
+  const h = new Array(6).fill(0);
+  for(let i=0;i<6;i++) for(let j=0;j<4;j++) h[i] += w[i*4+j]*x[j];
+  for(let i=0;i<6;i++) h[i] = Math.tanh(h[i]);
+  const o = [0,0];
+  for(let i=0;i<2;i++) for(let j=0;j<6;j++) o[i] += w[24+i*6+j]*h[j];
+  return o.map(v=>Math.tanh(v));
+}
+
+for(let i=0;i<N;i++){
+  const el = document.createElement('div');
+  el.className = 'agent';
+  el.textContent = 'A'+i;
+  el.style.left = (20+i*12)+'%';
+  el.style.top = (30+ (i%3)*15)+'%';
+  document.getElementById('stage').appendChild(el);
+  agents.push({
+    el, x: parseFloat(el.style.left)/100 * innerWidth, y: parseFloat(el.style.top)/100 * innerHeight,
+    vx:0, vy:0, fitness:0,
+    w: Array.from({length:36}, ()=>rand(-0.5,0.5))
+  });
+}
+// simple lattice springs
+for(let i=0;i<N;i++) for(let j=i+1;j<N;j++) if(Math.hypot(agents[i].x-agents[j].x, agents[i].y-agents[j].y)<250)
+  springs.push({a:i,b:j, rest:120, damp:0.1});
+
+let pointer = {x:innerWidth/2, y:innerHeight/2, active:false};
+let ori = {beta:0, gamma:0};
+window.addEventListener('pointermove', e=>{ pointer.x=e.clientX; pointer.y=e.clientY; pointer.active=true; });
+window.addEventListener('pointerdown', e=>{ pointer.active=true; });
+window.addEventListener('pointerup', ()=>pointer.active=false);
+if(window.DeviceOrientationEvent) window.addEventListener('deviceorientation', e=>{ ori.beta=e.beta||0; ori.gamma=e.gamma||0; });
+
+let xrSession = null, handPos = null;
+document.getElementById('xr').onclick = async ()=>{
+  if(!navigator.xr) return alert('WebXR not available');
+  try {
+    xrSession = await navigator.xr.requestSession('immersive-vr');
+    document.getElementById('status').textContent = 'XR session active — hands drive lattice';
+  } catch(e){ document.getElementById('status').textContent = 'XR unavailable, using pointer'; }
+};
+
+function transfer(a,b){
+  if(agents[a].fitness <= agents[b].fitness) return;
+  for(let k=0;k<36;k++) agents[b].w[k] = 0.7*agents[b].w[k] + 0.3*agents[a].w[k] + rand(-0.05,0.05);
+  agents[b].fitness *= 0.8;
+  ch.postMessage({from:a, to:b, w:agents[b].w});
+}
+
+function step(){
+  const inp = [
+    (pointer.x - innerWidth/2)/innerWidth,
+    (pointer.y - innerHeight/2)/innerHeight,
+    ori.beta/90, ori.gamma/90
+  ];
+  for(let i=0;i<N;i++){
+    const o = mlp(agents[i].w, inp);
+    agents[i].restBias = o[0]*40;
+    agents[i].damp = 0.05 + Math.abs(o[1])*0.1;
+  }
+  // forces
+  for(const s of springs){
+    const A=agents[s.a], B=agents[s.b];
+    const dx=B.x-A.x, dy=B.y-A.y, dist=Math.hypot(dx,dy)||1;
+    const target = s.rest + (A.restBias||0);
+    const f = (dist - target)*0.02;
+    const fx=f*dx/dist, fy=f*dy/dist;
+    A.vx += fx; A.vy += fy; B.vx -= fx; B.vy -= fy;
+  }
+  for(let i=0;i<N;i++){
+    const A=agents[i];
+    // attract to pointer/hand
+    const tx = pointer.x, ty = pointer.y;
+    A.vx += (tx - A.x)*0.001;
+    A.vy += (ty - A.y)*0.001;
+    A.vx *= 0.92; A.vy *= 0.92;
+    A.x += A.vx; A.y += A.vy;
+    A.x = Math.max(36, Math.min(innerWidth-36, A.x));
+    A.y = Math.max(36, Math.min(innerHeight-36, A.y));
+    A.el.style.left = A.x+'px'; A.el.style.top = A.y+'px';
+  }
+  // contacts
+  for(let i=0;i<N;i++) for(let j=i+1;j<N;j++){
+    if(Math.hypot(agents[i].x-agents[j].x, agents[i].y-agents[j].y)<80) transfer(i,j);
+  }
+  // draw springs
+  const cv=document.getElementById('springs'); cv.width=innerWidth; cv.height=innerHeight;
+  const ctx=cv.getContext('2d'); ctx.clearRect(0,0,cv.width,cv.height);
+  ctx.strokeStyle='rgba(136,170,255,0.3)';
+  for(const s of springs){
+    ctx.beginPath(); ctx.moveTo(agents[s.a].x, agents[s.a].y); ctx.lineTo(agents[s.b].x, agents[s.b].y); ctx.stroke();
+  }
+  requestAnimationFrame(step);
+}
+step();
+
+// rewards
+document.getElementById('stage').addEventListener('click', e=>{
+  const t=e.target.closest('.agent'); if(!t) return;
+  const i=agents.findIndex(a=>a.el===t); if(i<0) return;
+  agents[i].fitness += 1; agents[i].el.classList.add('rewarded');
+  setTimeout(()=>agents[i].el.classList.remove('rewarded'), 400);
+});
+
+// drag
+let drag=null, ox=0, oy=0;
+document.addEventListener('pointerdown', e=>{
+  const t=e.target.closest('.agent'); if(!t) return;
+  drag=agents.find(a=>a.el===t); ox=e.clientX-drag.x; oy=e.clientY-drag.y;
+});
+document.addEventListener('pointermove', e=>{
+  if(!drag) return; drag.x=e.clientX-ox; drag.y=e.clientY-oy; drag.vx=0; drag.vy=0;
+});
+document.addEventListener('pointerup', ()=>drag=null);
+
+// seal / restore
+document.getElementById('seal').onclick = ()=>{
+  const data = {agents: agents.map(a=>({w:a.w, fitness:a.fitness, x:a.x, y:a.y}))};
+  const req = indexedDB.open(dbName,1);
+  req.onupgradeneeded = e=>e.target.result.createObjectStore('seal');
+  req.onsuccess = e=>{
+    const tx=e.target.result.transaction('seal','readwrite');
+    tx.objectStore('seal').put(data, 'best');
+    document.getElementById('status').textContent = 'Sealed to IndexedDB';
+  };
+  ch.postMessage({type:'seal', data});
+};
+document.getElementById('reset').onclick = ()=>location.reload();
+
+// restore
+indexedDB.open(dbName,1).onsuccess = e=>{
+  const tx=e.target.result.transaction('seal','readonly');
+  const g=tx.objectStore('seal').get('best');
+  g.onsuccess = ()=>{
+    if(g.result){
+      g.result.agents.forEach((s,i)=>{ if(agents[i]){ agents[i].w=s.w; agents[i].fitness=s.fitness; agents[i].x=s.x; agents[i].y=s.y; }});
+      document.getElementById('status').textContent = 'Restored sealed lattice';
+    }
+  };
+};
+ch.onmessage = e=>{ if(e.data.type==='seal') console.log('peer seal received'); };
+</script>
+</body>
+</html>
