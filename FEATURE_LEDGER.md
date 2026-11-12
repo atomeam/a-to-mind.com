@@ -13969,13 +13969,16 @@ Void is now Verse everywhere.
 
 **F695-spatial-constrained-char-rnn-garden**
 
-Entry added by ledger-guard from drafts/F695-spatial-constrained-char-rnn-garden/SPEC.md, after a full-file write dropped it.
+Entry added by frontier-engine assimilation.
 
-
-**Slug:** F695-spatial-constrained-char-rnn-garden
+Plain name: Spatial constrained character RNN garden
+Job: A local generative mind whose output characters appear as draggable spatial cards; user drops them into constraint zones to bias future generation; hidden-state particles visualize thought currents; orientation supplies wind.
+Input: Seed text, Generate/Step buttons, drag cards into zones, tilt for wind, Seal.
+Keeps: Generated garden layout + RNN weights in IndexedDB.
+Not on Verse yet: Checked against recent ledger entries (no generative sequence model with spatial constraint injection via drag).
 
 **Concept**
-A local character-level generative mind embodied in space. A tiny Elman RNN (hidden size 16) running in the main thread (Worker-ready) generates characters that materialize as floating DOM cards. The user drags cards into colored constraint zones (attractors with bias vectors) that modulate the next-token logits. A Canvas2D particle field visualizes the hidden-state trajectory as flowing "thought currents." DeviceOrientation supplies a continuous wind force that drifts the cards. Champion weights and current garden seal to IndexedDB. Fully offline, single-file, progressive.
+A local character-level generative mind embodied in space. A tiny Elman RNN (hidden size 16) generates characters that materialize as floating DOM cards. The user drags cards into colored constraint zones that modulate the next-token logits. A Canvas2D particle field visualizes the hidden-state trajectory as flowing "thought currents." DeviceOrientation supplies a continuous wind force that drifts the cards. Champion weights and current garden seal to IndexedDB. Fully offline, single-file, progressive.
 
 This leaves the recent cluster of continuum kernels, particle flocks, DEM granules, SDF raymarch, pure-DOM residual MLP genome swarms, and force-directed packing lists. Core novel combination is a generative sequence model whose output is spatially embodied and whose generation is steered by physical drag of tokens into constraint zones, with orientation as causal wind and hidden-state particle visualization. Not a predictor on a field, not a genome competition, not a packing utility.
 
@@ -14009,10 +14012,6 @@ User types a seed, clicks Generate; characters appear as cards and drift. Drag a
 
 Void is now Verse everywhere.
 
-**Files:** drafts/F695-spatial-constrained-char-rnn-garden/SPEC.md, drafts/F695-spatial-constrained-char-rnn-garden/index.html
-
 **Files**: drafts/F695-spatial-constrained-char-rnn-garden/SPEC.md, drafts/F695-spatial-constrained-char-rnn-garden/index.html
 
-## Guard restore (2026-11-12)
-
-Ledger guard restored this file from ea3ebfc after 9f997ab broke it. Write the ledger with git on disk, append only.
+**Files**: drafts/F695-spatial-constrained-char-rnn-garden/SPEC.md, drafts/F695-spatial-constrained-char-rnn-garden/index.html
