@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F691 WebXR Hand DEM Granular MLP Mind — Verse</title>
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui; overflow:hidden; }
+canvas { display:block; position:absolute; top:0; left:0; }
+#ui { position:absolute; top:12px; left:12px; z-index:10; background:rgba(0,0,0,.5); padding:10px; border-radius:8px; }
+button { margin:4px; padding:6px 10px; background:#223; color:#fff; border:1px solid #445; border-radius:4px; cursor:pointer; }
+.portal { position:absolute; width:60px; height:40px; background:rgba(80,120,255,.7); border:2px solid #aaf; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:12px; cursor:grab; user-select:none; z-index:5; }
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="ui">
+  <button id="btnOrient">Request Orientation</button>
+  <button id="btnXR">Enter WebXR Hand</button>
+  <button id="btnSeal">Seal Genome</button>
+  <button id="btnReset">Reset Granules</button>
+  <div id="status">Verse DEM · particles: 0 · fitness: 0</div>
+</div>
+<script>
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+let W = cv.width = innerWidth, H = cv.height = innerHeight;
+addEventListener('resize', () => { W = cv.width = innerWidth; H = cv.height = innerHeight; });
+
+const N = 100;
+const particles = [];
+const portals = [];
+let gravity = {x:0, y:0.15};
+let orient = {beta:0, gamma:0};
+let hand = {x: W/2, y: H/2, r: 40, active: false, vx:0, vy:0};
+let fitness = 0;
+let mlp = {
+  w1: Array(6*8).fill(0).map(() => (Math.random()-0.5)*0.5),
+  w2: Array(8*3).fill(0).map(() => (Math.random()-0.5)*0.5),
+  mu: 0.3, e: 0.4, coh: 0.05
+};
+
+function initParticles() {
+  particles.length = 0;
+  for (let i = 0; i < N; i++) {
+    particles.push({
+      x: Math.random()*W, y: Math.random()*H*0.5,
+      vx: (Math.random()-0.5)*2, vy: (Math.random()-0.5)*2,
+      r: 6 + Math.random()*6, m: 1,
+      color: `hsl(${Math.random()*60+200},70%,60%)`
+    });
+  }
+}
+initParticles();
+
+// Simple portals
+for (let i = 0; i < 3; i++) {
+  const el = document.createElement('div');
+  el.className = 'portal';
+  el.textContent = 'mass';
+  el.style.left = (100 + i*80) + 'px';
+  el.style.top = '80px';
+  el.draggable = true;
+  document.body.appendChild(el);
+  portals.push({el, x:100+i*80, y:80, dropped: false, p: null});
+  el.addEventListener('pointerdown', e => { el.setPointerCapture(e.pointerId); });
+  el.addEventListener('pointermove', e => {
+    if (e.buttons) {
+      const p = portals.find(pp => pp.el === el);
+      p.x = e.clientX - 30; p.y = e.clientY - 20;
+      el.style.left = p.x + 'px'; el.style.top = p.y + 'px';
+    }
+  });
+  el.addEventListener('dblclick', () => {
+    const p = portals.find(pp => pp.el === el);
+    if (!p.dropped) {
+      p.dropped = true;
+      p.p = {x: p.x+30, y: p.y+20, vx:0, vy:0, r: 20, m: 4, color: '#88f'};
+      particles.push(p.p);
+      el.style.opacity = '0.4';
+    }
+  });
+}
+
+function relu(x) { return Math.max(0, x); }
+function forward(input) {
+  const h = new Array(8).fill(0);
+  for (let i = 0; i < 8; i++) {
+    let s = 0;
+    for (let j = 0; j < 6; j++) s += input[j] * mlp.w1[j*8 + i];
+    h[i] = relu(s);
+  }
+  const o = new Array(3).fill(0);
+  for (let i = 0; i < 3; i++) {
+    let s = 0;
+    for (let j = 0; j < 8; j++) s += h[j] * mlp.w2[j*3 + i];
+    o[i] = s;
+  }
+  mlp.mu = 0.1 + Math.tanh(o[0])*0.4;
+  mlp.e = 0.2 + Math.tanh(o[1])*0.5;
+  mlp.coh = Math.max(0, Math.tanh(o[2])*0.1);
+  return o;
+}
+
+function resolveContacts() {
+  for (let i = 0; i < particles.length; i++) {
+    const a = particles[i];
+    // hand collider
+    if (hand.active) {
+      const dx = a.x - hand.x, dy = a.y - hand.y;
+      const d = Math.hypot(dx, dy);
+      const min = a.r + hand.r;
+      if (d < min && d > 0) {
+        const nx = dx/d, ny = dy/d;
+        const overlap = min - d;
+        a.x += nx * overlap * 0.8;
+        a.y += ny * overlap * 0.8;
+        const rv = a.vx - hand.vx; // approx
+        const imp = -(1 + mlp.e) * (rv * nx) * a.m;
+        a.vx += nx * imp / a.m;
+        a.vy += ny * imp / a.m;
+      }
+    }
+    for (let j = i+1; j < particles.length; j++) {
+      const b = particles[j];
+      const dx = b.x - a.x, dy = b.y - a.y;
+      const d = Math.hypot(dx, dy);
+      const min = a.r + b.r;
+      if (d < min && d > 0) {
+        const nx = dx/d, ny = dy/d;
+        const overlap = min - d;
+        const im = 1/a.m + 1/b.m;
+        a.x -= nx * overlap * (1/a.m)/im * 0.5;
+        a.y -= ny * overlap * (1/a.m)/im * 0.5;
+        b.x += nx * overlap * (1/b.m)/im * 0.5;
+        b.y += ny * overlap * (1/b.m)/im * 0.5;
+        const rvx = b.vx - a.vx, rvy = b.vy - a.vy;
+        const vn = rvx*nx + rvy*ny;
+        if (vn < 0) {
+          const jimp = -(1 + mlp.e) * vn / im;
+          const jx = jimp * nx, jy = jimp * ny;
+          a.vx -= jx / a.m; a.vy -= jy / a.m;
+          b.vx += jx / b.m; b.vy += jy / b.m;
+          // friction approx
+          const vt = rvx*(-ny) + rvy*nx;
+          const fr = Math.min(Math.abs(vt), mlp.mu * Math.abs(jimp));
+          const fx = -Math.sign(vt) * fr * (-ny), fy = -Math.sign(vt) * fr * nx;
+          a.vx -= fx / a.m; a.vy -= fy / a.m;
+          b.vx += fx / b.m; b.vy += fy / b.m;
+        }
+        if (mlp.coh > 0 && overlap < 1) {
+          a.vx -= nx * mlp.coh; a.vy -= ny * mlp.coh;
+          b.vx += nx * mlp.coh; b.vy += ny * mlp.coh;
+        }
+      }
+    }
+  }
+}
+
+function step() {
+  const resX = (hand.x - W/2)/W;
+  const resY = (hand.y - H/2)/H;
+  const input = [resX, resY, hand.vx*0.1, hand.vy*0.1, orient.beta/90, orient.gamma/90];
+  forward(input);
+  for (const p of particles) {
+    p.vx += gravity.x; p.vy += gravity.y;
+    p.vx *= 0.99; p.vy *= 0.99;
+    p.x += p.vx; p.y += p.vy;
+    if (p.y > H - p.r) { p.y = H - p.r; p.vy *= -mlp.e; p.vx *= 0.8; }
+    if (p.x < p.r) { p.x = p.r; p.vx *= -mlp.e; }
+    if (p.x > W - p.r) { p.x = W - p.r; p.vx *= -mlp.e; }
+  }
+  resolveContacts();
+}
+
+function draw() {
+  ctx.fillStyle = 'rgba(10,10,18,0.3)';
+  ctx.fillRect(0,0,W,H);
+  for (const p of particles) {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+    ctx.fillStyle = p.color;
+    ctx.fill();
+  }
+  if (hand.active) {
+    ctx.beginPath();
+    ctx.arc(hand.x, hand.y, hand.r, 0, Math.PI*2);
+    ctx.strokeStyle = '#0ff';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  }
+  document.getElementById('status').textContent = `Verse DEM · particles: ${particles.length} · μ:${mlp.mu.toFixed(2)} e:${mlp.e.toFixed(2)} · fitness: ${fitness}`;
+}
+
+function loop() {
+  step();
+  draw();
+  requestAnimationFrame(loop);
+}
+loop();
+
+// Input
+cv.addEventListener('pointermove', e => {
+  hand.vx = e.clientX - hand.x;
+  hand.vy = e.clientY - hand.y;
+  hand.x = e.clientX; hand.y = e.clientY;
+  hand.active = true;
+});
+cv.addEventListener('pointerdown', () => { fitness++; mutate(); });
+cv.addEventListener('pointerleave', () => hand.active = false);
+
+function mutate() {
+  for (let i = 0; i < mlp.w1.length; i++) mlp.w1[i] += (Math.random()-0.5)*0.05;
+  for (let i = 0; i < mlp.w2.length; i++) mlp.w2[i] += (Math.random()-0.5)*0.05;
+}
+
+// Orientation
+document.getElementById('btnOrient').onclick = async () => {
+  if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+    try { await DeviceOrientationEvent.requestPermission(); } catch(e) {}
+  }
+  addEventListener('deviceorientation', e => {
+    orient.beta = e.beta || 0;
+    orient.gamma = e.gamma || 0;
+    gravity.x = (orient.gamma / 90) * 0.3;
+    gravity.y = Math.max(0.05, (orient.beta / 90) * 0.3 + 0.1);
+  });
+};
+
+// WebXR attempt (basic session; hand tracking more involved)
+document.getElementById('btnXR').onclick = async () => {
+  if (!navigator.xr) { alert('WebXR not available'); return; }
+  try {
+    const session = await navigator.xr.requestSession('immersive-vr', {optionalFeatures: ['hand-tracking']});
+    // For prototype, just note; full hand tracking requires more WebXR boilerplate
+    document.getElementById('status').textContent += ' · XR session started (hand fallback to pointer)';
+  } catch(e) { console.warn(e); }
+};
+
+// Seal
+const DB_NAME = 'verse-f691';
+document.getElementById('btnSeal').onclick = async () => {
+  const data = {mlp, fitness, gravity, ts: Date.now()};
+  try {
+    const req = indexedDB.open(DB_NAME, 1);
+    req.onupgradeneeded = () => req.result.createObjectStore('state');
+    req.onsuccess = () => {
+      const tx = req.result.transaction('state', 'readwrite');
+      tx.objectStore('state').put(data, 'genome');
+    };
+    const bc = new BroadcastChannel('verse-genome');
+    bc.postMessage({type: 'f691', data});
+    alert('Sealed to IndexedDB + BroadcastChannel');
+  } catch(e) { console.warn(e); }
+};
+
+document.getElementById('btnReset').onclick = () => { initParticles(); fitness = 0; };
+
+// Load seal
+(async () => {
+  try {
+    const req = indexedDB.open(DB_NAME, 1);
+    req.onsuccess = () => {
+      const tx = req.result.transaction('state', 'readonly');
+      const get = tx.objectStore('state').get('genome');
+      get.onsuccess = () => { if (get.result) { Object.assign(mlp, get.result.mlp); fitness = get.result.fitness || 0; } };
+    };
+  } catch(e) {}
+})();
+
+// Broadcast receive
+try {
+  const bc = new BroadcastChannel('verse-genome');
+  bc.onmessage = e => { if (e.data.type === 'f691') { Object.assign(mlp, e.data.data.mlp); } };
+} catch(e) {}
+</script>
+</body>
+</html>
