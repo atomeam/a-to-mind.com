@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F719 WebRTC Sealed Orientation-MLP DOM Swarm — Verse</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<style>
+:root { --bg: #0a0a12; --fg: #e0e0ff; --accent: #6cf; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); font-family: system-ui, sans-serif; overflow: hidden; }
+#status { position: fixed; top: 8px; left: 8px; z-index: 100; font-size: 12px; opacity: 0.8; pointer-events: none; }
+.agent {
+  position: absolute; width: 48px; height: 48px; border-radius: 12px;
+  background: hsl(var(--h), 70%, 55%); border: 2px solid rgba(255,255,255,0.3);
+  display: flex; align-items: center; justify-content: center; font-size: 10px;
+  cursor: pointer; user-select: none; box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  transition: transform 0.05s linear;
+}
+.agent:hover { z-index: 10; }
+#info { position: fixed; bottom: 8px; left: 8px; font-size: 11px; max-width: 280px; opacity: 0.7; }
+</style>
+</head>
+<body>
+<div id="status">F719 · Orientation → MLP → DOM Swarm · tilt / drag</div>
+<div id="info">Click an agent to reward it. Overlaps transfer sealed genomes via BroadcastChannel. Best persists in IndexedDB.</div>
+<script>
+const N = 14;
+const agents = [];
+let beta = 0, gamma = 0, t = 0;
+const channel = new BroadcastChannel('f719-genome');
+
+function randn() { return (Math.random() + Math.random() + Math.random() - 1.5) * 0.7; }
+function hashWeights(w) {
+  let h = 0;
+  for (let i = 0; i < w.length; i++) h = (h * 31 + Math.round(w[i] * 1000)) | 0;
+  return h.toString(16);
+}
+
+class Agent {
+  constructor(i) {
+    this.id = i;
+    this.el = document.createElement('div');
+    this.el.className = 'agent';
+    this.el.textContent = i;
+    document.body.appendChild(this.el);
+    this.x = Math.random() * (innerWidth - 60) + 30;
+    this.y = Math.random() * (innerHeight - 60) + 30;
+    this.vx = 0; this.vy = 0;
+    this.fitness = 0.5;
+    this.weights = Array.from({length: 4*6 + 6}, () => randn() * 0.3); // 4→6 MLP
+    this.el.addEventListener('pointerdown', e => { this.reward(0.15); e.stopPropagation(); });
+  }
+  mlp(inputs) {
+    // simple 4-6 linear
+    const out = [0,0,0,0,0,0];
+    for (let j = 0; j < 6; j++) {
+      let s = this.weights[24 + j];
+      for (let i = 0; i < 4; i++) s += inputs[i] * this.weights[i * 6 + j];
+      out[j] = Math.tanh(s);
+    }
+    return out;
+  }
+  step(dt) {
+    const density = agents.filter(a => a !== this && Math.hypot(a.x - this.x, a.y - this.y) < 80).length / 4;
+    const inputs = [beta / 90, gamma / 90, density, Math.sin(t * 0.5)];
+    const o = this.mlp(inputs);
+    this.vx += o[0] * 0.8 + beta * 0.002;
+    this.vy += o[1] * 0.8 + gamma * 0.002;
+    this.vx *= 0.92; this.vy *= 0.92;
+    this.x += this.vx * dt * 60;
+    this.y += this.vy * dt * 60;
+    // bounds
+    if (this.x < 20 || this.x > innerWidth - 20) this.vx *= -0.7;
+    if (this.y < 20 || this.y > innerHeight - 20) this.vy *= -0.7;
+    this.x = Math.max(20, Math.min(innerWidth - 20, this.x));
+    this.y = Math.max(20, Math.min(innerHeight - 20, this.y));
+    const scale = 0.8 + o[2] * 0.4;
+    const hue = (180 + o[3] * 120) % 360;
+    this.el.style.left = this.x - 24 + 'px';
+    this.el.style.top = this.y - 24 + 'px';
+    this.el.style.transform = `scale(${scale}) rotate(${o[4] * 30}deg)`;
+    this.el.style.setProperty('--h', hue);
+    this.fitness = 0.98 * this.fitness + 0.02 * (1 - density * 0.3);
+  }
+  reward(r) { this.fitness = Math.min(1, this.fitness + r); }
+  seal() {
+    return { id: this.id, weights: this.weights.slice(), fitness: this.fitness, hash: hashWeights(this.weights) };
+  }
+  adopt(genome) {
+    if (genome.fitness > this.fitness) {
+      this.weights = genome.weights.map(w => w + randn() * 0.05);
+      this.fitness = genome.fitness * 0.9;
+    }
+  }
+}
+
+for (let i = 0; i < N; i++) agents.push(new Agent(i));
+
+// collisions / transfers
+function checkTransfers() {
+  for (let i = 0; i < agents.length; i++) {
+    for (let j = i + 1; j < agents.length; j++) {
+      const a = agents[i], b = agents[j];
+      if (Math.hypot(a.x - b.x, a.y - b.y) < 50) {
+        if (a.fitness > b.fitness + 0.05) {
+          const g = a.seal();
+          b.adopt(g);
+          channel.postMessage({ type: 'genome', genome: g });
+        } else if (b.fitness > a.fitness + 0.05) {
+          const g = b.seal();
+          a.adopt(g);
+          channel.postMessage({ type: 'genome', genome: g });
+        }
+      }
+    }
+  }
+}
+
+channel.onmessage = e => {
+  if (e.data.type === 'genome') {
+    const g = e.data.genome;
+    const worst = agents.reduce((w, a) => a.fitness < w.fitness ? a : w);
+    worst.adopt(g);
+  }
+};
+
+// DeviceOrientation
+window.addEventListener('deviceorientation', e => {
+  if (e.beta != null) beta = e.beta;
+  if (e.gamma != null) gamma = e.gamma;
+});
+
+// pointer fallback for tilt
+let dragging = false;
+document.addEventListener('pointerdown', e => { if (e.target === document.body) dragging = true; });
+document.addEventListener('pointermove', e => {
+  if (dragging) {
+    gamma = (e.clientX / innerWidth - 0.5) * 90;
+    beta = (e.clientY / innerHeight - 0.5) * 90;
+  }
+});
+document.addEventListener('pointerup', () => dragging = false);
+
+// persistence
+const DB = 'verse-f719';
+async function saveBest() {
+  const best = agents.reduce((b, a) => a.fitness > b.fitness ? a : b);
+  try {
+    const req = indexedDB.open(DB, 1);
+    req.onupgradeneeded = () => req.result.createObjectStore('genomes');
+    req.onsuccess = () => {
+      const tx = req.result.transaction('genomes', 'readwrite');
+      tx.objectStore('genomes').put(best.seal(), 'best');
+    };
+  } catch (e) {}
+}
+async function loadBest() {
+  try {
+    const req = indexedDB.open(DB, 1);
+    req.onsuccess = () => {
+      const tx = req.result.transaction('genomes', 'readonly');
+      const get = tx.objectStore('genomes').get('best');
+      get.onsuccess = () => {
+        if (get.result) agents[0].adopt(get.result);
+      };
+    };
+  } catch (e) {}
+}
+loadBest();
+
+let last = performance.now();
+function loop(now) {
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  t += dt;
+  agents.forEach(a => a.step(dt));
+  if (Math.random() < 0.1) checkTransfers();
+  if (Math.random() < 0.02) saveBest();
+  document.getElementById('status').textContent =
+    `F719 · agents:${N} · best:${Math.max(...agents.map(a=>a.fitness)).toFixed(2)} · tilt β${beta.toFixed(0)} γ${gamma.toFixed(0)}`;
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
