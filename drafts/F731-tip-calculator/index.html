@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tip calculator · Verse</title>
+<style>
+:root { --bg:#0f1115; --fg:#e8e8e8; --acc:#4ade80; --card:#1a1d24; --border:#2a2e37; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--fg); line-height:1.4; }
+header { padding:1rem; border-bottom:1px solid var(--border); }
+h1 { margin:0; font-size:1.4rem; }
+.container { max-width:560px; margin:0 auto; padding:1rem; }
+section { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:1rem; margin-bottom:1rem; }
+h2 { margin:0 0 0.5rem; font-size:1.1rem; }
+label { display:block; margin:0.5rem 0 0.2rem; font-size:0.9rem; }
+input, select, button { padding:0.5rem; border-radius:4px; border:1px solid var(--border); background:#111; color:var(--fg); font:inherit; width:100%; }
+button { background:var(--acc); color:#000; border:none; cursor:pointer; font-weight:600; width:auto; }
+button:hover { filter:brightness(1.1); }
+.row { display:flex; gap:0.5rem; flex-wrap:wrap; align-items:end; margin-bottom:0.5rem; }
+.presets { display:flex; flex-wrap:wrap; gap:0.4rem; margin:0.4rem 0; }
+.presets button { background:#222; color:var(--fg); }
+.presets button.active { background:var(--acc); color:#000; }
+.results { font-size:1.15rem; }
+.results strong { color:var(--acc); }
+.line { background:#111; padding:0.6rem; border-radius:4px; font-family:ui-monospace,monospace; font-size:0.9rem; margin:0.5rem 0; word-break:break-all; }
+footer { text-align:center; font-size:0.8rem; opacity:0.7; padding:1rem; }
+</style>
+</head>
+<body>
+<header>
+  <div class="container">
+    <h1>Tip calculator</h1>
+    <p>Bill, tip percent, people, and rounding. Copy the line. Saved on this device.</p>
+  </div>
+</header>
+<div class="container">
+  <section>
+    <h2>Bill</h2>
+    <label>Amount <input id="bill" type="number" step="0.01" min="0" value="45.00" /></label>
+    <label>Tip percent
+      <div class="presets" id="presets">
+        <button data-p="10">10%</button>
+        <button data-p="15">15%</button>
+        <button data-p="18">18%</button>
+        <button data-p="20" class="active">20%</button>
+        <button data-p="25">25%</button>
+      </div>
+      <input id="tipPct" type="number" step="0.1" min="0" value="20" />
+    </label>
+    <label>People <input id="people" type="number" min="1" max="99" value="1" /></label>
+    <label>Rounding
+      <select id="round">
+        <option value="exact">Exact to the cent</option>
+        <option value="tip-dollar">Round tip up to next dollar</option>
+        <option value="each-dollar">Round each person's total to nearest dollar</option>
+      </select>
+    </label>
+  </section>
+
+  <section>
+    <h2>Result</h2>
+    <div id="results" class="results"></div>
+    <div id="line" class="line"></div>
+    <div class="row">
+      <button id="copyBtn">Copy line</button>
+      <button id="clearBtn">Reset</button>
+    </div>
+  </section>
+</div>
+<footer>Everything stays on this device. Works offline. Numbers are exact arithmetic on the values you enter.</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+const KEY = 'verse-tip-calculator';
+
+function load() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) {
+      const d = JSON.parse(raw);
+      $('bill').value = d.bill ?? 45;
+      $('tipPct').value = d.tipPct ?? 20;
+      $('people').value = d.people ?? 1;
+      $('round').value = d.round ?? 'exact';
+    }
+  } catch (e) {}
+  updatePresets();
+  calc();
+}
+
+function save() {
+  try {
+    localStorage.setItem(KEY, JSON.stringify({
+      bill: parseFloat($('bill').value) || 0,
+      tipPct: parseFloat($('tipPct').value) || 0,
+      people: parseInt($('people').value) || 1,
+      round: $('round').value
+    }));
+  } catch (e) {}
+}
+
+function updatePresets() {
+  const p = parseFloat($('tipPct').value) || 0;
+  document.querySelectorAll('#presets button').forEach(b => {
+    b.classList.toggle('active', parseFloat(b.dataset.p) === p);
+  });
+}
+
+function roundUpDollar(n) {
+  return Math.ceil(n);
+}
+
+function calc() {
+  let bill = Math.max(0, parseFloat($('bill').value) || 0);
+  let tipPct = Math.max(0, parseFloat($('tipPct').value) || 0);
+  let people = Math.min(99, Math.max(1, parseInt($('people').value) || 1));
+  $('people').value = people;
+  const mode = $('round').value;
+
+  let tip = bill * (tipPct / 100);
+  let total = bill + tip;
+
+  if (mode === 'tip-dollar') {
+    tip = roundUpDollar(tip);
+    total = bill + tip;
+  }
+
+  let each = total / people;
+  let eachTip = tip / people;
+  let adjusted = [];
+
+  if (mode === 'each-dollar') {
+    const base = Math.round(each);
+    const remainder = Math.round((total - base * people) * 100) / 100;
+    for (let i = 0; i < people; i++) {
+      adjusted.push(base + (i === people - 1 ? remainder : 0));
+    }
+    each = adjusted[0]; // for display of typical
+  } else {
+    each = Math.round(each * 100) / 100;
+    eachTip = Math.round(eachTip * 100) / 100;
+    tip = Math.round(tip * 100) / 100;
+    total = Math.round(total * 100) / 100;
+  }
+
+  const fmt = n => '$' + n.toFixed(2);
+
+  let resultHtml = `
+    Tip: <strong>${fmt(tip)}</strong><br>
+    Total: <strong>${fmt(total)}</strong><br>
+    Each (${people}): <strong>${fmt(each)}</strong>
+  `;
+  if (mode === 'each-dollar' && people > 1) {
+    resultHtml += `<br><small>Last person adjusted by remainder so the sum matches.</small>`;
+  }
+  $('results').innerHTML = resultHtml;
+
+  const line = `Bill ${fmt(bill)} + ${tipPct}% tip (${fmt(tip)}) = ${fmt(total)}. Split ${people} way${people>1?'s':''}: ${fmt(each)} each.`;
+  $('line').textContent = line;
+
+  save();
+  updatePresets();
+  return line;
+}
+
+$('bill').oninput = $('tipPct').oninput = $('people').oninput = $('round').onchange = calc;
+
+document.querySelectorAll('#presets button').forEach(b => {
+  b.onclick = () => {
+    $('tipPct').value = b.dataset.p;
+    calc();
+  };
+});
+
+$('copyBtn').onclick = () => {
+  const line = $('line').textContent;
+  navigator.clipboard.writeText(line).then(() => {
+    const btn = $('copyBtn');
+    const old = btn.textContent;
+    btn.textContent = 'Copied';
+    setTimeout(() => btn.textContent = old, 1200);
+  }).catch(() => alert('Copy failed — select the line manually'));
+};
+
+$('clearBtn').onclick = () => {
+  $('bill').value = 45;
+  $('tipPct').value = 20;
+  $('people').value = 1;
+  $('round').value = 'exact';
+  localStorage.removeItem(KEY);
+  calc();
+};
+
+load();
+</script>
+</body>
+</html>
