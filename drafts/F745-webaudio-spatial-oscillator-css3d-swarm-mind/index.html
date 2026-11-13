@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F745 WebAudio Spatial Oscillator CSS3D Swarm Mind</title>
+<style>
+  body { margin: 0; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  #stage { position: absolute; inset: 0; perspective: 800px; transform-style: preserve-3d; }
+  .agent {
+    position: absolute; width: 120px; height: 80px; border-radius: 12px;
+    background: rgba(30,30,50,0.85); border: 1px solid #4af;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-size: 12px; cursor: grab; user-select: none; box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    transition: filter 0.2s;
+  }
+  .agent.locked { border-color: #4f4; box-shadow: 0 0 15px #4f4; }
+  #hud { position: fixed; top: 12px; left: 12px; z-index: 10; background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 8px; font-size: 13px; }
+  button { margin: 4px; padding: 6px 12px; background: #222; color: #eee; border: 1px solid #555; border-radius: 6px; cursor: pointer; }
+  button:hover { background: #333; }
+  #order { font-weight: bold; color: #4af; }
+</style>
+</head>
+<body>
+<div id="hud">
+  <div>F745 Spatial Oscillator Swarm</div>
+  <div>Order: <span id="order">0.00</span></div>
+  <button id="start">Start Audio</button>
+  <button id="seal">Seal Best</button>
+  <button id="reset">Reset</button>
+</div>
+<div id="stage"></div>
+<script>
+const N = 10;
+const agents = [];
+let audioCtx, masterGain, analyser;
+let running = false;
+let bestFitness = -Infinity;
+let bestGenome = null;
+const channel = new BroadcastChannel('f745-genomes');
+const dbName = 'verse-f745-osc';
+
+function rand(a,b){ return a + Math.random()*(b-a); }
+
+class Agent {
+  constructor(i) {
+    this.id = i;
+    this.x = rand(-200,200); this.y = rand(-150,150); this.z = rand(-100,100);
+    this.vx=0; this.vy=0; this.vz=0;
+    this.freq = rand(220,440);
+    this.phase = Math.random()*Math.PI*2;
+    this.coupling = rand(0.5,2);
+    this.hue = rand(180,240);
+    this.fitness = 0;
+    this.el = document.createElement('div');
+    this.el.className = 'agent';
+    this.el.innerHTML = `<div>A${i}</div><div class="f"></div>`;
+    document.getElementById('stage').appendChild(this.el);
+    this.osc = null; this.pan = null;
+  }
+  startAudio(ctx) {
+    this.osc = ctx.createOscillator();
+    this.osc.type = 'sine';
+    this.osc.frequency.value = this.freq;
+    this.pan = ctx.createPanner();
+    this.pan.panningModel = 'HRTF';
+    this.pan.distanceModel = 'inverse';
+    this.pan.refDistance = 100;
+    this.osc.connect(this.pan).connect(masterGain);
+    this.osc.start();
+  }
+  update(dt, pointer) {
+    // spatial coupling forces
+    let fx=0, fy=0, fz=0, dphase=0;
+    for (const o of agents) {
+      if (o===this) continue;
+      const dx=o.x-this.x, dy=o.y-this.y, dz=o.z-this.z;
+      const dist = Math.hypot(dx,dy,dz)+1;
+      const strength = this.coupling / dist;
+      fx += dx * strength * 0.01;
+      fy += dy * strength * 0.01;
+      fz += dz * strength * 0.01;
+      dphase += Math.sin(o.phase - this.phase) * strength * 0.5;
+    }
+    // pointer attract
+    if (pointer.down) {
+      const dx=pointer.x-this.x, dy=pointer.y-this.y;
+      const d = Math.hypot(dx,dy)+1;
+      if (d < 150) {
+        fx += dx * 0.05;
+        fy += dy * 0.05;
+        this.fitness += (150-d)*0.001;
+        dphase += 0.2;
+      }
+    }
+    this.vx = (this.vx + fx)*0.92;
+    this.vy = (this.vy + fy)*0.92;
+    this.vz = (this.vz + fz)*0.92;
+    this.x += this.vx; this.y += this.vy; this.z += this.vz;
+    this.phase += dphase * dt;
+    this.freq += Math.sin(this.phase)*2;
+    this.freq = Math.max(80, Math.min(800, this.freq));
+    if (this.osc) {
+      this.osc.frequency.setTargetAtTime(this.freq, audioCtx.currentTime, 0.05);
+      this.pan.positionX.setValueAtTime(this.x/100, audioCtx.currentTime);
+      this.pan.positionY.setValueAtTime(this.y/100, audioCtx.currentTime);
+      this.pan.positionZ.setValueAtTime(this.z/100, audioCtx.currentTime);
+    }
+    // DOM
+    this.el.style.transform = `translate3d(${this.x}px,${this.y}px,${this.z}px)`;
+    this.el.style.background = `hsla(${this.hue},70%,40%,0.85)`;
+    this.el.querySelector('.f').textContent = this.freq.toFixed(0)+'Hz';
+    this.el.classList.toggle('locked', Math.abs(dphase)<0.5);
+  }
+}
+
+function init() {
+  for (let i=0;i<N;i++) agents.push(new Agent(i));
+  loadGenome();
+}
+
+let pointer = {x:0,y:0,down:false};
+document.addEventListener('pointermove', e => {
+  const rect = document.getElementById('stage').getBoundingClientRect();
+  pointer.x = e.clientX - rect.width/2;
+  pointer.y = e.clientY - rect.height/2;
+});
+document.addEventListener('pointerdown', ()=> pointer.down=true);
+document.addEventListener('pointerup', ()=> pointer.down=false);
+
+document.getElementById('start').onclick = async () => {
+  if (running) return;
+  audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+  masterGain = audioCtx.createGain();
+  masterGain.gain.value = 0.08;
+  masterGain.connect(audioCtx.destination);
+  analyser = audioCtx.createAnalyser();
+  masterGain.connect(analyser);
+  agents.forEach(a => a.startAudio(audioCtx));
+  running = true;
+  document.getElementById('start').textContent = 'Audio On';
+};
+
+function loop(t) {
+  const dt = 0.016;
+  let order = 0;
+  agents.forEach(a => a.update(dt, pointer));
+  // simple order param
+  for (let i=0;i<N;i++) for (let j=i+1;j<N;j++) {
+    order += Math.cos(agents[i].phase - agents[j].phase);
+  }
+  order /= (N*(N-1)/2);
+  document.getElementById('order').textContent = order.toFixed(2);
+  document.body.style.filter = `hue-rotate(${order*30}deg)`;
+  // evo every ~2s
+  if (Math.random()<0.005) evolve();
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+function evolve() {
+  const sorted = [...agents].sort((a,b)=>b.fitness-a.fitness);
+  const best = sorted[0];
+  if (best.fitness > bestFitness) {
+    bestFitness = best.fitness;
+    bestGenome = {freq:best.freq, coupling:best.coupling, hue:best.hue, positions: agents.map(a=>({x:a.x,y:a.y,z:a.z}))};
+  }
+  // mutate weak toward best
+  for (let k=3;k<N;k++) {
+    const a = sorted[k];
+    a.freq = best.freq + rand(-20,20);
+    a.coupling = best.coupling + rand(-0.2,0.2);
+    a.hue = best.hue + rand(-10,10);
+    a.fitness *= 0.95;
+  }
+}
+
+document.getElementById('seal').onclick = () => {
+  if (!bestGenome) return;
+  const req = indexedDB.open(dbName,1);
+  req.onupgradeneeded = e => e.target.result.createObjectStore('genomes');
+  req.onsuccess = e => {
+    const tx = e.target.result.transaction('genomes','readwrite');
+    tx.objectStore('genomes').put(bestGenome, 'best');
+  };
+  channel.postMessage({type:'genome', data:bestGenome, fitness:bestFitness});
+  alert('Sealed best genome');
+};
+
+document.getElementById('reset').onclick = () => location.reload();
+
+function loadGenome() {
+  const req = indexedDB.open(dbName,1);
+  req.onsuccess = e => {
+    const tx = e.target.result.transaction('genomes','readonly');
+    const g = tx.objectStore('genomes').get('best');
+    g.onsuccess = () => {
+      if (g.result) applyGenome(g.result);
+    };
+  };
+}
+
+function applyGenome(g) {
+  if (!g) return;
+  agents.forEach((a,i) => {
+    if (g.positions && g.positions[i]) {
+      a.x = g.positions[i].x; a.y=g.positions[i].y; a.z=g.positions[i].z;
+    }
+    a.freq = g.freq + rand(-5,5);
+    a.coupling = g.coupling;
+    a.hue = g.hue;
+  });
+  bestGenome = g;
+}
+
+channel.onmessage = e => {
+  if (e.data.type==='genome' && e.data.fitness > bestFitness) {
+    bestFitness = e.data.fitness;
+    applyGenome(e.data.data);
+  }
+};
+
+init();
+</script>
+</body>
+</html>
