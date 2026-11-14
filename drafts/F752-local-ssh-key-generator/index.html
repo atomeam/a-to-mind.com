@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Local SSH Key Generator – Verse</title>
+<style>
+  :root { --bg: #0f1419; --fg: #e6edf3; --accent: #58a6ff; --card: #161b22; }
+  body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--fg); margin: 0; padding: 1rem; line-height: 1.5; }
+  h1 { font-size: 1.6rem; margin: 0 0 0.5rem; }
+  .card { background: var(--card); border-radius: 12px; padding: 1rem; margin: 1rem 0; max-width: 720px; }
+  label { display: block; margin: 0.5rem 0 0.2rem; font-weight: 500; }
+  input, textarea, button { font: inherit; padding: 0.5rem; border-radius: 6px; border: 1px solid #30363d; background: #0d1117; color: var(--fg); width: 100%; box-sizing: border-box; }
+  button { background: var(--accent); color: #0d1117; border: none; cursor: pointer; font-weight: 600; margin-top: 0.5rem; }
+  button:hover { filter: brightness(1.1); }
+  button.secondary { background: #21262d; color: var(--fg); }
+  #output { white-space: pre-wrap; word-break: break-all; background: #0d1117; padding: 0.8rem; border-radius: 6px; font-family: ui-monospace, monospace; font-size: 0.9rem; }
+  canvas { border: 1px solid #30363d; border-radius: 8px; max-width: 100%; display: block; margin: 0.5rem 0; }
+  .row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .row button { flex: 1; min-width: 120px; }
+  .note { font-size: 0.85rem; opacity: 0.8; margin-top: 0.5rem; }
+  #status { min-height: 1.2em; color: #7ee787; }
+</style>
+</head>
+<body>
+<h1>Local SSH Key Generator</h1>
+<p>Generate an Ed25519 SSH key pair entirely in your browser. Nothing is sent anywhere.</p>
+
+<div class="card">
+  <label for="comment">Comment (optional, e.g. user@host)</label>
+  <input id="comment" type="text" placeholder="my-laptop" value="">
+  <label for="pass">Passphrase for private key (optional – leave blank for unencrypted)</label>
+  <input id="pass" type="password" placeholder="strong passphrase">
+  <button id="gen">Generate key pair</button>
+  <div id="status"></div>
+</div>
+
+<div class="card" id="result" hidden>
+  <h2>Public key (OpenSSH format)</h2>
+  <div id="output"></div>
+  <div class="row">
+    <button id="copyPub" class="secondary">Copy public key</button>
+    <button id="dlPriv" class="secondary">Download private key (.pem)</button>
+  </div>
+  <h2>Spatial fingerprint</h2>
+  <p>Unique visual pattern derived from the public key bytes. Same key always looks the same.</p>
+  <canvas id="fp" width="320" height="180"></canvas>
+  <button id="dlFp" class="secondary">Download fingerprint PNG</button>
+  <p class="note">Keep the private key secret. Never share it. This page generates keys locally using the Web Crypto API (Ed25519). Private key is PKCS#8 PEM. For full OpenSSH encrypted private keys, convert with <code>ssh-keygen -p</code> or similar after download if needed. Works offline after load.</p>
+</div>
+
+<script>
+const status = document.getElementById('status');
+const result = document.getElementById('result');
+const output = document.getElementById('output');
+const canvas = document.getElementById('fp');
+const ctx = canvas.getContext('2d');
+let currentPrivPem = '';
+let currentPub = '';
+
+function bytesToBase64(bytes) {
+  let bin = '';
+  for (let b of bytes) bin += String.fromCharCode(b);
+  return btoa(bin);
+}
+
+function encodeMpint(bytes) {
+  // SSH mpint: 4-byte length + data, with leading zero if high bit set
+  let data = new Uint8Array(bytes);
+  if (data[0] & 0x80) {
+    const padded = new Uint8Array(data.length + 1);
+    padded.set(data, 1);
+    data = padded;
+  }
+  const len = new Uint8Array(4);
+  new DataView(len.buffer).setUint32(0, data.length);
+  const out = new Uint8Array(4 + data.length);
+  out.set(len);
+  out.set(data, 4);
+  return out;
+}
+
+function encodeString(str) {
+  const enc = new TextEncoder().encode(str);
+  const len = new Uint8Array(4);
+  new DataView(len.buffer).setUint32(0, enc.length);
+  const out = new Uint8Array(4 + enc.length);
+  out.set(len);
+  out.set(enc, 4);
+  return out;
+}
+
+function makeOpenSSHPublic(rawPub, comment) {
+  // rawPub is 32 bytes for Ed25519
+  const type = encodeString('ssh-ed25519');
+  const key = encodeMpint(rawPub); // actually for ed25519 it's the raw key with length
+  // Correct: the key blob is string(type) + string(raw32)
+  const keyBlobParts = [encodeString('ssh-ed25519'), encodeStringBytes(rawPub)];
+  let keyBlobLen = 0;
+  keyBlobParts.forEach(p => keyBlobLen += p.length);
+  const keyBlob = new Uint8Array(keyBlobLen);
+  let off = 0;
+  keyBlobParts.forEach(p => { keyBlob.set(p, off); off += p.length; });
+  const b64 = bytesToBase64(keyBlob);
+  return `ssh-ed25519 ${b64}${comment ? ' ' + comment : ''}`;
+}
+
+function encodeStringBytes(bytes) {
+  const len = new Uint8Array(4);
+  new DataView(len.buffer).setUint32(0, bytes.length);
+  const out = new Uint8Array(4 + bytes.length);
+  out.set(len);
+  out.set(bytes, 4);
+  return out;
+}
+
+function pemFromPkcs8(pkcs8) {
+  const b64 = bytesToBase64(new Uint8Array(pkcs8));
+  const lines = b64.match(/.{1,64}/g).join('\n');
+  return `-----BEGIN PRIVATE KEY-----\n${lines}\n-----END PRIVATE KEY-----\n`;
+}
+
+function drawFingerprint(rawPub) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const w = canvas.width, h = canvas.height;
+  const cells = 16;
+  const cw = w / cells, ch = h / cells;
+  for (let i = 0; i < cells; i++) {
+    for (let j = 0; j < cells; j++) {
+      const idx = (i * cells + j) % rawPub.length;
+      const v = rawPub[idx];
+      const hue = (v * 1.4) % 360;
+      const sat = 40 + (v % 60);
+      const light = 30 + (v % 40);
+      ctx.fillStyle = `hsl(${hue},${sat}%,${light}%)`;
+      ctx.fillRect(i * cw, j * ch, cw - 1, ch - 1);
+    }
+  }
+  // Overlay a soft border from first bytes
+  ctx.strokeStyle = `hsl(${rawPub[0]},70%,50%)`;
+  ctx.lineWidth = 4;
+  ctx.strokeRect(2, 2, w - 4, h - 4);
+}
+
+document.getElementById('gen').onclick = async () => {
+  status.textContent = 'Generating…';
+  try {
+    if (!crypto.subtle || !crypto.subtle.generateKey) throw new Error('Web Crypto not available');
+    const keyPair = await crypto.subtle.generateKey(
+      { name: 'Ed25519' },
+      true,
+      ['sign', 'verify']
+    );
+    const rawPub = new Uint8Array(await crypto.subtle.exportKey('raw', keyPair.publicKey));
+    const pkcs8 = await crypto.subtle.exportKey('pkcs8', keyPair.privateKey);
+    const comment = document.getElementById('comment').value.trim();
+    currentPub = makeOpenSSHPublic(rawPub, comment);
+    currentPrivPem = pemFromPkcs8(pkcs8);
+    output.textContent = currentPub;
+    drawFingerprint(rawPub);
+    result.hidden = false;
+    status.textContent = 'Key pair generated locally. Private key ready to download.';
+    // Save metadata only (not private) to localStorage
+    try {
+      localStorage.setItem('verse-ssh-last-pub', currentPub);
+      localStorage.setItem('verse-ssh-last-comment', comment);
+    } catch (e) {}
+  } catch (err) {
+    status.textContent = 'Error: ' + err.message + '. Ed25519 may not be supported in this browser.';
+    console.error(err);
+  }
+};
+
+document.getElementById('copyPub').onclick = async () => {
+  try {
+    await navigator.clipboard.writeText(currentPub);
+    status.textContent = 'Public key copied.';
+  } catch {
+    status.textContent = 'Copy failed – select and copy manually.';
+  }
+};
+
+document.getElementById('dlPriv').onclick = () => {
+  const blob = new Blob([currentPrivPem], { type: 'application/x-pem-file' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'id_ed25519.pem';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  status.textContent = 'Private key downloaded. Keep it secret!';
+};
+
+document.getElementById('dlFp').onclick = () => {
+  const a = document.createElement('a');
+  a.href = canvas.toDataURL('image/png');
+  a.download = 'ssh-fingerprint.png';
+  a.click();
+  status.textContent = 'Fingerprint PNG downloaded.';
+};
+
+// Restore last public if any
+try {
+  const last = localStorage.getItem('verse-ssh-last-pub');
+  if (last) {
+    document.getElementById('comment').value = localStorage.getItem('verse-ssh-last-comment') || '';
+  }
+} catch (e) {}
+</script>
+</body>
+</html>
