@@ -16515,3 +16515,43 @@ People search for "debt snowball calculator" or "avalanche vs snowball". They br
 Branches hard away from the dominant recent cluster of WebGPU particle/agent fields, orientation-driven RNNs/MLPs, mic-modulated forces, DOM portals, genome sealing, and swarm competition (F740–F747). This is a pure deterministic financial planning tool with local persistence only. No particles, no neural nets, no sensors, no spatial agents. The "local-AI" element is limited to the classic ordered prioritization algorithms themselves (lowest-balance-first vs highest-rate-first) plus optional simple what-if comparison. The capability added for Verse is a reusable offline schedule generator that other tools can later embed or link to.
 
 **Files**: drafts/F748-debt-snowball-planner/SPEC.md, drafts/F748-debt-snowball-planner/index.html
+
+## Frontier Engine F-748 (2026-11-13)
+
+**F748-webxr-hand-mlp-sealed-pbd-tournament**
+
+**Ledger ID**: F-748 (frontier series)
+
+**Slug**: `webxr-hand-mlp-sealed-pbd-tournament`
+
+**Date**: 2026-11-13
+
+**Concept**
+True WebXR hand-tracking (mouse fallback) drives a local tiny MLP that predicts per-agent constraint stiffness and mutation bias for a Position-Based Dynamics (PBD) multi-agent tournament. Agents are clusters of points with distance constraints. High-fitness genomes (MLP weights + stiffness) are sealed only on explicit gesture/button, stored in IndexedDB, and transferred via BroadcastChannel. Deliberately branches away from recent DOM-swarm / particle-flock / pointer-attention / orientation-RNN / CSS3D clusters: embodiment is XR-spatial PBD with gesture-sealed transfer; local model is causal on live hand pose.
+
+**Architecture**
+- Single self-contained index.html.
+- Input: WebXR hand (optional) or pointer as hand proxy.
+- Local AI: tiny 2-layer MLP, pure JS.
+- Physics: 3 agents × 6 points, iterative PBD distance constraints.
+- Persistence: IndexedDB `verse-f748`.
+- Transfer: BroadcastChannel `f748-sealed`.
+- Fully offline after load.
+
+**Mechanics**
+Hand/mouse position feeds MLP → stiffness/damping. Agents integrate and solve constraints each frame. Fitness from stability + proximity. Seal button (or future pinch) persists and broadcasts superior genome. Other tabs adopt into weakest agent.
+
+**Expected outcome**
+Interactive tournament of soft clusters whose rigidity is controlled by hand-driven local model. Seal and open second tab: better genome migrates. XR path available when hardware supports.
+
+**Failure modes**
+- No WebXR: seamless mouse fallback.
+- No IndexedDB/BroadcastChannel: in-memory only.
+- Performance: reduce points/iterations.
+
+**Building blocks**
+Hand-pose features → MLP → PBD parameter modulation; gesture-gated sealed genome transfer across tabs. Ready for WebGPU PBD kernels, full WebRTC signaling, and true XR hand joint inputs.
+
+Void is now Verse everywhere.
+
+**Files**: drafts/F748-webxr-hand-mlp-sealed-pbd-tournament/SPEC.md, drafts/F748-webxr-hand-mlp-sealed-pbd-tournament/index.html
