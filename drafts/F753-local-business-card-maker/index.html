@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Business Card Maker — Verse</title>
+<style>
+  :root {
+    --bg: #0f1419;
+    --fg: #e7ecf1;
+    --accent: #3b82f6;
+    --card-bg: #1e2937;
+    --card-fg: #f8fafc;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    min-height: 100vh;
+    padding: 1rem;
+  }
+  h1 { font-size: 1.4rem; margin: 0 0 1rem; font-weight: 600; }
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  @media (min-width: 720px) {
+    .layout { grid-template-columns: 320px 1fr; }
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  label { font-size: 0.85rem; opacity: 0.85; }
+  input, select, button {
+    font: inherit;
+    padding: 0.6rem 0.75rem;
+    border-radius: 8px;
+    border: 1px solid #334155;
+    background: #1e2937;
+    color: var(--fg);
+  }
+  button {
+    background: var(--accent);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  button:hover { filter: brightness(1.1); }
+  .preview-wrap {
+    background: #0a0e13;
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 280px;
+    perspective: 800px;
+  }
+  canvas {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    transform-style: preserve-3d;
+    transition: transform 0.1s;
+  }
+  .actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+  .note { font-size: 0.8rem; opacity: 0.6; margin-top: 1rem; }
+</style>
+</head>
+<body>
+<h1>Business card maker</h1>
+<div class="layout">
+  <form id="form">
+    <label>Name
+      <input id="name" type="text" placeholder="Alex Rivera" autocomplete="name">
+    </label>
+    <label>Title / role
+      <input id="title" type="text" placeholder="Product Designer">
+    </label>
+    <label>Phone
+      <input id="phone" type="tel" placeholder="+1 555 0100">
+    </label>
+    <label>Email
+      <input id="email" type="email" placeholder="alex@example.com">
+    </label>
+    <label>Website
+      <input id="web" type="url" placeholder="https://example.com">
+    </label>
+    <label>Theme
+      <select id="theme">
+        <option value="slate">Slate</option>
+        <option value="blue">Blue</option>
+        <option value="emerald">Emerald</option>
+        <option value="amber">Amber</option>
+        <option value="rose">Rose</option>
+        <option value="dark">Dark</option>
+      </select>
+    </label>
+    <div class="actions">
+      <button type="button" id="download">Download PNG</button>
+      <button type="button" id="copy">Copy details</button>
+    </div>
+  </form>
+  <div>
+    <div class="preview-wrap" id="preview-wrap">
+      <canvas id="preview" width="525" height="300"></canvas>
+    </div>
+    <p class="note">Standard 3.5 × 2 inch card. Download is high-resolution (1050×600). Tilt your phone for a slight spatial preview. Everything stays on this device.</p>
+  </div>
+</div>
+<script>
+const $ = id => document.getElementById(id);
+const preview = $('preview');
+const ctx = preview.getContext('2d');
+const full = document.createElement('canvas');
+full.width = 1050;
+full.height = 600;
+const fctx = full.getContext('2d');
+
+const themes = {
+  slate: { bg: '#1e2937', fg: '#f8fafc', accent: '#94a3b8' },
+  blue: { bg: '#1e3a8a', fg: '#eff6ff', accent: '#60a5fa' },
+  emerald: { bg: '#064e3b', fg: '#ecfdf5', accent: '#34d399' },
+  amber: { bg: '#78350f', fg: '#fffbeb', accent: '#fbbf24' },
+  rose: { bg: '#881337', fg: '#fff1f2', accent: '#fb7185' },
+  dark: { bg: '#0f172a', fg: '#e2e8f0', accent: '#38bdf8' }
+};
+
+function load() {
+  try {
+    const s = JSON.parse(localStorage.getItem('verse-card') || '{}');
+    ['name','title','phone','email','web'].forEach(k => { if (s[k]) $(k).value = s[k]; });
+    if (s.theme) $('theme').value = s.theme;
+  } catch {}
+  draw();
+}
+function save() {
+  const data = {
+    name: $('name').value, title: $('title').value, phone: $('phone').value,
+    email: $('email').value, web: $('web').value, theme: $('theme').value
+  };
+  localStorage.setItem('verse-card', JSON.stringify(data));
+}
+function draw() {
+  const t = themes[$('theme').value] || themes.slate;
+  const name = $('name').value || 'Your Name';
+  const title = $('title').value || 'Title';
+  const phone = $('phone').value;
+  const email = $('email').value;
+  const web = $('web').value;
+
+  // Full resolution
+  fctx.fillStyle = t.bg;
+  fctx.fillRect(0, 0, 1050, 600);
+  fctx.fillStyle = t.accent;
+  fctx.fillRect(0, 0, 12, 600);
+  fctx.fillStyle = t.fg;
+  fctx.font = 'bold 72px system-ui, sans-serif';
+  fctx.fillText(name, 60, 180);
+  fctx.font = '36px system-ui, sans-serif';
+  fctx.fillStyle = t.accent;
+  fctx.fillText(title, 60, 240);
+  fctx.fillStyle = t.fg;
+  fctx.font = '28px system-ui, sans-serif';
+  let y = 340;
+  if (phone) { fctx.fillText(phone, 60, y); y += 48; }
+  if (email) { fctx.fillText(email, 60, y); y += 48; }
+  if (web) { fctx.fillText(web.replace(/^https?:\/\//, ''), 60, y); }
+
+  // Preview (half scale)
+  ctx.fillStyle = t.bg;
+  ctx.fillRect(0, 0, 525, 300);
+  ctx.fillStyle = t.accent;
+  ctx.fillRect(0, 0, 6, 300);
+  ctx.fillStyle = t.fg;
+  ctx.font = 'bold 36px system-ui, sans-serif';
+  ctx.fillText(name, 30, 90);
+  ctx.font = '18px system-ui, sans-serif';
+  ctx.fillStyle = t.accent;
+  ctx.fillText(title, 30, 120);
+  ctx.fillStyle = t.fg;
+  ctx.font = '14px system-ui, sans-serif';
+  y = 170;
+  if (phone) { ctx.fillText(phone, 30, y); y += 24; }
+  if (email) { ctx.fillText(email, 30, y); y += 24; }
+  if (web) { ctx.fillText(web.replace(/^https?:\/\//, ''), 30, y); }
+  save();
+}
+
+['name','title','phone','email','web','theme'].forEach(id => {
+  $(id).addEventListener('input', draw);
+});
+
+$('download').onclick = () => {
+  draw();
+  const a = document.createElement('a');
+  a.href = full.toDataURL('image/png');
+  a.download = 'business-card.png';
+  a.click();
+};
+$('copy').onclick = () => {
+  const lines = [
+    $('name').value, $('title').value, $('phone').value, $('email').value, $('web').value
+  ].filter(Boolean).join('\n');
+  navigator.clipboard.writeText(lines).then(() => {
+    const b = $('copy');
+    const old = b.textContent;
+    b.textContent = 'Copied';
+    setTimeout(() => b.textContent = old, 1200);
+  });
+};
+
+// Optional spatial tilt
+if (window.DeviceOrientationEvent) {
+  window.addEventListener('deviceorientation', e => {
+    if (e.beta == null) return;
+    const x = Math.max(-15, Math.min(15, (e.gamma || 0) * 0.3));
+    const y = Math.max(-15, Math.min(15, (e.beta - 30) * 0.15));
+    preview.style.transform = `rotateX(${ -y }deg) rotateY(${ x }deg)`;
+  });
+}
+
+load();
+</script>
+</body>
+</html>
