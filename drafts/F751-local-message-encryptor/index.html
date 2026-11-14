@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Local Message Encryptor</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; background: #f8f9fa; color: #212529; }
+  h1 { font-size: 1.5rem; }
+  label { display: block; margin: 1rem 0 0.25rem; font-weight: 600; }
+  textarea, input[type="password"], input[type="text"] { width: 100%; padding: 0.5rem; box-sizing: border-box; border: 1px solid #ced4da; border-radius: 0.25rem; font-family: inherit; }
+  textarea { min-height: 8rem; resize: vertical; }
+  button, .toggle { margin: 0.5rem 0.5rem 0.5rem 0; padding: 0.5rem 1rem; border: none; border-radius: 0.25rem; background: #0d6efd; color: white; cursor: pointer; }
+  button:hover { background: #0b5ed7; }
+  button.secondary { background: #6c757d; }
+  button.secondary:hover { background: #5c636a; }
+  #result { white-space: pre-wrap; word-break: break-all; background: #fff; border: 1px solid #dee2e6; padding: 0.75rem; border-radius: 0.25rem; margin-top: 1rem; min-height: 4rem; }
+  .error { color: #dc3545; }
+  .note { font-size: 0.875rem; color: #6c757d; margin-top: 1rem; }
+  .mode { display: flex; gap: 1rem; margin: 0.5rem 0; }
+  .mode label { font-weight: normal; }
+</style>
+</head>
+<body>
+<h1>Local Message Encryptor</h1>
+<p>Encrypt or decrypt a message with a passphrase. Everything stays in your browser. Nothing is sent anywhere.</p>
+
+<div class="mode">
+  <label><input type="radio" name="mode" value="encrypt" checked> Encrypt</label>
+  <label><input type="radio" name="mode" value="decrypt"> Decrypt</label>
+</div>
+
+<label for="message">Message or ciphertext</label>
+<textarea id="message" placeholder="Type or paste your message here (or the base64 ciphertext to decrypt)"></textarea>
+
+<label for="pass">Passphrase</label>
+<input type="password" id="pass" placeholder="Enter a strong passphrase">
+
+<button id="run">Encrypt / Decrypt</button>
+<button id="copy" class="secondary" disabled>Copy result</button>
+<button id="download" class="secondary" disabled>Download .txt</button>
+
+<div id="result" aria-live="polite"></div>
+<p class="note">Security depends on a strong unique passphrase. This is AES-GCM with PBKDF2 (100k iterations). For local notes only — not a substitute for full disk encryption or professional tools. Output is salt + IV + ciphertext in base64.</p>
+
+<script>
+const messageEl = document.getElementById('message');
+const passEl = document.getElementById('pass');
+const resultEl = document.getElementById('result');
+const runBtn = document.getElementById('run');
+const copyBtn = document.getElementById('copy');
+const downloadBtn = document.getElementById('download');
+
+let lastResult = '';
+
+function getMode() {
+  return document.querySelector('input[name="mode"]:checked').value;
+}
+
+async function deriveKey(passphrase, salt) {
+  const enc = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey(
+    'raw', enc.encode(passphrase), 'PBKDF2', false, ['deriveKey']
+  );
+  return crypto.subtle.deriveKey(
+    { name: 'PBKDF2', salt, iterations: 100000, hash: 'SHA-256' },
+    keyMaterial,
+    { name: 'AES-GCM', length: 256 },
+    false,
+    ['encrypt', 'decrypt']
+  );
+}
+
+async function encrypt(text, passphrase) {
+  const enc = new TextEncoder();
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const key = await deriveKey(passphrase, salt);
+  const ciphertext = await crypto.subtle.encrypt(
+    { name: 'AES-GCM', iv },
+    key,
+    enc.encode(text)
+  );
+  const combined = new Uint8Array(salt.length + iv.length + ciphertext.byteLength);
+  combined.set(salt, 0);
+  combined.set(iv, salt.length);
+  combined.set(new Uint8Array(ciphertext), salt.length + iv.length);
+  return btoa(String.fromCharCode(...combined));
+}
+
+async function decrypt(b64, passphrase) {
+  try {
+    const combined = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+    if (combined.length < 28) throw new Error('Too short');
+    const salt = combined.slice(0, 16);
+    const iv = combined.slice(16, 28);
+    const ciphertext = combined.slice(28);
+    const key = await deriveKey(passphrase, salt);
+    const plain = await crypto.subtle.decrypt(
+      { name: 'AES-GCM', iv },
+      key,
+      ciphertext
+    );
+    return new TextDecoder().decode(plain);
+  } catch (e) {
+    throw new Error('Decryption failed. Wrong passphrase or corrupt data.');
+  }
+}
+
+runBtn.addEventListener('click', async () => {
+  const text = messageEl.value.trim();
+  const pass = passEl.value;
+  if (!text || !pass) {
+    resultEl.innerHTML = '<span class="error">Please enter both a message and a passphrase.</span>';
+    return;
+  }
+  resultEl.textContent = 'Working…';
+  copyBtn.disabled = true;
+  downloadBtn.disabled = true;
+  try {
+    let result;
+    if (getMode() === 'encrypt') {
+      result = await encrypt(text, pass);
+    } else {
+      result = await decrypt(text, pass);
+    }
+    lastResult = result;
+    resultEl.textContent = result;
+    copyBtn.disabled = false;
+    downloadBtn.disabled = false;
+  } catch (err) {
+    resultEl.innerHTML = `<span class="error">${err.message}</span>`;
+  }
+});
+
+copyBtn.addEventListener('click', async () => {
+  if (!lastResult) return;
+  try {
+    await navigator.clipboard.writeText(lastResult);
+    const orig = copyBtn.textContent;
+    copyBtn.textContent = 'Copied!';
+    setTimeout(() => copyBtn.textContent = orig, 1500);
+  } catch {
+    resultEl.innerHTML += '<br><span class="error">Clipboard access denied. Select and copy manually.</span>';
+  }
+});
+
+downloadBtn.addEventListener('click', () => {
+  if (!lastResult) return;
+  const blob = new Blob([lastResult], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = getMode() === 'encrypt' ? 'encrypted.txt' : 'decrypted.txt';
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+// Update button label
+document.querySelectorAll('input[name="mode"]').forEach(r => {
+  r.addEventListener('change', () => {
+    runBtn.textContent = getMode() === 'encrypt' ? 'Encrypt' : 'Decrypt';
+  });
+});
+runBtn.textContent = 'Encrypt';
+</script>
+</body>
+</html>
