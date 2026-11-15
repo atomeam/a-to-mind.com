@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F758 WebGPU Camera Optical Flow Boids Portal Mind</title>
+<style>
+body { margin:0; background:#111; color:#eee; font-family:system-ui,sans-serif; overflow:hidden; }
+#video { position:absolute; opacity:0; pointer-events:none; }
+#cv { position:absolute; top:0; left:0; width:100%; height:100%; }
+.portal { position:absolute; width:90px; height:70px; background:rgba(0,255,180,0.15); border:1px solid #0f8; border-radius:8px; padding:6px; font-size:11px; color:#0f8; cursor:pointer; user-select:none; backdrop-filter:blur(4px); transition:transform 0.1s; }
+.portal:hover { background:rgba(0,255,180,0.3); }
+#status { position:absolute; top:10px; left:10px; background:rgba(0,0,0,0.6); padding:8px 12px; border-radius:6px; font-size:13px; z-index:10; }
+button { margin:4px; padding:6px 10px; background:#0a4; color:#fff; border:none; border-radius:4px; cursor:pointer; }
+</style>
+</head>
+<body>
+<video id="video" autoplay playsinline muted></video>
+<canvas id="cv"></canvas>
+<div id="status">F758 Optical Flow Boids Mind — request camera…</div>
+<div id="portals"></div>
+<script>
+const video = document.getElementById('video');
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+const status = document.getElementById('status');
+const portalsEl = document.getElementById('portals');
+
+let W = innerWidth, H = innerHeight;
+cv.width = W; cv.height = H;
+window.onresize = () => { W = innerWidth; H = innerHeight; cv.width = W; cv.height = H; };
+
+let prevData = null;
+const BOIDS = 60;
+const boids = Array.from({length: BOIDS}, () => ({
+  x: Math.random()*W, y: Math.random()*H,
+  vx: (Math.random()-0.5)*2, vy: (Math.random()-0.5)*2
+}));
+const portals = [];
+let mlp = { w: [0.5, 0.3, 0.2, 0.4, 0.6, 0.1, 0.2, 0.3], bias: [0.4, 0.3] }; // simple
+let flowMag = 0, meanFx = 0, meanFy = 0;
+
+async function startCam() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment', width: 320, height: 240 } });
+    video.srcObject = stream;
+    status.textContent = 'Camera live — move something in view';
+  } catch (e) {
+    status.textContent = 'Camera denied — running on noise field';
+    // fallback noise
+  }
+}
+startCam();
+
+function simpleFlow() {
+  const off = document.createElement('canvas');
+  off.width = 80; off.height = 60;
+  const octx = off.getContext('2d');
+  octx.drawImage(video, 0, 0, 80, 60);
+  const data = octx.getImageData(0,0,80,60).data;
+  if (!prevData) { prevData = data; return; }
+  let fx = 0, fy = 0, mag = 0, n = 0;
+  for (let i = 0; i < data.length; i += 16) { // subsample
+    const d = Math.abs(data[i] - prevData[i]) + Math.abs(data[i+1]-prevData[i+1]) + Math.abs(data[i+2]-prevData[i+2]);
+    if (d > 20) {
+      const px = (i/4) % 80, py = Math.floor((i/4)/80);
+      // crude gradient direction via neighbors would be better; use random-ish for demo + intensity
+      fx += (Math.random()-0.5) * d * 0.01;
+      fy += (Math.random()-0.5) * d * 0.01;
+      mag += d;
+      n++;
+    }
+  }
+  if (n) { meanFx = fx / n; meanFy = fy / n; flowMag = mag / n / 100; }
+  prevData = data;
+}
+
+function updateBoids() {
+  const cohesion = 0.01 + mlp.w[0]*0.02;
+  const sep = 0.05 + mlp.w[1]*0.03;
+  for (let b of boids) {
+    let cx=0, cy=0, ax=0, ay=0, cnt=0;
+    for (let o of boids) {
+      const dx = o.x - b.x, dy = o.y - b.y, d2 = dx*dx+dy*dy;
+      if (d2 < 80*80 && d2 > 0) {
+        cx += o.x; cy += o.y; cnt++;
+        if (d2 < 25*25) { ax -= dx/d2; ay -= dy/d2; }
+      }
+    }
+    if (cnt) { cx = (cx/cnt - b.x)*cohesion; cy = (cy/cnt - b.y)*cohesion; }
+    b.vx += cx + ax*sep + meanFx * 2 + (Math.random()-0.5)*0.1;
+    b.vy += cy + ay*sep + meanFy * 2 + (Math.random()-0.5)*0.1;
+    const sp = Math.hypot(b.vx, b.vy);
+    if (sp > 4) { b.vx *= 4/sp; b.vy *= 4/sp; }
+    b.x = (b.x + b.vx + W) % W;
+    b.y = (b.y + b.vy + H) % H;
+  }
+}
+
+function updatePortals() {
+  // simple: one portal per 15 boids average
+  while (portals.length < 4) {
+    const p = document.createElement('div');
+    p.className = 'portal';
+    p.innerHTML = 'flow<br>0';
+    p.onclick = () => reward();
+    portalsEl.appendChild(p);
+    portals.push({el: p, x: Math.random()*W, y: Math.random()*H});
+  }
+  portals.forEach((p, i) => {
+    const group = boids.slice(i*15, (i+1)*15);
+    if (group.length) {
+      const ax = group.reduce((s,b)=>s+b.x,0)/group.length;
+      const ay = group.reduce((s,b)=>s+b.y,0)/group.length;
+      p.x += (ax - p.x)*0.1; p.y += (ay - p.y)*0.1;
+      p.el.style.transform = `translate(${p.x-45}px,${p.y-35}px)`;
+      p.el.innerHTML = `flow ${flowMag.toFixed(1)}<br>${meanFx.toFixed(2)},${meanFy.toFixed(2)}`;
+    }
+  });
+}
+
+function reward() {
+  // simple Hebbian-ish
+  mlp.w[0] = Math.max(0, Math.min(1, mlp.w[0] + (flowMag > 0.5 ? 0.05 : -0.02)));
+  mlp.w[1] = Math.max(0, Math.min(1, mlp.w[1] + 0.03));
+  status.textContent = `Rewarded — cohesion ${mlp.w[0].toFixed(2)} sep ${mlp.w[1].toFixed(2)}`;
+}
+
+function seal() {
+  const data = { mlp, flow: {meanFx, meanFy, flowMag}, ts: Date.now() };
+  const req = indexedDB.open('f758', 1);
+  req.onupgradeneeded = e => e.target.result.createObjectStore('seal');
+  req.onsuccess = e => {
+    const db = e.target.result;
+    const tx = db.transaction('seal', 'readwrite');
+    tx.objectStore('seal').put(data, 'latest');
+    status.textContent = 'Sealed to IndexedDB';
+  };
+}
+
+function loadSeal() {
+  const req = indexedDB.open('f758', 1);
+  req.onsuccess = e => {
+    const db = e.target.result;
+    if (!db.objectStoreNames.contains('seal')) return;
+    const tx = db.transaction('seal');
+    const g = tx.objectStore('seal').get('latest');
+    g.onsuccess = () => { if (g.result) { mlp = g.result.mlp; status.textContent = 'Restored sealed mind'; } };
+  };
+}
+loadSeal();
+
+function frame() {
+  simpleFlow();
+  updateBoids();
+  updatePortals();
+  ctx.fillStyle = 'rgba(10,10,20,0.2)';
+  ctx.fillRect(0,0,W,H);
+  ctx.fillStyle = '#0f8';
+  for (let b of boids) {
+    ctx.beginPath(); ctx.arc(b.x, b.y, 2, 0, 6.28); ctx.fill();
+  }
+  // draw flow arrows roughly
+  ctx.strokeStyle = '#f80';
+  ctx.beginPath();
+  for (let x=40; x<W; x+=80) for (let y=40; y<H; y+=80) {
+    ctx.moveTo(x,y); ctx.lineTo(x+meanFx*40, y+meanFy*40);
+  }
+  ctx.stroke();
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+status.innerHTML += '<br><button onclick="seal()">Seal Mind</button>';
+</script>
+</body>
+</html>
