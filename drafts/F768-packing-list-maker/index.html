@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Packing list maker</title>
+<style>
+body { font-family: system-ui, -apple-system, sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; background: #f8f9fa; color: #212529; }
+h1 { font-size: 1.75rem; margin-bottom: 0.5rem; }
+.subtitle { color: #6c757d; margin-bottom: 1.5rem; }
+form { background: white; padding: 1.25rem; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.1); margin-bottom: 1.5rem; }
+label { display: block; margin: 0.75rem 0 0.25rem; font-weight: 500; }
+input, select, textarea { width: 100%; padding: 0.5rem; border: 1px solid #ced4da; border-radius: 6px; font: inherit; box-sizing: border-box; }
+button { background: #0d6efd; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 6px; font: inherit; cursor: pointer; margin-top: 1rem; }
+button:hover { background: #0b5ed7; }
+button.secondary { background: #6c757d; }
+button.secondary:hover { background: #5c636a; }
+#list { background: white; padding: 1.25rem; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+.item { display: flex; align-items: center; gap: 0.75rem; padding: 0.4rem 0; border-bottom: 1px solid #eee; }
+.item input[type=checkbox] { width: auto; margin: 0; }
+.item label { margin: 0; flex: 1; font-weight: normal; }
+.item.checked label { text-decoration: line-through; color: #6c757d; }
+.add-row { display: flex; gap: 0.5rem; margin-top: 1rem; }
+.add-row input { flex: 1; }
+.actions { display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap; }
+#status { margin-top: 1rem; color: #198754; font-size: 0.9rem; min-height: 1.2em; }
+@media (max-width: 480px) { body { margin: 1rem auto; } }
+</style>
+</head>
+<body>
+<h1>Packing list maker</h1>
+<p class="subtitle">Enter your trip details. Get a checklist to tick off. Saved on this device. Copy when ready.</p>
+
+<form id="form">
+  <label for="days">Trip length (days)</label>
+  <input type="number" id="days" min="1" max="90" value="7">
+
+  <label for="weather">Weather</label>
+  <select id="weather">
+    <option value="mild">Mild</option>
+    <option value="hot">Hot</option>
+    <option value="cold">Cold</option>
+    <option value="rainy">Rainy</option>
+  </select>
+
+  <label for="type">Kind of trip</label>
+  <select id="type">
+    <option value="city">City</option>
+    <option value="beach">Beach</option>
+    <option value="hiking">Hiking</option>
+    <option value="business">Business</option>
+    <option value="camping">Camping</option>
+  </select>
+
+  <label for="custom">Custom items (one per line, optional)</label>
+  <textarea id="custom" rows="3" placeholder="passport\ncharger\nbook"></textarea>
+
+  <button type="button" id="generate">Update list</button>
+</form>
+
+<div id="list"></div>
+<div class="actions">
+  <button type="button" id="copy" class="secondary">Copy list</button>
+  <button type="button" id="clear" class="secondary">Clear checks</button>
+</div>
+<div id="status"></div>
+
+<script>
+const STORAGE = 'verse-f768-packing';
+const form = document.getElementById('form');
+const listEl = document.getElementById('list');
+const statusEl = document.getElementById('status');
+
+const baseItems = [
+  'Passport / ID',
+  'Wallet',
+  'Phone + charger',
+  'Toothbrush & toothpaste',
+  'Underwear',
+  'Socks',
+  'T-shirts',
+  'Pants / shorts',
+  'Toiletries',
+  'Medications',
+  'Snacks'
+];
+
+const rules = {
+  weather: {
+    hot: ['Sunscreen', 'Hat', 'Sunglasses', 'Light clothes', 'Water bottle'],
+    cold: ['Warm jacket', 'Sweater', 'Gloves', 'Beanie', 'Thermal layers'],
+    rainy: ['Rain jacket', 'Umbrella', 'Waterproof shoes', 'Quick-dry clothes'],
+    mild: ['Light jacket', 'Comfortable walking shoes']
+  },
+  type: {
+    beach: ['Swimsuit', 'Beach towel', 'Flip flops', 'Beach bag'],
+    hiking: ['Hiking boots', 'Backpack', 'Water bottle', 'Trail snacks', 'First aid kit'],
+    business: ['Formal clothes', 'Laptop', 'Business cards', 'Dress shoes'],
+    city: ['Comfortable shoes', 'City map / app', 'Day bag'],
+    camping: ['Tent', 'Sleeping bag', 'Headlamp', 'Camp stove fuel', 'Insect repellent']
+  }
+};
+
+function getSuggestions() {
+  const days = parseInt(document.getElementById('days').value) || 7;
+  const weather = document.getElementById('weather').value;
+  const type = document.getElementById('type').value;
+  const customText = document.getElementById('custom').value.trim();
+  const customs = customText ? customText.split('\n').map(s => s.trim()).filter(Boolean) : [];
+
+  let items = [...baseItems];
+  if (rules.weather[weather]) items = items.concat(rules.weather[weather]);
+  if (rules.type[type]) items = items.concat(rules.type[type]);
+  items = items.concat(customs);
+
+  // Deduplicate, preserve order
+  const seen = new Set();
+  return items.filter(item => {
+    const key = item.toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function loadState() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE)) || { checks: {}, customs: '' };
+  } catch { return { checks: {}, customs: '' }; }
+}
+
+function saveState(state) {
+  try {
+    localStorage.setItem(STORAGE, JSON.stringify(state));
+  } catch {}
+}
+
+function render() {
+  const items = getSuggestions();
+  const state = loadState();
+  listEl.innerHTML = '';
+  items.forEach(item => {
+    const id = 'item-' + item.replace(/\W+/g, '-');
+    const checked = state.checks[item] || false;
+    const div = document.createElement('div');
+    div.className = 'item' + (checked ? ' checked' : '');
+    div.innerHTML = `
+      <input type="checkbox" id="${id}" ${checked ? 'checked' : ''}>
+      <label for="${id}">${item}</label>
+    `;
+    const cb = div.querySelector('input');
+    cb.addEventListener('change', () => {
+      const st = loadState();
+      st.checks[item] = cb.checked;
+      saveState(st);
+      div.classList.toggle('checked', cb.checked);
+    });
+    listEl.appendChild(div);
+  });
+  statusEl.textContent = items.length ? `${items.length} items` : '';
+}
+
+function exportText() {
+  const items = getSuggestions();
+  const state = loadState();
+  const lines = items.map(item => (state.checks[item] ? '[x] ' : '[ ] ') + item);
+  return lines.join('\n');
+}
+
+document.getElementById('generate').addEventListener('click', () => {
+  const state = loadState();
+  state.customs = document.getElementById('custom').value;
+  saveState(state);
+  render();
+  statusEl.textContent = 'List updated';
+});
+
+document.getElementById('copy').addEventListener('click', async () => {
+  const text = exportText();
+  try {
+    await navigator.clipboard.writeText(text);
+    statusEl.textContent = 'Copied to clipboard';
+  } catch {
+    statusEl.textContent = 'Copy failed — select and copy manually';
+  }
+});
+
+document.getElementById('clear').addEventListener('click', () => {
+  const state = loadState();
+  state.checks = {};
+  saveState(state);
+  render();
+  statusEl.textContent = 'Checks cleared';
+});
+
+// Live update on input changes
+['days', 'weather', 'type'].forEach(id => {
+  document.getElementById(id).addEventListener('change', render);
+});
+document.getElementById('custom').addEventListener('input', () => {
+  // Debounce a bit or just render on blur / button
+});
+
+// Initial
+const init = loadState();
+if (init.customs) document.getElementById('custom').value = init.customs;
+render();
+</script>
+</body>
+</html>
