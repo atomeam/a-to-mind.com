@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tip calculator</title>
+<style>
+  :root { --bg:#0f1419; --card:#1a2332; --text:#e7ecf3; --accent:#4cc9f0; --muted:#8b9bb4; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--text); display:flex; min-height:100vh; align-items:center; justify-content:center; padding:1rem; }
+  .card { background:var(--card); border-radius:16px; padding:1.5rem; max-width:420px; width:100%; box-shadow:0 8px 32px rgba(0,0,0,.4); }
+  h1 { margin:0 0 1rem; font-size:1.4rem; }
+  label { display:block; margin:.75rem 0 .25rem; font-size:.9rem; color:var(--muted); }
+  input, select { width:100%; padding:.6rem .75rem; border-radius:8px; border:1px solid #2a3a50; background:#0d1117; color:var(--text); font-size:1rem; }
+  .row { display:grid; grid-template-columns:1fr 1fr; gap:.75rem; }
+  button { margin-top:1rem; width:100%; padding:.75rem; border:0; border-radius:8px; background:var(--accent); color:#041016; font-weight:600; font-size:1rem; cursor:pointer; }
+  button:active { transform:scale(.98); }
+  #out { margin-top:1.25rem; padding:1rem; background:#0d1117; border-radius:8px; font-variant-numeric:tabular-nums; line-height:1.5; min-height:4rem; }
+  .muted { color:var(--muted); font-size:.85rem; }
+  .share { margin-top:.5rem; font-size:.85rem; word-break:break-all; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Tip calculator</h1>
+  <div class="row">
+    <div>
+      <label for="bill">Bill amount</label>
+      <input id="bill" type="number" min="0" step="0.01" value="50" inputmode="decimal">
+    </div>
+    <div>
+      <label for="tip">Tip %</label>
+      <input id="tip" type="number" min="0" step="0.1" value="18" inputmode="decimal">
+    </div>
+  </div>
+  <div class="row">
+    <div>
+      <label for="tax">Tax %</label>
+      <input id="tax" type="number" min="0" step="0.1" value="0" inputmode="decimal">
+    </div>
+    <div>
+      <label for="people">People</label>
+      <input id="people" type="number" min="1" step="1" value="2" inputmode="numeric">
+    </div>
+  </div>
+  <label>Rounding</label>
+  <select id="round">
+    <option value="none">Exact</option>
+    <option value="nearest">Nearest cent</option>
+    <option value="up">Round up to cent</option>
+  </select>
+  <button id="calc">Calculate</button>
+  <div id="out"></div>
+  <button id="copy" style="background:#2a3a50;color:var(--text);margin-top:.5rem">Copy breakdown</button>
+  <div class="share muted" id="share"></div>
+</div>
+<script>
+const $ = id => document.getElementById(id);
+const inputs = ['bill','tip','tax','people','round'];
+
+function loadFromURL() {
+  const p = new URLSearchParams(location.search);
+  inputs.forEach(k => { if (p.has(k)) $(k).value = p.get(k); });
+}
+function saveToURL() {
+  const p = new URLSearchParams();
+  inputs.forEach(k => p.set(k, $(k).value));
+  const url = location.pathname + '?' + p.toString();
+  history.replaceState(null, '', url);
+  $('share').textContent = 'Share link: ' + location.href;
+}
+function roundVal(n, mode) {
+  if (mode === 'none') return n;
+  if (mode === 'nearest') return Math.round(n * 100) / 100;
+  if (mode === 'up') return Math.ceil(n * 100) / 100;
+  return n;
+}
+function calculate() {
+  const bill = +$('bill').value || 0;
+  const tipPct = +$('tip').value || 0;
+  const taxPct = +$('tax').value || 0;
+  const people = Math.max(1, +$('people').value || 1);
+  const mode = $('round').value;
+  const tax = bill * (taxPct / 100);
+  const tip = bill * (tipPct / 100);
+  const sub = bill + tax;
+  const total = sub + tip;
+  const per = total / people;
+  const perR = roundVal(per, mode);
+  const tipPer = roundVal(tip / people, mode);
+  const out = `Bill: $${bill.toFixed(2)}\nTax: $${tax.toFixed(2)}\nTip: $${tip.toFixed(2)}\nTotal: $${total.toFixed(2)}\n\nPer person (${people}): $${perR.toFixed(2)}\nTip each: $${tipPer.toFixed(2)}`;
+  $('out').textContent = out;
+  saveToURL();
+  localStorage.setItem('tipcalc', JSON.stringify({bill, tipPct, taxPct, people, mode}));
+}
+function copy() {
+  const t = $('out').textContent;
+  if (!t) return;
+  navigator.clipboard.writeText(t).then(() => {
+    const b = $('copy');
+    const old = b.textContent;
+    b.textContent = 'Copied';
+    setTimeout(() => b.textContent = old, 1200);
+  });
+}
+$('calc').onclick = calculate;
+$('copy').onclick = copy;
+inputs.forEach(k => $(k).addEventListener('input', calculate));
+loadFromURL();
+try {
+  const s = JSON.parse(localStorage.getItem('tipcalc') || '{}');
+  if (s.bill != null && !location.search) {
+    $('bill').value = s.bill;
+    $('tip').value = s.tipPct;
+    $('tax').value = s.taxPct;
+    $('people').value = s.people;
+    $('round').value = s.mode || 'none';
+  }
+} catch(e) {}
+calculate();
+</script>
+</body>
+</html>
