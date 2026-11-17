@@ -17937,11 +17937,6 @@ Ledger guard restored this file from 4f1c482 after 234af48 broke it. Entries reb
 
 **F778-webrtc-broadcast-genome-competition-mind**
 
-Entry added by ledger-guard from drafts/F778-webrtc-broadcast-genome-competition-mind/SPEC.md, after a full-file write dropped it.
-
-
-**Ledger ID**: F-778
-
 **Concept**
 A multi-agent competition on The Verse canvas where independent local agents (one per browser tab or peer) run tiny MLPs that control spatial claim tokens. Agents compete to dominate a shared 2D claim field by proposing velocity and claim-strength actions. Genomes (MLP weights) are sealed and exchanged via BroadcastChannel (local multi-tab) with a WebRTC data-channel path stubbed for true peers. Highest-fitness genome is adopted across agents and persisted in IndexedDB. DeviceOrientation and pointer velocity are causal inputs. Pointer clicks inject local rewards. Fully offline after load for the BroadcastChannel path.
 
@@ -17979,7 +17974,3 @@ Reusable BroadcastChannel genome bus, IndexedDB sealed store, multi-agent claim 
 - drafts/F778-webrtc-broadcast-genome-competition-mind/index.html
 
 **Files**: drafts/F778-webrtc-broadcast-genome-competition-mind/SPEC.md, drafts/F778-webrtc-broadcast-genome-competition-mind/index.html
-
-## Guard restore (2026-11-17)
-
-Ledger guard restored this file from 861ef5d after b6d9eb9 broke it. Write the ledger with git on disk, append only.
