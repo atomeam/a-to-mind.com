@@ -1,1 +1,212 @@
-PLACEHOLDER_HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F782 DeviceMotion Hebbian CSS3D Competition Mind</title>
+<style>
+body { margin:0; background:#0a0a12; color:#eee; font-family:system-ui; overflow:hidden; }
+#stage { width:100vw; height:100vh; perspective:800px; position:relative; }
+.agent { position:absolute; width:40px; height:40px; border-radius:50%; background:hsla(var(--h),70%,50%,0.8); box-shadow:0 0 15px currentColor; transform-style:preserve-3d; transition:box-shadow 0.2s; }
+.agent.flash { box-shadow:0 0 40px #fff; }
+#ui { position:fixed; top:10px; left:10px; z-index:10; background:rgba(0,0,0,0.6); padding:8px; border-radius:6px; font-size:13px; }
+button { margin:2px; padding:4px 8px; background:#222; color:#eee; border:1px solid #555; }
+#target { position:absolute; width:30px; height:30px; background:#ff0; border-radius:50%; box-shadow:0 0 20px #ff0; pointer-events:none; }
+</style>
+</head>
+<body>
+<div id="ui">
+  <button id="perm">Enable Motion</button>
+  <button id="seal">Seal Best</button>
+  <button id="reset">Reset</button>
+  <div id="status">Agents: 0 | Best fit: 0</div>
+</div>
+<div id="stage"></div>
+<script>
+const N = 16;
+const stage = document.getElementById('stage');
+const status = document.getElementById('status');
+const agents = [];
+let motion = { ax:0, ay:0, az:0, rx:0, ry:0, rz:0 };
+let target = { x:0, y:0, z:0 };
+let bestFit = 0;
+const channel = new BroadcastChannel('f782-genomes');
+const dbName = 'f782-hebbian';
+
+function rand(a,b){ return a + Math.random()*(b-a); }
+function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+
+class Hebbian {
+  constructor() {
+    this.W = Array.from({length:3}, () => Array.from({length:6}, () => rand(-0.5,0.5)));
+  }
+  forward(x) {
+    return this.W.map(row => row.reduce((s,w,i)=>s+w*x[i],0));
+  }
+  update(x, y, lr=0.01) {
+    for(let i=0;i<3;i++) for(let j=0;j<6;j++) this.W[i][j] += lr * y[i] * x[j];
+    // normalize slightly
+    for(let i=0;i<3;i++) {
+      const n = Math.hypot(...this.W[i]) || 1;
+      for(let j=0;j<6;j++) this.W[i][j] /= n * 0.5;
+    }
+  }
+  clone() { const h = new Hebbian(); h.W = this.W.map(r=>r.slice()); return h; }
+  crossover(other) {
+    const c = new Hebbian();
+    for(let i=0;i<3;i++) for(let j=0;j<6;j++) {
+      c.W[i][j] = Math.random()<0.5 ? this.W[i][j] : other.W[i][j];
+      if(Math.random()<0.1) c.W[i][j] += rand(-0.2,0.2);
+    }
+    return c;
+  }
+}
+
+class Agent {
+  constructor(i) {
+    this.id = i;
+    this.el = document.createElement('div');
+    this.el.className = 'agent';
+    this.el.style.setProperty('--h', rand(0,360));
+    stage.appendChild(this.el);
+    this.pos = {x:rand(-200,200), y:rand(-150,150), z:rand(-100,100)};
+    this.vel = {x:0,y:0,z:0};
+    this.mind = new Hebbian();
+    this.fit = 0;
+    this.energy = 1;
+  }
+  step(dt) {
+    const input = [motion.ax, motion.ay, motion.az, motion.rx*0.1, motion.ry*0.1, motion.rz*0.1];
+    const out = this.mind.forward(input);
+    const desired = {x:out[0]*80, y:out[1]*80, z:out[2]*40};
+    // chase target bonus
+    const dx = target.x - this.pos.x, dy = target.y - this.pos.y, dz = target.z - this.pos.z;
+    const dist = Math.hypot(dx,dy,dz) || 1;
+    this.fit = Math.max(0, 200 - dist);
+    if(this.fit > 50) this.mind.update(input, [dx/dist, dy/dist, dz/dist], 0.005);
+    // integrate
+    this.vel.x += (desired.x - this.vel.x)*0.1;
+    this.vel.y += (desired.y - this.vel.y)*0.1;
+    this.vel.z += (desired.z - this.vel.z)*0.1;
+    this.vel.x *= 0.98; this.vel.y *= 0.98; this.vel.z *= 0.98;
+    this.pos.x += this.vel.x * dt;
+    this.pos.y += this.vel.y * dt;
+    this.pos.z += this.vel.z * dt;
+    // soft bounds
+    this.pos.x = clamp(this.pos.x, -300,300);
+    this.pos.y = clamp(this.pos.y, -200,200);
+    this.pos.z = clamp(this.pos.z, -150,150);
+    // collisions
+    agents.forEach(o => {
+      if(o===this) return;
+      const d = Math.hypot(this.pos.x-o.pos.x, this.pos.y-o.pos.y, this.pos.z-o.pos.z);
+      if(d < 50 && d > 0) {
+        const f = (50-d)*0.02;
+        this.vel.x += (this.pos.x-o.pos.x)/d * f;
+        this.vel.y += (this.pos.y-o.pos.y)/d * f;
+        this.vel.z += (this.pos.z-o.pos.z)/d * f;
+        if(this.fit > 80 && o.fit > 80 && Math.random()<0.02) {
+          this.mind = this.mind.crossover(o.mind);
+          this.el.classList.add('flash');
+          setTimeout(()=>this.el.classList.remove('flash'), 200);
+          channel.postMessage({type:'genome', W:this.mind.W, fit:this.fit});
+        }
+      }
+    });
+    this.el.style.transform = `translate3d(${this.pos.x+window.innerWidth/2-20}px, ${this.pos.y+window.innerHeight/2-20}px, ${this.pos.z}px)`;
+    this.el.style.opacity = 0.6 + this.fit/400;
+  }
+}
+
+function init() {
+  for(let i=0;i<N;i++) agents.push(new Agent(i));
+  const tEl = document.createElement('div');
+  tEl.id = 'target';
+  stage.appendChild(tEl);
+  loadSeal();
+}
+
+function loop(ts) {
+  const dt = 0.016;
+  target.x = Math.sin(ts*0.0005)*150;
+  target.y = Math.cos(ts*0.0007)*100;
+  target.z = Math.sin(ts*0.0003)*50;
+  document.getElementById('target').style.transform = `translate3d(${target.x+window.innerWidth/2-15}px, ${target.y+window.innerHeight/2-15}px, ${target.z}px)`;
+  agents.forEach(a => a.step(dt));
+  bestFit = Math.max(...agents.map(a=>a.fit), bestFit);
+  status.textContent = `Agents: ${agents.length} | Best fit: ${bestFit.toFixed(0)}`;
+  requestAnimationFrame(loop);
+}
+
+document.getElementById('perm').onclick = async () => {
+  if(typeof DeviceMotionEvent.requestPermission === 'function') {
+    const p = await DeviceMotionEvent.requestPermission();
+    if(p !== 'granted') alert('Motion denied; using pointer fallback');
+  }
+  window.addEventListener('devicemotion', e => {
+    if(e.accelerationIncludingGravity) {
+      motion.ax = e.accelerationIncludingGravity.x || 0;
+      motion.ay = e.accelerationIncludingGravity.y || 0;
+      motion.az = e.accelerationIncludingGravity.z || 0;
+    }
+    if(e.rotationRate) {
+      motion.rx = e.rotationRate.beta || 0;
+      motion.ry = e.rotationRate.gamma || 0;
+      motion.rz = e.rotationRate.alpha || 0;
+    }
+  });
+};
+
+let dragging = null;
+stage.onpointerdown = e => {
+  dragging = agents.find(a => Math.hypot(e.clientX - (a.pos.x+window.innerWidth/2), e.clientY - (a.pos.y+window.innerHeight/2)) < 40);
+};
+stage.onpointermove = e => {
+  if(dragging) {
+    dragging.pos.x = e.clientX - window.innerWidth/2;
+    dragging.pos.y = e.clientY - window.innerHeight/2;
+    motion.ax = (e.movementX||0)*0.1;
+    motion.ay = (e.movementY||0)*0.1;
+  }
+};
+stage.onpointerup = () => dragging = null;
+
+document.getElementById('seal').onclick = () => seal();
+document.getElementById('reset').onclick = () => { agents.forEach(a => a.mind = new Hebbian()); };
+
+function seal() {
+  const top = agents.slice().sort((a,b)=>b.fit-a.fit).slice(0,3);
+  const req = indexedDB.open(dbName, 1);
+  req.onupgradeneeded = e => e.target.result.createObjectStore('genomes', {keyPath:'id'});
+  req.onsuccess = e => {
+    const tx = e.target.result.transaction('genomes','readwrite');
+    const store = tx.objectStore('genomes');
+    top.forEach((a,i) => store.put({id:i, W:a.mind.W, fit:a.fit}));
+  };
+}
+
+function loadSeal() {
+  const req = indexedDB.open(dbName, 1);
+  req.onsuccess = e => {
+    const tx = e.target.result.transaction('genomes','readonly');
+    const store = tx.objectStore('genomes');
+    store.getAll().onsuccess = ev => {
+      const saved = ev.target.result;
+      if(saved && saved.length) {
+        saved.forEach((s,i) => { if(agents[i]) agents[i].mind.W = s.W; });
+      }
+    };
+  };
+}
+
+channel.onmessage = e => {
+  if(e.data.type === 'genome' && e.data.fit > 50) {
+    const a = agents[Math.floor(Math.random()*agents.length)];
+    a.mind.W = e.data.W.map(r=>r.slice());
+  }
+};
+
+init();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
