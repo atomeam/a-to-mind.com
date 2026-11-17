@@ -17827,3 +17827,17 @@ Entry added by ledger-guard from drafts/F774-webgpu-sdf-sculpt-audio-feedback-mi
 **Building blocks**: Reusable SDF metaball raymarch stub, audio-RMS mutation operator, orientation-aware MLP sculptor.
 
 **Files**: drafts/F774-webgpu-sdf-sculpt-audio-feedback-mind/SPEC.md, drafts/F774-webgpu-sdf-sculpt-audio-feedback-mind/index.html
+
+## Frontier Engine F-775 (2026-11-16)
+
+**F775-tip-calculator-fair-split**
+
+Entry added by ledger-guard from drafts/F775-tip-calculator-fair-split/SPEC.md, after a full-file write dropped it.
+
+Plain name: Tip calculator
+Job: Someone enters a bill amount, tip percent, tax, and number of people; they get clear per-person totals (with rounding options) they can copy or share via link.
+Input: Number boxes for bill, tip %, tax %, people; radio for rounding style (none, up, nearest).
+Keeps: Copy button for the breakdown; share link that carries all inputs so the page restores them.
+Not on Verse yet: Checked against recent ledger entries and BRIEF jobs; no matching tip-focused tool with share link and rounding options found in last drafts.
+
+**Files**: drafts/F775-tip-calculator-fair-split/SPEC.md, drafts/F775-tip-calculator-fair-split/index.html
