@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F779 – Echo State SDF Portal Mind</title>
+<style>
+  body { margin: 0; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #ui { position: absolute; top: 12px; left: 12px; z-index: 10; background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 8px; font-size: 13px; }
+  button { background: #2a2a4a; color: #fff; border: 1px solid #555; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+  button:hover { background: #3a3a6a; }
+  .portal {
+    position: absolute; width: 28px; height: 28px; border-radius: 50%;
+    background: radial-gradient(circle, #fff 0%, transparent 70%);
+    border: 2px solid rgba(255,255,255,0.6); cursor: grab; z-index: 5;
+    mix-blend-mode: screen; pointer-events: auto;
+    transform: translate(-50%, -50%);
+  }
+  .portal:active { cursor: grabbing; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <div>F779 Echo State SDF Portal Mind</div>
+  <button id="seal">Seal Genome</button>
+  <div id="status">Reservoir energy: 0</div>
+</div>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const status = document.getElementById('status');
+const sealBtn = document.getElementById('seal');
+
+let W = innerWidth, H = innerHeight;
+function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+addEventListener('resize', resize); resize();
+
+// Echo State Network
+const N = 48;
+const LEAK = 0.28;
+const SPECTRAL = 0.92;
+let reservoir = new Float32Array(N);
+let W_res = new Float32Array(N * N); // sparse
+let W_in = new Float32Array(N * 6);
+let readout = new Float32Array(N * 6); // 6 outputs
+
+function initReservoir(seed = 42) {
+  let s = seed;
+  const rand = () => { s = (s * 16807) % 2147483647; return (s / 2147483647) * 2 - 1; };
+  // sparse recurrent
+  for (let i = 0; i < N; i++) {
+    for (let j = 0; j < N; j++) {
+      if (Math.abs(rand()) < 0.12) W_res[i*N + j] = rand() * 0.8;
+    }
+  }
+  // scale spectral roughly
+  for (let i = 0; i < W_res.length; i++) W_res[i] *= SPECTRAL;
+  // input weights
+  for (let i = 0; i < W_in.length; i++) W_in[i] = rand() * 0.4;
+  // readout init small
+  for (let i = 0; i < readout.length; i++) readout[i] = rand() * 0.05;
+}
+
+function stepESN(inputs) { // inputs: [px, py, vx, vy, beta, gamma] normalized
+  const next = new Float32Array(N);
+  for (let i = 0; i < N; i++) {
+    let sum = 0;
+    for (let j = 0; j < N; j++) sum += W_res[i*N + j] * reservoir[j];
+    for (let k = 0; k < 6; k++) sum += W_in[i*6 + k] * inputs[k];
+    next[i] = Math.tanh(sum);
+  }
+  for (let i = 0; i < N; i++) {
+    reservoir[i] = (1 - LEAK) * reservoir[i] + LEAK * next[i];
+  }
+}
+
+function readoutForward() {
+  const out = new Float32Array(6);
+  for (let o = 0; o < 6; o++) {
+    let s = 0;
+    for (let i = 0; i < N; i++) s += readout[o*N + i] * reservoir[i];
+    out[o] = Math.tanh(s);
+  }
+  return out;
+}
+
+// load or init
+let seed = 42;
+try {
+  const saved = localStorage.getItem('f779-genome');
+  if (saved) {
+    const g = JSON.parse(saved);
+    seed = g.seed || 42;
+    initReservoir(seed);
+    if (g.readout) readout.set(g.readout);
+  } else initReservoir(seed);
+} catch(e) { initReservoir(seed); }
+
+// Portals
+const portals = [];
+for (let i = 0; i < 6; i++) {
+  const el = document.createElement('div');
+  el.className = 'portal';
+  el.dataset.idx = i;
+  document.body.appendChild(el);
+  portals.push({ el, x: W/2, y: H/2, dragging: false });
+}
+
+// Input state
+let px = 0.5, py = 0.5, vx = 0, vy = 0, beta = 0, gamma = 0, clickE = 0;
+let lastX = 0, lastY = 0;
+canvas.addEventListener('pointermove', e => {
+  const nx = e.clientX / W, ny = e.clientY / H;
+  vx = (nx - lastX) * 8; vy = (ny - lastY) * 8;
+  px = nx; py = ny; lastX = nx; lastY = ny;
+});
+canvas.addEventListener('pointerdown', () => clickE = 1.2);
+addEventListener('deviceorientation', e => {
+  beta = (e.beta || 0) / 90;
+  gamma = (e.gamma || 0) / 90;
+});
+
+// Portal drag
+portals.forEach((p, i) => {
+  p.el.addEventListener('pointerdown', ev => { p.dragging = true; p.el.setPointerCapture(ev.pointerId); });
+  p.el.addEventListener('pointerup', () => p.dragging = false);
+  p.el.addEventListener('pointermove', ev => {
+    if (!p.dragging) return;
+    p.x = ev.clientX; p.y = ev.clientY;
+    // inject into reservoir
+    const node = i % N;
+    reservoir[node] += 0.4;
+  });
+});
+
+function seal() {
+  // slight mutation
+  for (let i = 0; i < readout.length; i++) readout[i] += (Math.random()-0.5)*0.02;
+  const g = { seed, readout: Array.from(readout) };
+  try { localStorage.setItem('f779-genome', JSON.stringify(g)); } catch(e){}
+  status.textContent = 'Genome sealed';
+}
+sealBtn.onclick = seal;
+
+// Metaballs
+const balls = [
+  {x:0.3,y:0.4,r:0.12}, {x:0.6,y:0.5,r:0.15}, {x:0.5,y:0.7,r:0.1}
+];
+
+function frame() {
+  clickE *= 0.92;
+  const inputs = [px*2-1, py*2-1, vx, vy, beta, gamma + clickE];
+  stepESN(inputs);
+  const ctrl = readoutForward();
+
+  // update balls from readout
+  balls[0].x = 0.5 + ctrl[0]*0.35; balls[0].y = 0.5 + ctrl[1]*0.35; balls[0].r = 0.08 + Math.abs(ctrl[2])*0.12;
+  balls[1].x = 0.5 + ctrl[3]*0.4; balls[1].y = 0.5 + ctrl[4]*0.3; balls[1].r = 0.1 + Math.abs(ctrl[5])*0.1;
+  balls[2].x = 0.5 + (ctrl[0]+ctrl[3])*0.2; balls[2].y = 0.5 + (ctrl[1]+ctrl[4])*0.2; balls[2].r = 0.09;
+
+  // energy
+  let energy = 0;
+  for (let i = 0; i < N; i++) energy += Math.abs(reservoir[i]);
+  energy /= N;
+  status.textContent = `Reservoir energy: ${energy.toFixed(3)}`;
+
+  // portals to top activations
+  const acts = Array.from(reservoir).map((v,i)=>({v:Math.abs(v),i})).sort((a,b)=>b.v-a.v);
+  portals.forEach((p, pi) => {
+    if (p.dragging) {
+      p.el.style.left = p.x + 'px';
+      p.el.style.top = p.y + 'px';
+      return;
+    }
+    const node = acts[pi].i;
+    // project node index to screen with noise from activation
+    const ang = (node / N) * Math.PI * 2;
+    const rad = 0.25 + acts[pi].v * 0.3;
+    p.x = (0.5 + Math.cos(ang)*rad) * W;
+    p.y = (0.5 + Math.sin(ang)*rad) * H;
+    p.el.style.left = p.x + 'px';
+    p.el.style.top = p.y + 'px';
+    const hue = (node * 7 + energy*120) % 360;
+    p.el.style.background = `radial-gradient(circle, hsl(${hue},80%,70%) 0%, transparent 70%)`;
+    p.el.style.transform = `translate(-50%,-50%) scale(${0.7 + acts[pi].v})`;
+  });
+
+  // render metaballs
+  ctx.fillStyle = '#0a0a12';
+  ctx.fillRect(0,0,W,H);
+  const img = ctx.createImageData(W, H);
+  const data = img.data;
+  for (let y = 0; y < H; y += 2) {
+    for (let x = 0; x < W; x += 2) {
+      let d = 0;
+      for (const b of balls) {
+        const dx = (x/W - b.x), dy = (y/H - b.y);
+        const dist = Math.sqrt(dx*dx + dy*dy) + 1e-4;
+        d += (b.r * b.r) / (dist * dist);
+      }
+      if (d > 1.0) {
+        const hue = (180 + energy*200 + d*40) % 360;
+        const c = hslToRgb(hue, 0.7, 0.4 + Math.min(d*0.15, 0.4));
+        const i = (y*W + x)*4;
+        data[i] = c[0]; data[i+1] = c[1]; data[i+2] = c[2]; data[i+3] = 255;
+        if (x+1 < W) { data[i+4]=c[0]; data[i+5]=c[1]; data[i+6]=c[2]; data[i+7]=255; }
+        if (y+1 < H) {
+          const j = ((y+1)*W + x)*4;
+          data[j]=c[0]; data[j+1]=c[1]; data[j+2]=c[2]; data[j+3]=255;
+          if (x+1 < W) { data[j+4]=c[0]; data[j+5]=c[1]; data[j+6]=c[2]; data[j+7]=255; }
+        }
+      }
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+
+  if (energy > 0.45 && navigator.vibrate) navigator.vibrate(10);
+  requestAnimationFrame(frame);
+}
+
+function hslToRgb(h, s, l) {
+  h /= 360;
+  const a = s * Math.min(l, 1-l);
+  const f = n => { const k = (n + h*12) % 12; return l - a * Math.max(Math.min(k-3,9-k,1),-1); };
+  return [f(0)*255, f(8)*255, f(4)*255];
+}
+
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
