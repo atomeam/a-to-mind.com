@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F815 · Orientation-Evo Spatial Audio Hybrid Mind — Verse</title>
+<style>
+body { margin:0; background:#0a0a12; color:#eee; font-family:system-ui,sans-serif; overflow:hidden; }
+#hud { position:fixed; top:8px; left:8px; z-index:10; background:rgba(0,0,0,.7); padding:8px 12px; border-radius:8px; font-size:13px; }
+#hud button { margin:0 4px; padding:4px 8px; background:#246; color:#fff; border:none; border-radius:4px; cursor:pointer; }
+.agent { position:absolute; width:90px; height:70px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:11px; text-align:center; cursor:pointer; transition:background .3s; user-select:none; border:2px solid rgba(255,255,255,.3); }
+.agent .fit { font-size:9px; opacity:.8; }
+</style>
+</head>
+<body>
+<div id="hud">
+  F815 Orientation-Evo Spatial Audio<br>
+  <button id="seal">Seal Genome</button>
+  <button id="resume">Resume Audio</button>
+  <span id="status">init</span>
+</div>
+<script>
+const N = 7;
+const agents = [];
+let orientation = { beta: 0, gamma: 0 };
+let audioCtx = null;
+let masterGain;
+const channel = new BroadcastChannel('f815-genome');
+const DB_NAME = 'verse-f815';
+const STORE = 'genomes';
+
+function rand(a,b){ return a + Math.random()*(b-a); }
+function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+
+class Genome {
+  constructor() {
+    this.freq = rand(80, 800);
+    this.detune = rand(-50, 50);
+    this.q = rand(0.5, 8);
+    this.gain = rand(0.05, 0.4);
+    this.pan = rand(-1, 1);
+    this.type = ['sine','square','sawtooth','triangle'][Math.floor(Math.random()*4)];
+  }
+  mutate(rate=0.3) {
+    if (Math.random()<rate) this.freq *= rand(0.85, 1.15);
+    if (Math.random()<rate) this.detune += rand(-20,20);
+    if (Math.random()<rate) this.q *= rand(0.8,1.2);
+    if (Math.random()<rate) this.gain *= rand(0.7,1.3);
+    if (Math.random()<rate) this.pan += rand(-0.3,0.3);
+    if (Math.random()<0.1) this.type = ['sine','square','sawtooth','triangle'][Math.floor(Math.random()*4)];
+    this.freq = clamp(this.freq, 40, 2000);
+    this.q = clamp(this.q, 0.1, 20);
+    this.gain = clamp(this.gain, 0.01, 0.6);
+    this.pan = clamp(this.pan, -1, 1);
+  }
+  clone() {
+    const g = new Genome();
+    Object.assign(g, this);
+    return g;
+  }
+}
+
+class Agent {
+  constructor(i) {
+    this.id = i;
+    this.el = document.createElement('div');
+    this.el.className = 'agent';
+    this.el.innerHTML = `<div>A${i}<br><span class="fit">0</span></div>`;
+    document.body.appendChild(this.el);
+    this.x = rand(60, window.innerWidth-150);
+    this.y = rand(60, window.innerHeight-150);
+    this.pop = [new Genome(), new Genome(), new Genome(), new Genome()];
+    this.best = this.pop[0];
+    this.fitness = 0;
+    this.osc = null; this.filter = null; this.panner = null; this.gain = null; this.analyser = null;
+    this.setupAudio();
+    this.el.addEventListener('pointerdown', () => this.boost());
+  }
+  setupAudio() {
+    if (!audioCtx) return;
+    this.osc = audioCtx.createOscillator();
+    this.filter = audioCtx.createBiquadFilter();
+    this.panner = audioCtx.createStereoPanner();
+    this.gain = audioCtx.createGain();
+    this.analyser = audioCtx.createAnalyser();
+    this.analyser.fftSize = 256;
+    this.osc.connect(this.filter);
+    this.filter.connect(this.panner);
+    this.panner.connect(this.gain);
+    this.gain.connect(this.analyser);
+    this.analyser.connect(masterGain);
+    this.osc.start();
+    this.applyGenome(this.best);
+  }
+  applyGenome(g) {
+    if (!this.osc) return;
+    this.osc.frequency.setTargetAtTime(g.freq, audioCtx.currentTime, 0.1);
+    this.osc.detune.setTargetAtTime(g.detune, audioCtx.currentTime, 0.1);
+    this.osc.type = g.type;
+    this.filter.frequency.setTargetAtTime(g.freq * 1.5, audioCtx.currentTime, 0.1);
+    this.filter.Q.setTargetAtTime(g.q, audioCtx.currentTime, 0.1);
+    this.panner.pan.setTargetAtTime(g.pan, audioCtx.currentTime, 0.05);
+    this.gain.gain.setTargetAtTime(g.gain, audioCtx.currentTime, 0.1);
+  }
+  boost() { this.fitness += 2; }
+  update(dt, ox, oy) {
+    const tiltBias = (orientation.beta / 90) * 0.5;
+    const dist = Math.hypot(ox - this.x, oy - this.y);
+    const prox = Math.max(0, 1 - dist / 300);
+    this.fitness = this.fitness * 0.98 + tiltBias * 0.5 + prox * 1.2;
+    if (Math.random() < 0.05) {
+      this.pop.sort((a,b) => (Math.random()-0.5));
+      const parent = this.pop[0].clone();
+      parent.mutate(0.4);
+      this.pop[3] = parent;
+      if (this.fitness > 1) this.best = parent;
+    }
+    this.applyGenome(this.best);
+    const data = new Uint8Array(this.analyser ? this.analyser.frequencyBinCount : 0);
+    if (this.analyser) this.analyser.getByteFrequencyData(data);
+    const energy = data.length ? data.reduce((s,v)=>s+v,0) / data.length / 255 : 0.3;
+    this.el.style.left = this.x + 'px';
+    this.el.style.top = this.y + 'px';
+    this.el.style.transform = `scale(${0.8 + energy*0.6}) rotate(${orientation.gamma*0.3}deg)`;
+    const hue = (this.best.freq / 10 + orientation.beta) % 360;
+    this.el.style.background = `hsla(${hue},70%,${30+energy*40}%,0.85)`;
+    this.el.querySelector('.fit').textContent = this.fitness.toFixed(1);
+    if (prox > 0.3) {
+      this.x += (ox - this.x) * 0.02;
+      this.y += (oy - this.y) * 0.02;
+    }
+  }
+  seal() {
+    return { id: this.id, genome: {...this.best}, fitness: this.fitness };
+  }
+}
+
+async function initAudio() {
+  if (audioCtx) {
+    if (audioCtx.state === 'suspended') await audioCtx.resume();
+    return;
+  }
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  masterGain = audioCtx.createGain();
+  masterGain.gain.value = 0.3;
+  masterGain.connect(audioCtx.destination);
+  for (const a of agents) a.setupAudio();
+  document.getElementById('status').textContent = 'audio on';
+}
+
+function initAgents() {
+  for (let i=0; i<N; i++) agents.push(new Agent(i));
+}
+
+window.addEventListener('deviceorientation', e => {
+  orientation.beta = e.beta || 0;
+  orientation.gamma = e.gamma || 0;
+});
+
+let pointer = { x: window.innerWidth/2, y: window.innerHeight/2 };
+window.addEventListener('pointermove', e => { pointer.x = e.clientX; pointer.y = e.clientY; });
+
+document.getElementById('resume').onclick = initAudio;
+document.getElementById('seal').onclick = () => {
+  const best = agents.reduce((b,a) => a.fitness > b.fitness ? a : b, agents[0]);
+  const payload = best.seal();
+  channel.postMessage({ type: 'seal', ...payload });
+  saveToIDB(payload);
+  document.getElementById('status').textContent = 'sealed & broadcast';
+};
+
+channel.onmessage = e => {
+  if (e.data.type === 'seal') {
+    const target = agents[Math.floor(Math.random()*agents.length)];
+    Object.assign(target.best, e.data.genome);
+    target.fitness = Math.max(target.fitness, e.data.fitness * 0.8);
+    document.getElementById('status').textContent = 'received genome';
+  }
+};
+
+function saveToIDB(data) {
+  const req = indexedDB.open(DB_NAME, 1);
+  req.onupgradeneeded = () => req.result.createObjectStore(STORE);
+  req.onsuccess = () => {
+    const tx = req.result.transaction(STORE, 'readwrite');
+    tx.objectStore(STORE).put(data, 'best');
+  };
+}
+
+function loadFromIDB() {
+  const req = indexedDB.open(DB_NAME, 1);
+  req.onsuccess = () => {
+    const tx = req.result.transaction(STORE, 'readonly');
+    const get = tx.objectStore(STORE).get('best');
+    get.onsuccess = () => {
+      if (get.result && agents.length) {
+        Object.assign(agents[0].best, get.result.genome);
+        document.getElementById('status').textContent = 'restored';
+      }
+    };
+  };
+}
+
+function loop() {
+  for (const a of agents) a.update(0.016, pointer.x, pointer.y);
+  requestAnimationFrame(loop);
+}
+
+initAgents();
+loadFromIDB();
+document.getElementById('status').textContent = 'ready — grant audio + tilt';
+loop();
+</script>
+</body>
+</html>
