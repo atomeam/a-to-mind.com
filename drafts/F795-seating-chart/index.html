@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seating Chart Maker · Verse</title>
+<style>
+:root { --bg: #0f1419; --fg: #e7e9ea; --accent: #1d9bf0; --card: #1a2332; --border: #38444d; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.4; }
+header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); }
+h1 { margin: 0; font-size: 1.5rem; }
+.container { max-width: 1100px; margin: 0 auto; padding: 1rem; display: grid; grid-template-columns: 280px 1fr; gap: 1.5rem; }
+@media (max-width: 800px) { .container { grid-template-columns: 1fr; } }
+.panel { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; }
+label { display: block; font-size: 0.85rem; margin-bottom: 0.25rem; color: #8b98a5; }
+input, textarea, button, select { width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border); background: #15202b; color: var(--fg); font: inherit; }
+textarea { min-height: 80px; resize: vertical; }
+button { background: var(--accent); color: #fff; border: none; cursor: pointer; font-weight: 600; margin-top: 0.5rem; }
+button.secondary { background: transparent; border: 1px solid var(--border); color: var(--fg); }
+.tables { display: flex; flex-wrap: wrap; gap: 1rem; min-height: 400px; }
+.table { background: #15202b; border: 2px dashed var(--border); border-radius: 12px; min-width: 180px; min-height: 140px; padding: 0.75rem; flex: 1; }
+.table h3 { margin: 0 0 0.5rem; font-size: 0.95rem; text-align: center; }
+.seat { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 0.4rem 0.6rem; margin: 0.25rem 0; cursor: grab; user-select: none; font-size: 0.9rem; }
+.seat.dragging { opacity: 0.5; }
+.guest-pool { max-height: 300px; overflow-y: auto; }
+.actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; }
+.actions button { width: auto; padding: 0.5rem 1rem; }
+.note { font-size: 0.8rem; color: #8b98a5; margin-top: 0.5rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Seating Chart Maker</h1>
+  <p style="margin:0.25rem 0 0; color:#8b98a5;">Arrange guests at tables. Drag to place. Nothing leaves your device.</p>
+</header>
+<div class="container">
+  <div class="panel">
+    <label for="names">Guest names (one per line)</label>
+    <textarea id="names" placeholder="Alice&#10;Bob&#10;Carol&#10;Dave"></textarea>
+    <label for="numTables" style="margin-top:0.75rem">Number of tables</label>
+    <input type="number" id="numTables" min="1" max="20" value="4">
+    <label for="together" style="margin-top:0.75rem">Must sit together (pairs, one per line: Name1, Name2)</label>
+    <textarea id="together" placeholder="Alice, Bob"></textarea>
+    <label for="apart" style="margin-top:0.75rem">Must sit apart (pairs, one per line)</label>
+    <textarea id="apart" placeholder="Carol, Dave"></textarea>
+    <button id="generate">Generate tables</button>
+    <div class="actions">
+      <button id="save" class="secondary">Save arrangement</button>
+      <button id="csv" class="secondary">Download CSV</button>
+      <button id="png" class="secondary">Download PNG</button>
+    </div>
+    <p class="note">Drag guests between tables or back to the pool. Constraints are checked on generate and shown as warnings.</p>
+  </div>
+  <div>
+    <div class="panel" style="margin-bottom:1rem">
+      <h2 style="margin:0 0 0.5rem; font-size:1.1rem">Unseated guests</h2>
+      <div id="pool" class="guest-pool"></div>
+    </div>
+    <div id="tables" class="tables"></div>
+  </div>
+</div>
+<script>
+const $ = id => document.getElementById(id);
+const namesEl = $('names'), numEl = $('numTables'), togetherEl = $('together'), apartEl = $('apart');
+const pool = $('pool'), tablesEl = $('tables');
+let guests = [], tables = [];
+
+function load() {
+  try {
+    const s = localStorage.getItem('verse-seating-f795');
+    if (s) {
+      const d = JSON.parse(s);
+      namesEl.value = d.names || '';
+      numEl.value = d.num || 4;
+      togetherEl.value = d.together || '';
+      apartEl.value = d.apart || '';
+    }
+  } catch(e) {}
+}
+function saveState() {
+  const data = {
+    names: namesEl.value,
+    num: numEl.value,
+    together: togetherEl.value,
+    apart: apartEl.value,
+    seating: tables.map(t => t.map(g => g))
+  };
+  localStorage.setItem('verse-seating-f795', JSON.stringify(data));
+}
+
+function parsePairs(text) {
+  return text.split('\n').map(l => l.split(',').map(s => s.trim()).filter(Boolean)).filter(p => p.length === 2);
+}
+
+function generate() {
+  const lines = namesEl.value.split('\n').map(s => s.trim()).filter(Boolean);
+  guests = [...new Set(lines)];
+  const n = Math.max(1, Math.min(20, parseInt(numEl.value) || 4));
+  tables = Array.from({length: n}, () => []);
+  guests.forEach((g, i) => tables[i % n].push(g));
+  render();
+  checkConstraints();
+  saveState();
+}
+
+function render() {
+  pool.innerHTML = '';
+  const seated = new Set(tables.flat());
+  guests.filter(g => !seated.has(g)).forEach(g => {
+    const el = document.createElement('div');
+    el.className = 'seat';
+    el.textContent = g;
+    el.draggable = true;
+    el.dataset.guest = g;
+    el.addEventListener('dragstart', onDragStart);
+    pool.appendChild(el);
+  });
+  tablesEl.innerHTML = '';
+  tables.forEach((seats, i) => {
+    const t = document.createElement('div');
+    t.className = 'table';
+    t.dataset.table = i;
+    t.innerHTML = `<h3>Table ${i+1}</h3>`;
+    seats.forEach(g => {
+      const el = document.createElement('div');
+      el.className = 'seat';
+      el.textContent = g;
+      el.draggable = true;
+      el.dataset.guest = g;
+      el.addEventListener('dragstart', onDragStart);
+      t.appendChild(el);
+    });
+    t.addEventListener('dragover', e => e.preventDefault());
+    t.addEventListener('drop', onDrop);
+    tablesEl.appendChild(t);
+  });
+  pool.addEventListener('dragover', e => e.preventDefault());
+  pool.addEventListener('drop', onDropPool);
+}
+
+let dragGuest = null, dragFrom = null;
+function onDragStart(e) {
+  dragGuest = e.target.dataset.guest;
+  dragFrom = e.target.closest('.table') ? parseInt(e.target.closest('.table').dataset.table) : -1;
+  e.target.classList.add('dragging');
+}
+function onDrop(e) {
+  e.preventDefault();
+  const to = parseInt(e.currentTarget.dataset.table);
+  if (dragGuest == null) return;
+  if (dragFrom >= 0) tables[dragFrom] = tables[dragFrom].filter(g => g !== dragGuest);
+  if (!tables[to].includes(dragGuest)) tables[to].push(dragGuest);
+  document.querySelectorAll('.dragging').forEach(el => el.classList.remove('dragging'));
+  render();
+  saveState();
+  dragGuest = null;
+}
+function onDropPool(e) {
+  e.preventDefault();
+  if (dragGuest == null || dragFrom < 0) return;
+  tables[dragFrom] = tables[dragFrom].filter(g => g !== dragGuest);
+  document.querySelectorAll('.dragging').forEach(el => el.classList.remove('dragging'));
+  render();
+  saveState();
+  dragGuest = null;
+}
+
+function checkConstraints() {
+  const tog = parsePairs(togetherEl.value);
+  const apa = parsePairs(apartEl.value);
+  const warnings = [];
+  tog.forEach(([a,b]) => {
+    const ta = tables.findIndex(t => t.includes(a));
+    const tb = tables.findIndex(t => t.includes(b));
+    if (ta >= 0 && tb >= 0 && ta !== tb) warnings.push(`${a} and ${b} are on different tables`);
+  });
+  apa.forEach(([a,b]) => {
+    const ta = tables.findIndex(t => t.includes(a));
+    const tb = tables.findIndex(t => t.includes(b));
+    if (ta >= 0 && ta === tb) warnings.push(`${a} and ${b} are on the same table`);
+  });
+  if (warnings.length) alert('Constraint notes:\n' + warnings.join('\n'));
+}
+
+$('generate').onclick = generate;
+$('save').onclick = () => { saveState(); alert('Saved on this device.'); };
+$('csv').onclick = () => {
+  let csv = 'Table,Guest\n';
+  tables.forEach((seats, i) => seats.forEach(g => csv += `${i+1},"${g}"\n`));
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
+  a.download = 'seating-chart.csv';
+  a.click();
+};
+$('png').onclick = () => {
+  const canvas = document.createElement('canvas');
+  canvas.width = 800; canvas.height = 600;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#0f1419'; ctx.fillRect(0,0,800,600);
+  ctx.fillStyle = '#e7e9ea'; ctx.font = '16px system-ui';
+  ctx.fillText('Seating Chart', 20, 30);
+  tables.forEach((seats, i) => {
+    const x = 20 + (i % 4) * 190;
+    const y = 50 + Math.floor(i / 4) * 160;
+    ctx.strokeStyle = '#38444d'; ctx.strokeRect(x, y, 170, 140);
+    ctx.fillText(`Table ${i+1}`, x+10, y+25);
+    seats.slice(0, 6).forEach((g, j) => ctx.fillText(g, x+10, y+50 + j*18));
+  });
+  const a = document.createElement('a');
+  a.href = canvas.toDataURL('image/png');
+  a.download = 'seating-chart.png';
+  a.click();
+};
+
+load();
+if (namesEl.value) generate();
+</script>
+</body>
+</html>
