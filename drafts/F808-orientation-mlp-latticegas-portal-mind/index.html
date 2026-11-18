@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F808 Orientation MLP Lattice-Gas Portal Mind</title>
+<style>
+body { margin:0; background:#0a0a12; color:#eee; font-family:system-ui; overflow:hidden; }
+canvas { display:block; background:#111; }
+.portal { position:absolute; width:60px; height:60px; border-radius:50%; background:rgba(0,255,180,0.3); border:2px solid #0f8; cursor:grab; display:flex; align-items:center; justify-content:center; font-size:10px; user-select:none; }
+#ui { position:absolute; top:10px; left:10px; z-index:10; }
+button { margin:4px; padding:6px 10px; background:#222; color:#0f8; border:1px solid #0f8; cursor:pointer; }
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="ui">
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset</button>
+  <span id="info">Tilt to bias flow | Drag portals to inject</span>
+</div>
+<script>
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+let W = 64, H = 64, scale = 8;
+function resize() {
+  cv.width = W * scale; cv.height = H * scale;
+  cv.style.width = '100vw'; cv.style.height = '100vh';
+}
+resize(); window.onresize = resize;
+
+// Lattice: each cell has particle counts in 4 dirs (N,E,S,W)
+let grid = Array.from({length: H}, () => Array.from({length: W}, () => [0,0,0,0]));
+let next = Array.from({length: H}, () => Array.from({length: W}, () => [0,0,0,0]));
+
+// Tiny MLP: 3 in (alpha,beta,gamma or proxies) -> 4 out (bias N,E,S,W)
+let weights = {
+  w1: Array(6).fill(0).map(() => Array(3).fill(0).map(() => Math.random()*0.4-0.2)),
+  b1: Array(6).fill(0).map(() => Math.random()*0.1),
+  w2: Array(4).fill(0).map(() => Array(6).fill(0).map(() => Math.random()*0.4-0.2)),
+  b2: Array(4).fill(0).map(() => Math.random()*0.1)
+};
+let ori = { alpha:0, beta:0, gamma:0 };
+
+function sigmoid(x) { return 1/(1+Math.exp(-x)); }
+function mlpForward(x) {
+  let h = weights.b1.map((b,i) => sigmoid(b + x.reduce((s,xi,j) => s + xi * weights.w1[i][j], 0)));
+  return weights.b2.map((b,i) => sigmoid(b + h.reduce((s,hi,j) => s + hi * weights.w2[i][j], 0)));
+}
+
+function step() {
+  const bias = mlpForward([ori.alpha, ori.beta, ori.gamma]);
+  // Stream
+  for (let y=0; y<H; y++) for (let x=0; x<W; x++) {
+    next[y][x] = [0,0,0,0];
+  }
+  for (let y=0; y<H; y++) for (let x=0; x<W; x++) {
+    const p = grid[y][x];
+    // N
+    if (y>0) next[y-1][x][0] += p[0];
+    // E
+    if (x<W-1) next[y][x+1][1] += p[1];
+    // S
+    if (y<H-1) next[y+1][x][2] += p[2];
+    // W
+    if (x>0) next[y][x-1][3] += p[3];
+  }
+  // Collision + bias injection
+  for (let y=0; y<H; y++) for (let x=0; x<W; x++) {
+    let p = next[y][x];
+    // Simple HPP collision: swap N/S with E/W if both pairs present
+    if (p[0] && p[2] && !p[1] && !p[3]) { p[1]=p[0]; p[3]=p[2]; p[0]=0; p[2]=0; }
+    else if (p[1] && p[3] && !p[0] && !p[2]) { p[0]=p[1]; p[2]=p[3]; p[1]=0; p[3]=0; }
+    // Bias from MLP: slightly favor directions
+    for (let d=0; d<4; d++) p[d] = Math.max(0, p[d] + (bias[d]-0.5)*0.05);
+    // Clamp
+    for (let d=0; d<4; d++) p[d] = Math.min(4, p[d]);
+  }
+  [grid, next] = [next, grid];
+}
+
+function render() {
+  const img = ctx.createImageData(cv.width, cv.height);
+  const data = img.data;
+  for (let y=0; y<H; y++) for (let x=0; x<W; x++) {
+    const dens = grid[y][x].reduce((a,b)=>a+b,0);
+    const col = Math.min(255, dens * 40);
+    for (let dy=0; dy<scale; dy++) for (let dx=0; dx<scale; dx++) {
+      const i = ((y*scale+dy)*cv.width + (x*scale+dx)) * 4;
+      data[i] = col*0.2; data[i+1] = col; data[i+2] = col*0.6; data[i+3] = 255;
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+}
+
+// Portals
+const portals = [];
+for (let i=0; i<3; i++) {
+  const el = document.createElement('div');
+  el.className = 'portal';
+  el.textContent = 'INJ';
+  el.style.left = (20+i*100)+'px';
+  el.style.top = (window.innerHeight-80)+'px';
+  document.body.appendChild(el);
+  portals.push({el, x:0, y:0, active:false});
+  el.onpointerdown = e => { el.setPointerCapture(e.pointerId); portals[i].active=true; };
+  el.onpointermove = e => {
+    if (!portals[i].active) return;
+    el.style.left = (e.clientX-30)+'px';
+    el.style.top = (e.clientY-30)+'px';
+  };
+  el.onpointerup = () => portals[i].active=false;
+}
+
+function inject() {
+  portals.forEach(p => {
+    const rect = p.el.getBoundingClientRect();
+    const gx = Math.floor((rect.left + 30) / (window.innerWidth / W));
+    const gy = Math.floor((rect.top + 30) / (window.innerHeight / H));
+    if (gx>=0 && gx<W && gy>=0 && gy<H) {
+      for (let d=0; d<4; d++) grid[gy][gx][d] += 1;
+    }
+  });
+}
+
+// Orientation
+window.addEventListener('deviceorientation', e => {
+  ori.alpha = (e.alpha||0)/180 - 1;
+  ori.beta = (e.beta||0)/90;
+  ori.gamma = (e.gamma||0)/90;
+  document.getElementById('info').textContent = `\u03b1:${ori.alpha.toFixed(2)} \u03b2:${ori.beta.toFixed(2)} \u03b3:${ori.gamma.toFixed(2)}`;
+});
+
+// Fallback pointer
+let lastP = {x:0,y:0};
+window.onpointermove = e => {
+  const dx = (e.clientX - lastP.x)/100;
+  const dy = (e.clientY - lastP.y)/100;
+  lastP = {x:e.clientX, y:e.clientY};
+  ori.beta = Math.max(-1, Math.min(1, ori.beta + dx*0.1));
+  ori.gamma = Math.max(-1, Math.min(1, ori.gamma + dy*0.1));
+};
+
+// Seal / IDB
+const bc = new BroadcastChannel('f808-genome');
+bc.onmessage = e => { if (e.data.w) weights = e.data.w; };
+
+function seal() {
+  const dbReq = indexedDB.open('f808', 1);
+  dbReq.onupgradeneeded = e => e.target.result.createObjectStore('genome');
+  dbReq.onsuccess = e => {
+    const tx = e.target.result.transaction('genome', 'readwrite');
+    tx.objectStore('genome').put(weights, 'mlp');
+    bc.postMessage({w: weights});
+    alert('Sealed & shared');
+  };
+}
+document.getElementById('seal').onclick = seal;
+document.getElementById('reset').onclick = () => {
+  grid.forEach(row => row.forEach(c => c.fill(0)));
+  weights.w1.forEach(r => r.fill(0).map(()=>Math.random()*0.4-0.2));
+};
+
+function load() {
+  const dbReq = indexedDB.open('f808', 1);
+  dbReq.onsuccess = e => {
+    const tx = e.target.result.transaction('genome', 'readonly');
+    const req = tx.objectStore('genome').get('mlp');
+    req.onsuccess = () => { if (req.result) weights = req.result; };
+  };
+}
+load();
+
+function loop() {
+  inject();
+  step();
+  render();
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
+</body>
+</html>
