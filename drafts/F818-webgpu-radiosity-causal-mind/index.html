@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F818 — WebGPU Radiosity Causal Illumination Mind</title>
+<style>
+  body { margin: 0; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  #canvas { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; }
+  .card { position: absolute; width: 140px; height: 90px; background: rgba(20,20,40,0.7); border: 1px solid #446; border-radius: 12px; padding: 12px; cursor: pointer; z-index: 2; transition: filter 0.1s, transform 0.1s; backdrop-filter: blur(4px); }
+  .card h3 { margin: 0 0 6px; font-size: 14px; }
+  .card p { margin: 0; font-size: 12px; opacity: 0.8; }
+  #ui { position: fixed; bottom: 16px; left: 16px; z-index: 10; display: flex; gap: 8px; }
+  button { background: #224; color: #fff; border: 1px solid #668; padding: 8px 14px; border-radius: 8px; cursor: pointer; }
+  #status { position: fixed; top: 12px; right: 12px; z-index: 10; font-size: 12px; background: rgba(0,0,0,0.6); padding: 6px 10px; border-radius: 6px; }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="status">Initializing…</div>
+<div id="ui">
+  <button id="seal">Seal Weights</button>
+  <button id="mic">Enable Mic</button>
+  <button id="reset">Reset Field</button>
+</div>
+<script>
+const W = 128, H = 128;
+const canvas = document.getElementById('canvas');
+const status = document.getElementById('status');
+let light = new Float32Array(W * H);
+let sources = new Float32Array(W * H);
+let gl = null, gpu = false;
+let adapter, device, pipeline, bindGroup, lightBuf, sourceBuf;
+
+// MLP weights: 5 → 8 → 4
+let w1 = Array.from({length: 5*8}, () => (Math.random()-0.5)*0.4);
+let b1 = Array(8).fill(0);
+let w2 = Array.from({length: 8*4}, () => (Math.random()-0.5)*0.4);
+let b2 = Array(4).fill(0);
+
+function tanh(x) { return Math.tanh(x); }
+function mlp(input) {
+  const h = [];
+  for (let i = 0; i < 8; i++) {
+    let s = b1[i];
+    for (let j = 0; j < 5; j++) s += input[j] * w1[j*8 + i];
+    h.push(tanh(s));
+  }
+  const o = [];
+  for (let i = 0; i < 4; i++) {
+    let s = b2[i];
+    for (let j = 0; j < 8; j++) s += h[j] * w2[j*4 + i];
+    o.push(tanh(s));
+  }
+  return o;
+}
+
+async function initGPU() {
+  if (!navigator.gpu) return false;
+  try {
+    adapter = await navigator.gpu.requestAdapter();
+    device = await adapter.requestDevice();
+    const shader = `
+      @group(0) @binding(0) var<storage, read_write> light: array<f32>;
+      @group(0) @binding(1) var<storage, read> sources: array<f32>;
+      @compute @workgroup_size(8, 8)
+      fn main(@builtin(global_invocation_id) gid: vec3<u32>) {
+        let x = gid.x; let y = gid.y;
+        if (x >= ${W}u || y >= ${H}u) { return; }
+        let i = y * ${W}u + x;
+        var acc = light[i] * 0.92;
+        if (x > 0u) { acc += light[i - 1u] * 0.02; }
+        if (x + 1u < ${W}u) { acc += light[i + 1u] * 0.02; }
+        if (y > 0u) { acc += light[i - ${W}u] * 0.02; }
+        if (y + 1u < ${H}u) { acc += light[i + ${W}u] * 0.02; }
+        light[i] = min(acc + sources[i], 2.0);
+      }`;
+    const module = device.createShaderModule({ code: shader });
+    pipeline = device.createComputePipeline({ layout: 'auto', compute: { module, entryPoint: 'main' } });
+    lightBuf = device.createBuffer({ size: light.byteLength, usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC });
+    sourceBuf = device.createBuffer({ size: sources.byteLength, usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST });
+    bindGroup = device.createBindGroup({ layout: pipeline.getBindGroupLayout(0), entries: [
+      { binding: 0, resource: { buffer: lightBuf } },
+      { binding: 1, resource: { buffer: sourceBuf } }
+    ]});
+    return true;
+  } catch (e) { console.warn(e); return false; }
+}
+
+function cpuStep() {
+  const next = new Float32Array(light);
+  for (let y = 0; y < H; y++) {
+    for (let x = 0; x < W; x++) {
+      const i = y * W + x;
+      let acc = light[i] * 0.92;
+      if (x > 0) acc += light[i-1] * 0.02;
+      if (x < W-1) acc += light[i+1] * 0.02;
+      if (y > 0) acc += light[i-W] * 0.02;
+      if (y < H-1) acc += light[i+W] * 0.02;
+      next[i] = Math.min(acc + sources[i], 2);
+    }
+  }
+  light.set(next);
+}
+
+async function step() {
+  sources.fill(0);
+  const tiltX = (window.tilt?.beta || 0) / 90;
+  const tiltY = (window.tilt?.gamma || 0) / 90;
+  const px = (pointer.x / innerWidth) * 2 - 1;
+  const py = (pointer.y / innerHeight) * 2 - 1;
+  const mic = micLevel;
+  const out = mlp([tiltX, tiltY, px, py, mic]);
+  const sx = Math.floor(((out[0] + 1) / 2) * W);
+  const sy = Math.floor(((out[1] + 1) / 2) * H);
+  const em = (out[2] + 1) * 0.15;
+  const abs = 0.9 + out[3] * 0.05;
+  if (sx >= 0 && sx < W && sy >= 0 && sy < H) sources[sy * W + sx] = em;
+
+  if (gpu) {
+    device.queue.writeBuffer(sourceBuf, 0, sources);
+    const encoder = device.createCommandEncoder();
+    const pass = encoder.beginComputePass();
+    pass.setPipeline(pipeline);
+    pass.setBindGroup(0, bindGroup);
+    pass.dispatchWorkgroups(Math.ceil(W/8), Math.ceil(H/8));
+    pass.end();
+    device.queue.submit([encoder.finish()]);
+    cpuStep();
+  } else {
+    cpuStep();
+  }
+  draw();
+  updateCards();
+  requestAnimationFrame(step);
+}
+
+function draw() {
+  const ctx = canvas.getContext('2d');
+  canvas.width = innerWidth; canvas.height = innerHeight;
+  const img = ctx.createImageData(W, H);
+  for (let i = 0; i < light.length; i++) {
+    const v = Math.min(255, light[i] * 180);
+    img.data[i*4] = v * 0.6;
+    img.data[i*4+1] = v * 0.8;
+    img.data[i*4+2] = v;
+    img.data[i*4+3] = 255;
+  }
+  ctx.putImageData(img, 0, 0);
+  ctx.drawImage(canvas, 0, 0, W, H, 0, 0, innerWidth, innerHeight);
+}
+
+const cards = [];
+for (let i = 0; i < 5; i++) {
+  const el = document.createElement('div');
+  el.className = 'card';
+  el.innerHTML = `<h3>Surface ${i+1}</h3><p>Light-responsive</p>`;
+  el.style.left = (20 + i * 18) + '%';
+  el.style.top = (30 + (i % 3) * 15) + '%';
+  el.onclick = () => injectAt(el);
+  document.body.appendChild(el);
+  cards.push(el);
+}
+
+function injectAt(el) {
+  const r = el.getBoundingClientRect();
+  const x = Math.floor((r.left + r.width/2) / innerWidth * W);
+  const y = Math.floor((r.top + r.height/2) / innerHeight * H);
+  if (x >= 0 && x < W && y >= 0 && y < H) sources[y*W + x] += 0.8;
+}
+
+function updateCards() {
+  cards.forEach(el => {
+    const r = el.getBoundingClientRect();
+    const x = Math.floor((r.left + r.width/2) / innerWidth * W);
+    const y = Math.floor((r.top + r.height/2) / innerHeight * H);
+    const i = Math.max(0, Math.min(light.length-1, y*W + x));
+    const L = light[i] || 0;
+    const b = 0.6 + L * 1.4;
+    const s = 1 + L * 0.25;
+    el.style.filter = `brightness(${b}) blur(${L*2}px)`;
+    el.style.transform = `scale(${s})`;
+    el.style.boxShadow = `0 0 ${L*30}px rgba(100,180,255,${L})`;
+  });
+}
+
+let pointer = {x: innerWidth/2, y: innerHeight/2};
+window.addEventListener('pointermove', e => { pointer.x = e.clientX; pointer.y = e.clientY; });
+window.addEventListener('deviceorientation', e => { window.tilt = e; });
+
+let micLevel = 0;
+document.getElementById('mic').onclick = async () => {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const ctx = new AudioContext();
+    const src = ctx.createMediaStreamSource(stream);
+    const analyser = ctx.createAnalyser();
+    analyser.fftSize = 256;
+    src.connect(analyser);
+    const data = new Uint8Array(analyser.frequencyBinCount);
+    setInterval(() => {
+      analyser.getByteTimeDomainData(data);
+      let sum = 0; for (let v of data) sum += Math.abs(v-128); micLevel = sum / data.length / 64;
+    }, 50);
+    status.textContent = 'Mic active';
+  } catch { status.textContent = 'Mic denied'; }
+};
+
+document.getElementById('seal').onclick = () => {
+  const data = { w1, b1, w2, b2 };
+  const req = indexedDB.open('verse-f818', 1);
+  req.onupgradeneeded = () => req.result.createObjectStore('weights');
+  req.onsuccess = () => {
+    const tx = req.result.transaction('weights', 'readwrite');
+    tx.objectStore('weights').put(data, 'mlp');
+    status.textContent = 'Weights sealed';
+  };
+};
+
+document.getElementById('reset').onclick = () => { light.fill(0); sources.fill(0); };
+
+async function loadWeights() {
+  return new Promise(res => {
+    const req = indexedDB.open('verse-f818', 1);
+    req.onsuccess = () => {
+      const tx = req.result.transaction('weights');
+      const get = tx.objectStore('weights').get('mlp');
+      get.onsuccess = () => {
+        if (get.result) { Object.assign({w1,b1,w2,b2}, get.result); status.textContent = 'Weights restored'; }
+        res();
+      };
+    };
+    req.onerror = res;
+  });
+}
+
+(async () => {
+  gpu = await initGPU();
+  status.textContent = gpu ? 'WebGPU radiosity active' : 'Canvas2D fallback';
+  await loadWeights();
+  requestAnimationFrame(step);
+})();
+</script>
+</body>
+</html>
