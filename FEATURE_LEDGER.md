@@ -19677,3 +19677,41 @@ Void is now Verse everywhere.
 **Files**: drafts/F812-webgpu-sph-hand-policy-mind/SPEC.md, drafts/F812-webgpu-sph-hand-policy-mind/index.html
 
 **Files**: drafts/F812-webgpu-sph-hand-policy-mind/SPEC.md, drafts/F812-webgpu-sph-hand-policy-mind/index.html
+
+## Frontier Engine F-813 (2026-11-18)
+
+**F813-content-attention-spatial-note-canvas**
+
+**Ledger ID**: F-813
+**Slug**: content-attention-spatial-note-canvas
+**Date**: 2026-11-18
+**Branch from**: Recent cluster of WebGPU SPH hand policy (F812), spatial weekly timecard (F811), local GNN dynamic graph (F810), local HMM spatial intent (F809).
+
+**Concept**
+A spatial canvas of user-editable DOM note cards. Each card maintains a small local embedding (bag-of-words hashed into a fixed dim vector). A pure-JS multi-head attention mechanism computes content similarity (plus a weak positional bias). High attention scores generate attraction forces so semantically related notes physically cluster; low attention allows repulsion or free drift. User typing updates embeddings live; dragging injects a temporary "user intent" boost that the attention matrix can reinforce via simple Hebbian update. Background Canvas2D draws attention edges. Fully offline, single-file. Pointer always works.
+
+**Novelty**
+Leaves the recent continuum/physics cluster (SPH/LBM/lattice-gas/particles), orientation/motion RNN/MLP/Hopfield/GNN/HMM controllers on fixed fields or non-content DOM, and manual spatial boards. Core novel combination is content-derived embeddings + multi-head attention driving physical force layout of living editable text cards that the user authors. Not residual predictors, not pure physics, not sealed genomes on agents, not WebGPU compute kernels, not sensor-only causal input.
+
+**Architecture**
+- 8–16 absolute-positioned contenteditable DOM cards.
+- Embeddings: dim=16, simple token hash + count, L2-normalized.
+- Attention: cosine similarity with distance decay.
+- Forces: attraction ∝ attention, soft repulsion, damping, weak center.
+- Persistence: IndexedDB `verse-f813-notes`.
+- Export: Markdown or JSON.
+
+**Expected outcome**
+Open: empty or restored notes. Type related phrases; they drift together. Drag to separate; typing updates clusters live. Seal/export works. Runs offline on phone/desktop.
+
+**Failure modes**
+- No IndexedDB: session memory only.
+- Very long notes: truncate embedding window.
+- High card count: limit to 12, lower update rate.
+
+**Building blocks**
+Reusable content-embedding + attention-force layout for future spatial knowledge canvases on Verse.
+
+Void is now Verse everywhere.
+
+**Files**: drafts/F813-content-attention-spatial-note-canvas/SPEC.md, drafts/F813-content-attention-spatial-note-canvas/index.html
