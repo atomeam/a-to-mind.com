@@ -19892,8 +19892,10 @@ Void is now Verse everywhere.
 
 **F817-sealed-genome-resource-capture-arena**
 
-Entry added by ledger-guard from drafts/F817-sealed-genome-resource-capture-arena/SPEC.md, after a full-file write dropped it.
-
+**Ledger ID**: F-817  
+**Slug**: sealed-genome-resource-capture-arena  
+**Date**: 2026-11-18  
+**Branch from**: Recent cluster of continuum physics (SPH/LBM/quantum), attention lattices/content notes (F813), softbody/reservoir DOM (F814), orientation-evo spatial audio (F815), online-MLP particle swarms (F816), residual predictors, volumetric injection, pure NCA, spectral residuals, pointer-history fields, k-means particles.
 
 **Concept**
 A competitive multi-agent arena on the Verse canvas. 6 living DOM agent cards, each controlled by a tiny local MLP (6-8-4), forage and compete for resources on a shared 2D lattice field rendered on Canvas2D. DeviceOrientation tilt and pointer proximity supply continuous causal inputs that bias the agents' policies. When one agent captures another (proximity + higher fitness), it performs a sealed partial genome transfer (crossover of weights). Agents embody their state via CSS transforms (position, scale, rotation, hue). Fully offline single-file prototype. Persistence via IndexedDB; cross-tab competition via BroadcastChannel.
@@ -19927,7 +19929,3 @@ Reusable sealed-genome capture transfer, resource lattice substrate, orientation
 Void is now Verse everywhere.
 
 **Files**: drafts/F817-sealed-genome-resource-capture-arena/SPEC.md, drafts/F817-sealed-genome-resource-capture-arena/index.html
-
-## Guard restore (2026-11-18)
-
-Ledger guard restored this file from 9d73e38 after d8f4daf broke it. Write the ledger with git on disk, append only.
