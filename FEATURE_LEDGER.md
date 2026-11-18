@@ -18455,15 +18455,6 @@ Void is now Verse everywhere.
 
 **F787-webgpu-kohonen-spatial-portal-mind**
 
-Entry added by ledger-guard from drafts/F787-webgpu-kohonen-spatial-portal-mind/SPEC.md, after a full-file write dropped it.
-
-
-**Ledger ID**: F-787 (frontier series)
-
-**Slug**: webgpu-kohonen-spatial-portal-mind
-
-**Date**: 2026-11-17
-
 **Concept**
 A living 8×8 lattice of DOM portals that form a Kohonen self-organizing map. DeviceOrientation and pointer velocity continuously supply a 6-dimensional causal input vector. Each portal holds a weight vector; the best-matching unit (BMU) and its topological neighborhood are updated every frame so the map self-organizes the sensorimotor space. Portal position, scale, and hue are driven directly by their weights. User clicks inject a local reward that pulls the neighborhood toward the current input. Best maps are sealed to localStorage and restored on reload. A lightweight canvas overlay visualizes the current BMU trail.
 
@@ -18506,7 +18497,3 @@ Void is now Verse everywhere.
 - drafts/F787-webgpu-kohonen-spatial-portal-mind/index.html
 
 **Files**: drafts/F787-webgpu-kohonen-spatial-portal-mind/SPEC.md, drafts/F787-webgpu-kohonen-spatial-portal-mind/index.html
-
-## Guard restore (2026-11-18)
-
-Ledger guard restored this file from fd5f3da after 7354276 broke it. Write the ledger with git on disk, append only.
