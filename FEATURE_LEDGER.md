@@ -18544,3 +18544,16 @@ drafts/F788-webgpu-cellular-potts-orientation-mind/SPEC.md
 drafts/F788-webgpu-cellular-potts-orientation-mind/index.html
 
 **Files**: drafts/F788-webgpu-cellular-potts-orientation-mind/SPEC.md, drafts/F788-webgpu-cellular-potts-orientation-mind/index.html
+---
+
+## F788 WebGPU Cellular Potts Orientation Mind (2026-11-18)
+
+**Concept**: Local tiny MLP driven by DeviceOrientation (or pointer proxy) outputs bias parameters for a Cellular Potts Model lattice. Cells compete via Metropolis copy attempts under contact energy and volume constraints. DOM portals track largest cell centroids; clicks reward the MLP. Sealed genome persists to IndexedDB and transfers via BroadcastChannel.
+
+**Novelty**: Branches away from Kohonen/SOM topographic portals (F787), worker-isolated genomes (F786), RBF kinetic mobiles (F785), neural-ODE crystals (F784), Bayesian CSS portals (F783), Hebbian CSS3D (F782), WebXR magnetic strings (F781), and prior NCA/Lenia/Ising/softbody/attention/residual/k-means clusters. Core is CPM energy-minimizing multi-cell dynamics (not previously used) controlled by orientation MLP with hybrid DOM embodiment and sealed weight transfer.
+
+**Files**: drafts/F788-webgpu-cellular-potts-orientation-mind/SPEC.md, drafts/F788-webgpu-cellular-potts-orientation-mind/index.html
+
+**Building blocks**: Orientation-to-CPM parameter mapping, Metropolis lattice competition, cell-centroid DOM binding, reward-gated MLP update, sealed genome over IDB+BroadcastChannel. Expands local-AI hybrid embodiments into contact-energy multi-cell substrates.
+
+Void is now Verse everywhere.
