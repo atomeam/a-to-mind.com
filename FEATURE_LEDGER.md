@@ -18938,3 +18938,17 @@ Void is now Verse everywhere.
 ## Guard restore (2026-11-18)
 
 Ledger guard restored this file from b5570eb after 3308ae9 broke it. Entries rebuilt from SPEC.md: F796-decision-tree-css3d-kinematic-mind. Write the ledger with git on disk, append only.
+
+## Frontier Engine F-796 (2026-11-18)
+
+**F796-scoreboard-any-game**
+
+Entry added by ledger-guard from drafts/F796-scoreboard-any-game/SPEC.md, after a full-file write dropped it.
+
+Plain name: Scoreboard for any game
+Job: Add players, enter scores for each round, see running totals and a simple chart; save the board on the device, copy the results, download as CSV, or share a link that reloads the same board.
+Input: Player name field and add button, or paste names; per-round score inputs that appear as you go; optional round labels.
+Keeps: localStorage for the last board; copy totals as text; download CSV of all scores; share link with the data in the URL hash so anyone can open the same board.
+Not on Verse yet: checked against https://a-to-mind.com/llms.txt and GAPS.md — no general offline scoreboard with running totals, CSV export, and shareable link for arbitrary games.
+
+**Files**: drafts/F796-scoreboard-any-game/SPEC.md, drafts/F796-scoreboard-any-game/index.html
