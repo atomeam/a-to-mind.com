@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F837 Spatial Audio Evolutionary Listener Mind</title>
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+#chrome { position:fixed; top:8px; left:8px; z-index:100; font-size:13px; background:rgba(0,0,0,.5); padding:6px 10px; border-radius:6px; }
+#canvas { position:absolute; inset:0; width:100%; height:100%; }
+.portal { position:absolute; width:72px; height:48px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:11px; cursor:grab; user-select:none; border:2px solid rgba(255,255,255,.3); transition:transform .05s linear; }
+.portal:active { cursor:grabbing; }
+#status { margin-top:4px; opacity:.8; }
+button { margin:2px; padding:4px 8px; background:#222; color:#fff; border:1px solid #555; border-radius:4px; cursor:pointer; }
+</style>
+</head>
+<body>
+<div id="chrome">
+  <div>F837 Spatial Audio Evo Listener Mind</div>
+  <div id="status">Click anywhere to start audio. Tilt or move mouse. Click portals to reward. S=seal</div>
+  <button id="seal">Seal Genome</button>
+  <button id="mute">Mute</button>
+</div>
+<canvas id="canvas"></canvas>
+<div id="portals"></div>
+<script>
+const N = 6;
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const portalsEl = document.getElementById('portals');
+const statusEl = document.getElementById('status');
+let W = canvas.width = innerWidth, H = canvas.height = innerHeight;
+addEventListener('resize', () => { W = canvas.width = innerWidth; H = canvas.height = innerHeight; });
+
+let audioCtx, oscillators = [], gains = [], panners = [], analyser, masterGain;
+let started = false, muted = false;
+let weights = new Float32Array(6 * 18 + 18);
+const IN = 6, HID = 12, OUT = 18;
+weights = new Float32Array((IN*HID) + HID + (HID*OUT) + OUT);
+for (let i=0; i<weights.length; i++) weights[i] = (Math.random()-0.5)*0.4;
+
+let ori = {alpha:0, beta:0, gamma:0};
+let pointer = {x:0, y:0, dx:0, dy:0};
+let fitness = 0;
+let time = 0;
+let sources = Array.from({length:N}, (_,i) => ({
+  x: (Math.random()-0.5)*4, y: (Math.random()-0.5)*2, z: Math.random()*3 + 1,
+  freq: 220 + i*40, gain: 0.15
+}));
+
+const portals = [];
+for (let i=0; i<N; i++) {
+  const el = document.createElement('div');
+  el.className = 'portal';
+  el.textContent = 'S' + (i+1);
+  el.style.background = `hsl(${i*60},70%,40%)`;
+  el.dataset.i = i;
+  portalsEl.appendChild(el);
+  portals.push(el);
+  el.addEventListener('pointerdown', e => { e.preventDefault(); drag = {el, i, ox:e.clientX, oy:e.clientY, sx:sources[i].x, sy:sources[i].y}; });
+  el.addEventListener('click', e => { if (dragJust) return; reward(i); });
+}
+let drag = null, dragJust = false;
+addEventListener('pointermove', e => {
+  pointer.dx = e.clientX - pointer.x; pointer.dy = e.clientY - pointer.y;
+  pointer.x = e.clientX; pointer.y = e.clientY;
+  if (drag) {
+    sources[drag.i].x = drag.sx + (e.clientX - drag.ox) * 0.01;
+    sources[drag.i].y = drag.sy - (e.clientY - drag.oy) * 0.01;
+    dragJust = true;
+  }
+});
+addEventListener('pointerup', () => { drag = null; setTimeout(()=>dragJust=false, 50); });
+
+function startAudio() {
+  if (started) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  masterGain = audioCtx.createGain();
+  masterGain.gain.value = 0.3;
+  analyser = audioCtx.createAnalyser();
+  analyser.fftSize = 256;
+  masterGain.connect(analyser);
+  analyser.connect(audioCtx.destination);
+  for (let i=0; i<N; i++) {
+    const osc = audioCtx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.value = sources[i].freq;
+    const g = audioCtx.createGain();
+    g.gain.value = sources[i].gain;
+    const p = audioCtx.createPanner();
+    p.panningModel = 'HRTF';
+    p.distanceModel = 'inverse';
+    p.refDistance = 1;
+    p.maxDistance = 20;
+    osc.connect(g); g.connect(p); p.connect(masterGain);
+    osc.start();
+    oscillators.push(osc); gains.push(g); panners.push(p);
+  }
+  started = true;
+  statusEl.textContent = 'Audio live. Tilt / move. Click portals to reward. S=seal';
+}
+
+addEventListener('click', startAudio, {once:false});
+document.getElementById('mute').onclick = () => {
+  muted = !muted;
+  if (masterGain) masterGain.gain.value = muted ? 0 : 0.3;
+};
+
+if (window.DeviceOrientationEvent) {
+  addEventListener('deviceorientation', e => {
+    ori.alpha = e.alpha || 0; ori.beta = e.beta || 0; ori.gamma = e.gamma || 0;
+  });
+}
+
+function relu(x) { return Math.max(0, x); }
+function mlp(input) {
+  const h = new Float32Array(HID);
+  let widx = 0;
+  for (let j=0; j<HID; j++) {
+    let s = weights[widx++];
+    for (let i=0; i<IN; i++) s += input[i] * weights[widx++];
+    h[j] = relu(s);
+  }
+  const o = new Float32Array(OUT);
+  for (let k=0; k<OUT; k++) {
+    let s = weights[widx++];
+    for (let j=0; j<HID; j++) s += h[j] * weights[widx++];
+    o[k] = Math.tanh(s);
+  }
+  return o;
+}
+
+function reward(i) {
+  fitness += 1;
+  for (let k=0; k<weights.length; k++) {
+    if (Math.random() < 0.05) weights[k] += (Math.random()-0.5)*0.1;
+  }
+  statusEl.textContent = `Rewarded S${i+1}. Fitness ${fitness}`;
+}
+
+function seal() {
+  const data = {weights: Array.from(weights), fitness, ts: Date.now()};
+  const req = indexedDB.open('verse-f837', 1);
+  req.onupgradeneeded = () => req.result.createObjectStore('genomes');
+  req.onsuccess = () => {
+    const tx = req.result.transaction('genomes', 'readwrite');
+    tx.objectStore('genomes').put(data, 'best');
+  };
+  const bc = new BroadcastChannel('f837-genome');
+  bc.postMessage(data);
+  statusEl.textContent = `Sealed fitness ${fitness}`;
+}
+document.getElementById('seal').onclick = seal;
+addEventListener('keydown', e => { if (e.key === 's' || e.key === 'S') seal(); });
+
+const bc = new BroadcastChannel('f837-genome');
+bc.onmessage = e => {
+  if (e.data.fitness > fitness) {
+    weights.set(e.data.weights);
+    fitness = e.data.fitness;
+    statusEl.textContent = `Adopted genome fitness ${fitness}`;
+  }
+};
+
+const req = indexedDB.open('verse-f837', 1);
+req.onupgradeneeded = () => req.result.createObjectStore('genomes');
+req.onsuccess = () => {
+  const tx = req.result.transaction('genomes', 'readonly');
+  const g = tx.objectStore('genomes').get('best');
+  g.onsuccess = () => { if (g.result) { weights.set(g.result.weights); fitness = g.result.fitness || 0; } };
+};
+
+function project(sx, sy, sz) {
+  const scale = 80 / (sz + 2);
+  return {x: W/2 + sx * scale, y: H/2 - sy * scale};
+}
+
+function loop() {
+  time += 0.016;
+  const input = [
+    ori.beta / 90, ori.gamma / 90, ori.alpha / 180,
+    pointer.dx / 20, pointer.dy / 20, Math.sin(time)
+  ];
+  const out = mlp(input);
+  for (let i=0; i<N; i++) {
+    sources[i].x += out[i*3] * 0.02;
+    sources[i].y += out[i*3+1] * 0.02;
+    sources[i].z = Math.max(0.5, 2 + out[i*3+2] * 1.5);
+    sources[i].freq = 180 + (out[i + 12] * 0.5 + 0.5) * 400 + i*20;
+    sources[i].gain = 0.05 + (out[i + 15] * 0.5 + 0.5) * 0.2;
+    if (started && !muted) {
+      panners[i].positionX.value = sources[i].x;
+      panners[i].positionY.value = sources[i].y;
+      panners[i].positionZ.value = sources[i].z;
+      oscillators[i].frequency.setTargetAtTime(sources[i].freq, audioCtx.currentTime, 0.05);
+      gains[i].gain.setTargetAtTime(sources[i].gain, audioCtx.currentTime, 0.05);
+    }
+    if (started && audioCtx.listener.forwardX) {
+      const rad = ori.alpha * Math.PI / 180;
+      audioCtx.listener.forwardX.value = Math.sin(rad);
+      audioCtx.listener.forwardZ.value = Math.cos(rad);
+      audioCtx.listener.upY.value = 1;
+    }
+  }
+  ctx.fillStyle = '#0a0a12';
+  ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle = '#334';
+  ctx.beginPath(); ctx.arc(W/2, H/2, 40, 0, Math.PI*2); ctx.stroke();
+  ctx.fillStyle = '#88f'; ctx.fillText('listener', W/2-20, H/2+50);
+  for (let i=0; i<N; i++) {
+    const p = project(sources[i].x, sources[i].y, sources[i].z);
+    portals[i].style.left = (p.x - 36) + 'px';
+    portals[i].style.top = (p.y - 24) + 'px';
+    portals[i].style.opacity = Math.min(1, 1.2 - sources[i].z * 0.15);
+    ctx.fillStyle = portals[i].style.background;
+    ctx.beginPath(); ctx.arc(p.x, p.y, 6, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#aaa'; ctx.fillText(sources[i].freq.toFixed(0), p.x+8, p.y);
+  }
+  if (started && analyser) {
+    const data = new Uint8Array(analyser.frequencyBinCount);
+    analyser.getByteFrequencyData(data);
+    ctx.fillStyle = '#0f8';
+    for (let i=0; i<64; i++) {
+      const v = data[i] / 255 * 80;
+      ctx.fillRect(20 + i*4, H - 20 - v, 3, v);
+    }
+  }
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
+</body>
+</html>
