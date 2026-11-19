@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F0495 N-Body Gravity Evolutionary Mind</title>
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui; overflow:hidden; }
+canvas { display:block; position:absolute; top:0; left:0; }
+#chrome { position:absolute; top:10px; left:10px; z-index:10; background:rgba(0,0,20,0.7); padding:8px; border-radius:6px; font-size:12px; max-width:280px; }
+.portal { position:absolute; width:60px; height:40px; background:rgba(80,120,255,0.3); border:1px solid #88f; border-radius:4px; cursor:grab; display:flex; align-items:center; justify-content:center; font-size:10px; user-select:none; z-index:5; }
+.portal:active { cursor:grabbing; }
+button { margin:2px; padding:4px 8px; background:#223; color:#fff; border:1px solid #55f; border-radius:3px; cursor:pointer; }
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="chrome">
+  <div>F0495 N-Body Gravity Evo Mind</div>
+  <div id="status">Tilt device or drag portals. R=reward, S=seal</div>
+  <div id="fitness"></div>
+  <button id="sealBtn">Seal Best</button>
+  <button id="resetBtn">Reset Particles</button>
+</div>
+<script>
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+let W = cv.width = innerWidth, H = cv.height = innerHeight;
+addEventListener('resize', () => { W = cv.width = innerWidth; H = cv.height = innerHeight; });
+
+const N = 72;
+const particles = [];
+function resetParticles() {
+  particles.length = 0;
+  for (let i = 0; i < N; i++) {
+    particles.push({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random()-0.5)*2, vy: (Math.random()-0.5)*2,
+      m: 0.5 + Math.random()*1.5
+    });
+  }
+}
+resetParticles();
+
+// 4 competing genomes: [G, damping, repulsion, color]
+const genomes = Array.from({length:4}, (_,i) => ({
+  id: i,
+  G: 0.3 + Math.random()*0.8,
+  damp: 0.98 + Math.random()*0.015,
+  rep: 20 + Math.random()*40,
+  fitness: 0,
+  color: `hsl(${i*90},70%,60%)`
+}));
+let active = 0;
+
+let orient = { beta: 0, gamma: 0 };
+if (window.DeviceOrientationEvent) {
+  addEventListener('deviceorientation', e => {
+    orient.beta = e.beta || 0;
+    orient.gamma = e.gamma || 0;
+  });
+}
+
+const portals = [];
+for (let i = 0; i < 3; i++) {
+  const el = document.createElement('div');
+  el.className = 'portal';
+  el.textContent = 'P' + i;
+  el.style.left = (100 + i*120) + 'px';
+  el.style.top = (80 + i*40) + 'px';
+  document.body.appendChild(el);
+  portals.push({ el, x: 100+i*120, y: 80+i*40, attract: 0.5 });
+  let drag = false, ox, oy;
+  el.addEventListener('pointerdown', e => { drag=true; ox=e.clientX-portals[i].x; oy=e.clientY-portals[i].y; el.setPointerCapture(e.pointerId); });
+  el.addEventListener('pointermove', e => { if(drag){ portals[i].x = e.clientX-ox; portals[i].y = e.clientY-oy; el.style.left=portals[i].x+'px'; el.style.top=portals[i].y+'px'; } });
+  el.addEventListener('pointerup', () => drag=false);
+}
+
+function step() {
+  const g = genomes[active];
+  const gx = Math.sin(orient.gamma * Math.PI/180) * 0.15;
+  const gy = Math.sin(orient.beta * Math.PI/180) * 0.15;
+
+  for (let i = 0; i < N; i++) {
+    let fx = gx, fy = gy;
+    const p = particles[i];
+    for (let j = 0; j < N; j++) if (i !== j) {
+      const q = particles[j];
+      let dx = q.x - p.x, dy = q.y - p.y;
+      let r2 = dx*dx + dy*dy + 10;
+      let r = Math.sqrt(r2);
+      let f = g.G * p.m * q.m / r2;
+      if (r < g.rep) f -= (g.rep - r) * 0.05;
+      fx += f * dx / r;
+      fy += f * dy / r;
+    }
+    for (const port of portals) {
+      let dx = port.x - p.x, dy = port.y - p.y;
+      let r2 = dx*dx + dy*dy + 20;
+      fx += port.attract * dx / r2 * 8;
+      fy += port.attract * dy / r2 * 8;
+    }
+    p.vx = (p.vx + fx) * g.damp;
+    p.vy = (p.vy + fy) * g.damp;
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0 || p.x > W) p.vx *= -0.8;
+    if (p.y < 0 || p.y > H) p.vy *= -0.8;
+    p.x = Math.max(0, Math.min(W, p.x));
+    p.y = Math.max(0, Math.min(H, p.y));
+  }
+
+  // Simple fitness: mean pairwise distance inverse (cohesion)
+  let sumDist = 0, count = 0;
+  for (let i = 0; i < N; i += 3) for (let j = i+3; j < N; j += 3) {
+    const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y;
+    sumDist += Math.hypot(dx, dy); count++;
+  }
+  g.fitness = Math.max(0, 400 - sumDist / count);
+
+  // Bind portals roughly to centroids of thirds
+  for (let k = 0; k < 3; k++) {
+    let cx=0, cy=0, c=0;
+    const start = k * (N/3), end = (k+1)*(N/3);
+    for (let i = start; i < end; i++) { cx += particles[i].x; cy += particles[i].y; c++; }
+    if (c) {
+      portals[k].x = portals[k].x * 0.95 + (cx/c) * 0.05;
+      portals[k].y = portals[k].y * 0.95 + (cy/c) * 0.05;
+      portals[k].el.style.left = portals[k].x + 'px';
+      portals[k].el.style.top = portals[k].y + 'px';
+      portals[k].el.style.background = genomes[active].color.replace(')', ',0.4)').replace('hsl','hsla');
+    }
+  }
+
+  // Occasional genome switch / competition
+  if (Math.random() < 0.005) {
+    let best = 0;
+    for (let i = 1; i < 4; i++) if (genomes[i].fitness > genomes[best].fitness) best = i;
+    if (best !== active && genomes[best].fitness > genomes[active].fitness + 5) active = best;
+  }
+}
+
+function draw() {
+  ctx.fillStyle = 'rgba(10,10,18,0.25)';
+  ctx.fillRect(0,0,W,H);
+  const g = genomes[active];
+  for (const p of particles) {
+    ctx.fillStyle = g.color;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, Math.sqrt(p.m)*2, 0, Math.PI*2);
+    ctx.fill();
+  }
+  document.getElementById('fitness').textContent = `Active #${active} fit:${g.fitness.toFixed(1)} G:${g.G.toFixed(2)}`;
+}
+
+function loop() { step(); draw(); requestAnimationFrame(loop); }
+loop();
+
+// Seal / reward
+function seal() {
+  const best = genomes.reduce((a,b) => a.fitness > b.fitness ? a : b);
+  const data = { genomes, active, ts: Date.now() };
+  try {
+    const req = indexedDB.open('f0495', 1);
+    req.onupgradeneeded = e => e.target.result.createObjectStore('seal');
+    req.onsuccess = e => {
+      const tx = e.target.result.transaction('seal', 'readwrite');
+      tx.objectStore('seal').put(data, 'best');
+    };
+  } catch(e) {}
+  try {
+    const bc = new BroadcastChannel('f0495-genome');
+    bc.postMessage({ type: 'seal', data, fitness: best.fitness });
+  } catch(e) {}
+  document.getElementById('status').textContent = 'Sealed best genome';
+}
+document.getElementById('sealBtn').onclick = seal;
+document.getElementById('resetBtn').onclick = resetParticles;
+addEventListener('keydown', e => {
+  if (e.key === 's' || e.key === 'S') seal();
+  if (e.key === 'r' || e.key === 'R') {
+    genomes[active].fitness += 15;
+    document.getElementById('status').textContent = 'Rewarded active';
+  }
+});
+
+// Receive seals
+try {
+  const bc = new BroadcastChannel('f0495-genome');
+  bc.onmessage = e => {
+    if (e.data.type === 'seal' && e.data.fitness > genomes.reduce((a,b)=>Math.max(a,b.fitness),0)) {
+      Object.assign(genomes, e.data.data.genomes);
+      active = e.data.data.active || 0;
+      document.getElementById('status').textContent = 'Adopted higher-fitness seal';
+    }
+  };
+} catch(e) {}
+
+// Load previous seal
+try {
+  const req = indexedDB.open('f0495', 1);
+  req.onsuccess = e => {
+    const tx = e.target.result.transaction('seal', 'readonly');
+    const get = tx.objectStore('seal').get('best');
+    get.onsuccess = () => {
+      if (get.result) {
+        Object.assign(genomes, get.result.genomes);
+        active = get.result.active || 0;
+      }
+    };
+  };
+} catch(e) {}
+</script>
+</body>
+</html>
