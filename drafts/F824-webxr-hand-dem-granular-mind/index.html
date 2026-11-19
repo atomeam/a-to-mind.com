@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F824 WebXR Hand DEM Granular Mind — Verse</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+body{margin:0;background:#0a0a12;color:#e0e0ff;font-family:system-ui,sans-serif;overflow:hidden;touch-action:none}
+canvas{display:block;width:100vw;height:100vh;position:absolute;inset:0}
+#ui{position:absolute;top:12px;left:12px;z-index:10;background:rgba(10,10,20,.75);padding:12px;border-radius:8px;max-width:320px;font-size:13px;backdrop-filter:blur(4px)}
+button,input{margin:4px 4px 0 0;padding:6px 10px;background:#222;color:#fff;border:1px solid #555;border-radius:4px;cursor:pointer}
+button:hover{background:#333}
+#status{font-size:11px;opacity:.8;margin-top:6px}
+.portal{position:absolute;width:140px;height:90px;background:rgba(30,40,80,.85);border:2px solid #6af;border-radius:8px;padding:8px;font-size:12px;color:#fff;cursor:grab;user-select:none;z-index:5;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+.portal.grabbed{border-color:#f80;cursor:grabbing}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <strong>F824 DEM Granular Mind</strong><br>
+  WebXR hands (or pointer) push grains.<br>
+  Tiny MLP sets friction/cohesion from orientation.<br>
+  Clusters bind to portals. Seal persists.<br>
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset</button>
+  <button id="addPortal">+ Portal</button><br>
+  <label>Friction <input type="range" id="fric" min="0" max="1" step="0.01" value="0.4"></label><br>
+  <label>Cohesion <input type="range" id="coh" min="0" max="2" step="0.01" value="0.3"></label>
+  <div id="status">Initializing…</div>
+</div>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const status = document.getElementById('status');
+const fricSlider = document.getElementById('fric');
+const cohSlider = document.getElementById('coh');
+let W = canvas.width = innerWidth, H = canvas.height = innerHeight;
+addEventListener('resize', () => { W = canvas.width = innerWidth; H = canvas.height = innerHeight; });
+
+const N = 280;
+const particles = [];
+const portals = [];
+let hands = [];
+let pointer = {x: W/2, y: H/2, down: false};
+let orientation = {beta: 0, gamma: 0};
+let mlp = { w: new Float32Array(16), b: new Float32Array(4) };
+let friction = 0.4, cohesion = 0.3;
+let idb;
+
+function rand(a,b){return a+Math.random()*(b-a)}
+function initParticles(){
+  particles.length = 0;
+  for(let i=0;i<N;i++){
+    particles.push({
+      x: rand(40,W-40), y: rand(40,H-40),
+      vx: rand(-0.5,0.5), vy: rand(-0.5,0.5),
+      r: rand(3.5,6.5), mass: 1
+    });
+  }
+}
+function initMLP(){
+  for(let i=0;i<16;i++) mlp.w[i] = (Math.random()-0.5)*0.8;
+  for(let i=0;i<4;i++) mlp.b[i] = (Math.random()-0.5)*0.2;
+}
+function mlpForward(inputs){
+  const o = new Float32Array(4);
+  for(let j=0;j<4;j++){
+    let s = mlp.b[j];
+    for(let i=0;i<4;i++) s += inputs[i] * mlp.w[i*4 + j];
+    o[j] = Math.tanh(s);
+  }
+  return o;
+}
+
+async function openIDB(){
+  return new Promise((res,rej)=>{
+    const r = indexedDB.open('verse-f824',1);
+    r.onupgradeneeded = e => e.target.result.createObjectStore('state');
+    r.onsuccess = e => res(e.target.result);
+    r.onerror = rej;
+  });
+}
+async function saveState(){
+  if(!idb) return;
+  const tx = idb.transaction('state','readwrite');
+  tx.objectStore('state').put({
+    mlp: Array.from(mlp.w).concat(Array.from(mlp.b)),
+    friction, cohesion,
+    portals: portals.map(p => ({x:p.x,y:p.y,html:p.el.innerHTML}))
+  }, 'main');
+}
+async function loadState(){
+  if(!idb) return;
+  const tx = idb.transaction('state','readonly');
+  const req = tx.objectStore('state').get('main');
+  req.onsuccess = () => {
+    const d = req.result;
+    if(d){
+      const arr = d.mlp || [];
+      for(let i=0;i<16;i++) mlp.w[i] = arr[i] || mlp.w[i];
+      for(let i=0;i<4;i++) mlp.b[i] = arr[16+i] || mlp.b[i];
+      friction = d.friction ?? friction;
+      cohesion = d.cohesion ?? cohesion;
+      fricSlider.value = friction;
+      cohSlider.value = cohesion;
+      if(d.portals) d.portals.forEach(pd => addPortal(pd.x, pd.y, pd.html));
+    }
+  };
+}
+
+function addPortal(x = rand(100,W-200), y = rand(100,H-150), html = 'Granular note<br>drag me'){
+  const el = document.createElement('div');
+  el.className = 'portal';
+  el.innerHTML = html;
+  el.style.left = x + 'px';
+  el.style.top = y + 'px';
+  document.body.appendChild(el);
+  const p = {el, x, y, vx:0, vy:0, r:70};
+  portals.push(p);
+  el.addEventListener('pointerdown', e => { p.grabbed = true; el.classList.add('grabbed'); e.stopPropagation(); });
+  el.addEventListener('pointerup', () => { p.grabbed = false; el.classList.remove('grabbed'); });
+  el.addEventListener('pointermove', e => {
+    if(p.grabbed){
+      p.x = e.clientX - 70;
+      p.y = e.clientY - 45;
+      el.style.left = p.x + 'px';
+      el.style.top = p.y + 'px';
+    }
+  });
+}
+
+canvas.addEventListener('pointermove', e => { pointer.x = e.clientX; pointer.y = e.clientY; });
+canvas.addEventListener('pointerdown', () => pointer.down = true);
+canvas.addEventListener('pointerup', () => pointer.down = false);
+window.addEventListener('deviceorientation', e => {
+  orientation.beta = e.beta || 0;
+  orientation.gamma = e.gamma || 0;
+});
+
+async function tryXR(){
+  if(!navigator.xr) return;
+  try{
+    const supported = await navigator.xr.isSessionSupported('immersive-vr');
+    if(supported) status.textContent += ' | WebXR available';
+  }catch(e){}
+}
+
+function step(){
+  const inputs = [
+    Math.sin(orientation.beta * Math.PI/180),
+    Math.sin(orientation.gamma * Math.PI/180),
+    pointer.down ? 1 : 0,
+    0.5
+  ];
+  const outs = mlpForward(inputs);
+  friction = 0.2 + (outs[0]+1)*0.3;
+  cohesion = 0.1 + (outs[1]+1)*0.8;
+  fricSlider.value = friction.toFixed(2);
+  cohSlider.value = cohesion.toFixed(2);
+
+  const g = 0.08;
+  const colliders = [];
+  if(pointer.down) colliders.push({x:pointer.x, y:pointer.y, r:28});
+
+  for(let i=0;i<particles.length;i++){
+    const p = particles[i];
+    p.vy += g;
+    for(const c of colliders){
+      const dx = p.x - c.x, dy = p.y - c.y;
+      const d = Math.hypot(dx,dy) || 1;
+      const overlap = (p.r + c.r) - d;
+      if(overlap > 0){
+        const f = overlap * 0.8;
+        p.vx += (dx/d)*f;
+        p.vy += (dy/d)*f;
+      }
+    }
+    for(const port of portals){
+      const dx = p.x - (port.x+70), dy = p.y - (port.y+45);
+      const d = Math.hypot(dx,dy) || 1;
+      if(d < port.r){
+        const f = (port.r - d)*0.15;
+        p.vx += (dx/d)*f;
+        p.vy += (dy/d)*f;
+      }
+    }
+    for(let j=i+1;j<particles.length;j++){
+      const q = particles[j];
+      const dx = p.x - q.x, dy = p.y - q.y;
+      const d = Math.hypot(dx,dy) || 1;
+      const minD = p.r + q.r;
+      if(d < minD){
+        const overlap = minD - d;
+        const nx = dx/d, ny = dy/d;
+        const rep = overlap * 0.55;
+        p.vx += nx * rep; p.vy += ny * rep;
+        q.vx -= nx * rep; q.vy -= ny * rep;
+        const relVx = p.vx - q.vx, relVy = p.vy - q.vy;
+        const tang = relVx*nx + relVy*ny;
+        p.vx -= nx * tang * friction * 0.3;
+        p.vy -= ny * tang * friction * 0.3;
+        q.vx += nx * tang * friction * 0.3;
+        q.vy += ny * tang * friction * 0.3;
+      } else if(d < minD + 18 && cohesion > 0.2){
+        const f = cohesion * 0.02;
+        p.vx -= nx * f; p.vy -= ny * f;
+        q.vx += nx * f; q.vy += ny * f;
+      }
+    }
+    p.vx *= 0.98; p.vy *= 0.98;
+    p.x += p.vx; p.y += p.vy;
+    if(p.x < p.r){ p.x = p.r; p.vx *= -0.4; }
+    if(p.x > W-p.r){ p.x = W-p.r; p.vx *= -0.4; }
+    if(p.y > H-p.r){ p.y = H-p.r; p.vy *= -0.3; }
+    if(p.y < p.r){ p.y = p.r; p.vy = 0; }
+  }
+
+  for(const port of portals){
+    if(port.grabbed) continue;
+    let cx=0,cy=0,n=0;
+    for(const p of particles){
+      const dx = p.x - (port.x+70), dy = p.y - (port.y+45);
+      if(Math.hypot(dx,dy) < 80){ cx += p.x; cy += p.y; n++; }
+    }
+    if(n > 12){
+      const tx = cx/n - 70, ty = cy/n - 45;
+      port.x += (tx - port.x)*0.04;
+      port.y += (ty - port.y)*0.04;
+      port.el.style.left = port.x+'px';
+      port.el.style.top = port.y+'px';
+    }
+  }
+}
+
+function draw(){
+  ctx.fillStyle = '#0a0a12';
+  ctx.fillRect(0,0,W,H);
+  ctx.fillStyle = '#8cf';
+  for(const p of particles){
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+    ctx.fill();
+  }
+  ctx.strokeStyle = '#f80';
+  ctx.lineWidth = 2;
+  if(pointer.down){
+    ctx.beginPath(); ctx.arc(pointer.x,pointer.y,28,0,Math.PI*2); ctx.stroke();
+  }
+  status.textContent = `Particles: ${N} | Friction: ${friction.toFixed(2)} | Cohesion: ${cohesion.toFixed(2)} | Portals: ${portals.length}`;
+}
+
+function loop(){
+  step();
+  draw();
+  requestAnimationFrame(loop);
+}
+
+document.getElementById('seal').onclick = () => { saveState(); status.textContent += ' | Sealed'; };
+document.getElementById('reset').onclick = () => { initParticles(); initMLP(); };
+document.getElementById('addPortal').onclick = () => addPortal();
+fricSlider.oninput = () => friction = +fricSlider.value;
+cohSlider.oninput = () => cohesion = +cohSlider.value;
+
+(async () => {
+  initMLP();
+  initParticles();
+  addPortal(W*0.3, H*0.4);
+  addPortal(W*0.6, H*0.5);
+  try{ idb = await openIDB(); await loadState(); }catch(e){ status.textContent = 'IDB unavailable'; }
+  tryXR();
+  status.textContent = 'Ready — pointer down pushes grains. Tilt device if supported.';
+  loop();
+})();
+</script>
+</body>
+</html>
