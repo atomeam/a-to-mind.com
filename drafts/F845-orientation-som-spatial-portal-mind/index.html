@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F845 Orientation SOM Spatial Portal Mind</title>
+<style>
+  body { margin: 0; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  #stage { position: relative; width: 100vw; height: 100vh; }
+  .portal {
+    position: absolute; width: 120px; height: 90px; border-radius: 12px;
+    background: #111; border: 2px solid #333; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; text-align: center; transition: transform 0.1s, filter 0.1s, background 0.2s;
+    cursor: pointer; user-select: none; box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+  .portal.bmu { border-color: #0ff; box-shadow: 0 0 20px #0ff; z-index: 2; }
+  #ui { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 8px; font-size: 13px; }
+  button { background: #222; color: #0ff; border: 1px solid #0ff; padding: 4px 10px; border-radius: 4px; cursor: pointer; }
+  canvas { position: absolute; bottom: 12px; right: 12px; background: #111; border: 1px solid #333; }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<div id="ui">
+  <div>F845 SOM Portal Mind</div>
+  <div id="status">Tilt or move pointer</div>
+  <button id="seal">Seal Map</button>
+  <button id="reset">Reset</button>
+</div>
+<canvas id="viz" width="160" height="160"></canvas>
+<script>
+const N = 4; // 4x4 lattice
+const DIM = 5;
+const portals = [];
+let weights = [];
+let lr = 0.08;
+let radius = 2.2;
+let step = 0;
+const stage = document.getElementById('stage');
+const status = document.getElementById('status');
+const viz = document.getElementById('viz');
+const vctx = viz.getContext('2d');
+
+function rand() { return Math.random() * 2 - 1; }
+
+function init() {
+  stage.innerHTML = '';
+  portals.length = 0;
+  weights = [];
+  const gap = 140;
+  const ox = (window.innerWidth - (N-1)*gap) / 2;
+  const oy = (window.innerHeight - (N-1)*gap) / 2;
+  for (let i = 0; i < N; i++) {
+    for (let j = 0; j < N; j++) {
+      const idx = i * N + j;
+      const w = Array.from({length: DIM}, rand);
+      weights.push(w);
+      const el = document.createElement('div');
+      el.className = 'portal';
+      el.style.left = (ox + j * gap) + 'px';
+      el.style.top = (oy + i * gap) + 'px';
+      el.textContent = `${i},${j}`;
+      el.dataset.idx = idx;
+      el.onclick = () => trainForced(idx);
+      stage.appendChild(el);
+      portals.push(el);
+    }
+  }
+  load();
+}
+
+function normalize(v) {
+  return v.map(x => Math.max(-1, Math.min(1, x)));
+}
+
+let lastInput = [0,0,0,0,0];
+
+function getInput() {
+  return lastInput.slice();
+}
+
+function findBMU(x) {
+  let best = 0, bestD = Infinity;
+  for (let i = 0; i < weights.length; i++) {
+    let d = 0;
+    for (let k = 0; k < DIM; k++) {
+      const diff = x[k] - weights[i][k];
+      d += diff * diff;
+    }
+    if (d < bestD) { bestD = d; best = i; }
+  }
+  return best;
+}
+
+function update(x, forced = -1) {
+  const bmu = forced >= 0 ? forced : findBMU(x);
+  const bi = Math.floor(bmu / N), bj = bmu % N;
+  const sigma = radius * Math.exp(-step / 800);
+  const eta = lr * Math.exp(-step / 1200);
+  for (let i = 0; i < N; i++) {
+    for (let j = 0; j < N; j++) {
+      const idx = i * N + j;
+      const dist2 = (i - bi)**2 + (j - bj)**2;
+      const h = Math.exp(-dist2 / (2 * sigma * sigma));
+      for (let k = 0; k < DIM; k++) {
+        weights[idx][k] += eta * h * (x[k] - weights[idx][k]);
+        weights[idx][k] = Math.max(-1.5, Math.min(1.5, weights[idx][k]));
+      }
+    }
+  }
+  step++;
+  render(bmu);
+  return bmu;
+}
+
+function render(bmu) {
+  portals.forEach((el, idx) => {
+    const w = weights[idx];
+    const hue = ((w[0] + 1) * 180) % 360;
+    const sat = 40 + Math.abs(w[1]) * 40;
+    const light = 30 + (w[2] + 1) * 20;
+    const scale = 0.85 + Math.abs(w[3]) * 0.3;
+    const blur = Math.abs(w[4]) * 2;
+    el.style.background = `hsl(${hue},${sat}%,${light}%)`;
+    el.style.transform = `scale(${scale})`;
+    el.style.filter = `blur(${blur}px)`;
+    el.classList.toggle('bmu', idx === bmu);
+  });
+  vctx.fillStyle = '#111';
+  vctx.fillRect(0,0,160,160);
+  const cell = 160 / N;
+  for (let i = 0; i < N; i++) {
+    for (let j = 0; j < N; j++) {
+      const idx = i * N + j;
+      const act = Math.max(0, 1 - Math.hypot(...weights[idx].map((v,k)=>v-lastInput[k])) / 2);
+      vctx.fillStyle = `rgba(0,255,255,${act})`;
+      vctx.fillRect(j*cell, i*cell, cell-2, cell-2);
+    }
+  }
+  status.textContent = `step ${step}  BMU ${bmu}  η≈${(lr*Math.exp(-step/1200)).toFixed(3)}`;
+}
+
+function trainForced(idx) {
+  update(getInput(), idx);
+  status.textContent = `Taught node ${idx}`;
+}
+
+window.addEventListener('deviceorientation', e => {
+  lastInput[0] = (e.alpha || 0) / 180 - 1;
+  lastInput[1] = (e.beta || 0) / 90;
+  lastInput[2] = (e.gamma || 0) / 90;
+  lastInput = normalize(lastInput);
+  if (step % 2 === 0) update(lastInput);
+});
+
+window.addEventListener('pointermove', e => {
+  lastInput[3] = (e.clientX / window.innerWidth) * 2 - 1;
+  lastInput[4] = (e.clientY / window.innerHeight) * 2 - 1;
+  if (step % 3 === 0) update(lastInput);
+});
+
+const DB_NAME = 'f845-som';
+const CH = new BroadcastChannel('f845-som');
+function seal() {
+  const data = { weights, step, t: Date.now() };
+  const req = indexedDB.open(DB_NAME, 1);
+  req.onupgradeneeded = () => req.result.createObjectStore('map');
+  req.onsuccess = () => {
+    const tx = req.result.transaction('map', 'readwrite');
+    tx.objectStore('map').put(data, 'weights');
+  };
+  CH.postMessage(data);
+  status.textContent = 'Sealed & broadcast';
+}
+document.getElementById('seal').onclick = seal;
+
+CH.onmessage = e => {
+  if (e.data && e.data.weights) {
+    weights = e.data.weights;
+    step = e.data.step || step;
+    render(findBMU(getInput()));
+    status.textContent = 'Adopted remote map';
+  }
+};
+
+function load() {
+  const req = indexedDB.open(DB_NAME, 1);
+  req.onsuccess = () => {
+    const tx = req.result.transaction('map', 'readonly');
+    const g = tx.objectStore('map').get('weights');
+    g.onsuccess = () => {
+      if (g.result) {
+        weights = g.result.weights;
+        step = g.result.step || 0;
+        render(findBMU(getInput()));
+      }
+    };
+  };
+}
+
+document.getElementById('reset').onclick = () => { step = 0; init(); };
+window.addEventListener('resize', init);
+init();
+</script>
+</body>
+</html>
