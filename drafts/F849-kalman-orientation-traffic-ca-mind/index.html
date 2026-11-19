@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F849 Kalman Orientation Traffic CA Mind</title>
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui; overflow:hidden; }
+canvas { display:block; position:absolute; top:0; left:0; }
+#chrome { position:absolute; top:10px; left:10px; z-index:10; background:rgba(0,0,20,0.75); padding:8px; border-radius:6px; font-size:12px; max-width:300px; }
+.portal { position:absolute; width:70px; height:36px; background:rgba(40,180,80,0.35); border:1px solid #4f8; border-radius:4px; cursor:grab; display:flex; align-items:center; justify-content:center; font-size:10px; user-select:none; z-index:5; }
+.portal:active { cursor:grabbing; }
+button { margin:2px; padding:4px 8px; background:#223; color:#fff; border:1px solid #5f8; border-radius:3px; cursor:pointer; }
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="chrome">
+  <div>F849 Kalman Orientation Traffic CA Mind</div>
+  <div id="status">Tilt or move pointer. Drag portals. R=reward S=seal</div>
+  <div id="info"></div>
+  <button id="sealBtn">Seal Best</button>
+  <button id="resetBtn">Reset Traffic</button>
+</div>
+<script>
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+let W = cv.width = innerWidth, H = cv.height = innerHeight;
+addEventListener('resize', () => { W = cv.width = innerWidth; H = cv.height = innerHeight; });
+
+// Kalman filter: state [beta, gamma, vbeta, vgamma]
+let state = [0, 0, 0, 0];
+let P = [[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]]; // cov approx diagonal for simplicity
+let Q = 0.01, R = 0.5; // process / measurement noise
+let fitness = 0;
+
+function kalmanPredict() {
+  // Simple constant velocity: x += v * dt, v unchanged
+  state[0] += state[2] * 0.05;
+  state[1] += state[3] * 0.05;
+  // inflate cov
+  for (let i = 0; i < 4; i++) P[i][i] += Q;
+}
+function kalmanUpdate(meas) {
+  // meas = [beta, gamma]
+  const y0 = meas[0] - state[0], y1 = meas[1] - state[1];
+  const s0 = P[0][0] + R, s1 = P[1][1] + R;
+  const k0 = P[0][0] / s0, k1 = P[1][1] / s1;
+  state[0] += k0 * y0;
+  state[1] += k1 * y1;
+  state[2] += 0.1 * y0; // crude velocity update
+  state[3] += 0.1 * y1;
+  P[0][0] *= (1 - k0);
+  P[1][1] *= (1 - k1);
+}
+
+let orient = { beta: 0, gamma: 0 };
+let hasOrient = false;
+if (window.DeviceOrientationEvent) {
+  addEventListener('deviceorientation', e => {
+    orient.beta = e.beta || 0;
+    orient.gamma = e.gamma || 0;
+    hasOrient = true;
+  });
+}
+// pointer proxy
+let ptr = { x: W/2, y: H/2 };
+addEventListener('pointermove', e => { ptr.x = e.clientX; ptr.y = e.clientY; });
+
+// Nagel-Schreckenberg traffic CA: 4 lanes, L=128 cells
+const LANES = 4, L = 128;
+const vmaxBase = 5;
+let cars = []; // {lane, pos, vel}
+function resetTraffic() {
+  cars = [];
+  for (let lane = 0; lane < LANES; lane++) {
+    for (let i = 0; i < 18; i++) {
+      cars.push({ lane, pos: Math.floor(Math.random() * L), vel: Math.floor(Math.random() * 3) });
+    }
+  }
+  cars.sort((a,b) => a.lane - b.lane || a.pos - b.pos);
+}
+resetTraffic();
+
+function trafficStep(maxV, pRand) {
+  // group by lane
+  const byLane = Array.from({length: LANES}, () => []);
+  for (const c of cars) byLane[c.lane].push(c);
+  for (let lane = 0; lane < LANES; lane++) {
+    const laneCars = byLane[lane].sort((a,b) => a.pos - b.pos);
+    for (let i = 0; i < laneCars.length; i++) {
+      const c = laneCars[i];
+      const next = laneCars[(i+1) % laneCars.length];
+      let gap = (next.pos - c.pos + L) % L - 1;
+      if (gap < 0) gap = L - 1;
+      // accelerate
+      if (c.vel < maxV) c.vel++;
+      // brake
+      if (c.vel > gap) c.vel = gap;
+      // random slow
+      if (Math.random() < pRand && c.vel > 0) c.vel--;
+      // move
+      c.pos = (c.pos + c.vel) % L;
+    }
+  }
+  // fitness from mean speed
+  let sumV = 0;
+  for (const c of cars) sumV += c.vel;
+  fitness = sumV / cars.length;
+}
+
+// Portals
+const portals = [];
+for (let i = 0; i < 3; i++) {
+  const el = document.createElement('div');
+  el.className = 'portal';
+  el.textContent = 'S' + i;
+  const x = 80 + i * 140, y = 100 + i * 30;
+  el.style.left = x + 'px';
+  el.style.top = y + 'px';
+  document.body.appendChild(el);
+  portals.push({ el, x, y, flow: 0 });
+  let drag = false, ox, oy;
+  el.addEventListener('pointerdown', e => { drag = true; ox = e.clientX - portals[i].x; oy = e.clientY - portals[i].y; el.setPointerCapture(e.pointerId); });
+  el.addEventListener('pointermove', e => { if (drag) { portals[i].x = e.clientX - ox; portals[i].y = e.clientY - oy; el.style.left = portals[i].x + 'px'; el.style.top = portals[i].y + 'px'; } });
+  el.addEventListener('pointerup', () => drag = false);
+}
+
+function step() {
+  // Kalman
+  kalmanPredict();
+  const meas = hasOrient ? [orient.beta, orient.gamma] : [(ptr.x / W - 0.5) * 40, (ptr.y / H - 0.5) * 30];
+  kalmanUpdate(meas);
+
+  // Map state to traffic params
+  const tilt = Math.hypot(state[0], state[1]);
+  const maxV = Math.max(1, Math.min(5, Math.round(3 + state[0] / 20)));
+  const pRand = Math.max(0.05, Math.min(0.4, 0.2 + Math.abs(state[1]) / 100));
+
+  trafficStep(maxV, pRand);
+
+  // Sample local flow under portals (map portal y to lane, x to pos)
+  for (const port of portals) {
+    const lane = Math.floor((port.y / H) * LANES) % LANES;
+    const pos = Math.floor((port.x / W) * L) % L;
+    let local = 0, count = 0;
+    for (const c of cars) {
+      if (c.lane === lane && Math.abs(((c.pos - pos + L) % L) - L/2) < 8) {
+        local += c.vel; count++;
+      }
+    }
+    port.flow = count ? local / count : 0;
+    if (port.flow > 2.5) fitness += 0.1; // reward
+  }
+}
+
+function draw() {
+  ctx.fillStyle = 'rgba(10,10,18,0.3)';
+  ctx.fillRect(0, 0, W, H);
+  const cellW = W / L, laneH = H / LANES;
+  for (const c of cars) {
+    const x = c.pos * cellW;
+    const y = c.lane * laneH + laneH / 2;
+    ctx.fillStyle = `hsl(${120 + c.vel * 20}, 70%, 55%)`;
+    ctx.fillRect(x, y - 4, Math.max(3, c.vel * 2), 8);
+  }
+  // draw portals influence
+  for (const port of portals) {
+    ctx.strokeStyle = 'rgba(80,255,120,0.4)';
+    ctx.strokeRect(port.x - 20, port.y - 15, 40, 30);
+  }
+  document.getElementById('info').textContent =
+    `State β:${state[0].toFixed(1)} γ:${state[1].toFixed(1)} v:${state[2].toFixed(2)} fit:${fitness.toFixed(2)} R:${R.toFixed(2)}`;
+}
+
+function loop() { step(); draw(); requestAnimationFrame(loop); }
+loop();
+
+function seal() {
+  const data = { state: [...state], Q, R, fitness, ts: Date.now() };
+  try {
+    const req = indexedDB.open('f849', 1);
+    req.onupgradeneeded = e => e.target.result.createObjectStore('seal');
+    req.onsuccess = e => {
+      const tx = e.target.result.transaction('seal', 'readwrite');
+      tx.objectStore('seal').put(data, 'best');
+    };
+  } catch (e) {}
+  try {
+    const bc = new BroadcastChannel('f849-genome');
+    bc.postMessage({ type: 'seal', data, fitness });
+  } catch (e) {}
+  document.getElementById('status').textContent = 'Sealed Kalman params';
+}
+document.getElementById('sealBtn').onclick = seal;
+document.getElementById('resetBtn').onclick = () => { resetTraffic(); fitness = 0; };
+addEventListener('keydown', e => {
+  if (e.key === 's' || e.key === 'S') seal();
+  if (e.key === 'r' || e.key === 'R') {
+    fitness += 5;
+    R = Math.max(0.1, R * 0.95);
+    document.getElementById('status').textContent = 'Rewarded – tightened R';
+  }
+});
+
+try {
+  const bc = new BroadcastChannel('f849-genome');
+  bc.onmessage = e => {
+    if (e.data.type === 'seal' && e.data.fitness > fitness) {
+      state = e.data.data.state || state;
+      Q = e.data.data.Q || Q;
+      R = e.data.data.R || R;
+      fitness = e.data.fitness;
+      document.getElementById('status').textContent = 'Adopted higher-fitness seal';
+    }
+  };
+} catch (e) {}
+
+try {
+  const req = indexedDB.open('f849', 1);
+  req.onsuccess = e => {
+    const tx = e.target.result.transaction('seal', 'readonly');
+    const get = tx.objectStore('seal').get('best');
+    get.onsuccess = () => {
+      if (get.result) {
+        state = get.result.state || state;
+        Q = get.result.Q || Q;
+        R = get.result.R || R;
+        fitness = get.result.fitness || 0;
+      }
+    };
+  };
+} catch (e) {}
+</script>
+</body>
+</html>
