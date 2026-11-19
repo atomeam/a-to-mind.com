@@ -21319,9 +21319,6 @@ drafts/F847-webgpu-vicsek-flock-policy-mind/index.html
 
 **F848-webxr-hand-hopfield-spatial-recall-mind**
 
-Entry added by ledger-guard from drafts/F848-webxr-hand-hopfield-spatial-recall-mind/SPEC.md, after a full-file write dropped it.
-
-
 **Concept**
 A local Hopfield associative memory network whose input pattern is formed from WebXR hand joint positions (or pointer + DeviceOrientation fallback). The user can "store" a hand pose by clicking, writing a bipolar pattern into the Hopfield weight matrix. At runtime the network performs asynchronous energy minimization, recalling the nearest stored attractor. The recalled binary pattern morphs a grid of living DOM portals (position, scale, hue) into the remembered configuration. High-energy or high-match genomes seal to IndexedDB and broadcast over BroadcastChannel for sealed transfer across tabs/peers. Offline-capable single file.
 
@@ -21331,7 +21328,7 @@ Leaves the dominant recent cluster of spatial portal minds (SOM, MCTS, spiking, 
 **Architecture**
 - Single self-contained index.html
 - WebXR hand tracking (optional, progressive)
-- Fallback: pointer + DeviceOrientation for  pattern bits
+- Fallback: pointer + DeviceOrientation for pattern bits
 - Hopfield: 16-bit patterns, Hebbian storage, async updates
 - DOM: 16 portal tiles in a 4x4 grid whose transforms are driven by the current state bits
 - Seal: IndexedDB `f848-hopfield` + BroadcastChannel `f848-genome`
@@ -21357,5 +21354,3 @@ Pure-JS Hopfield network, WebXR hand pattern embedding, DOM-attractor hybrid emb
 **Files**
 drafts/F848-webxr-hand-hopfield-spatial-recall-mind/SPEC.md
 drafts/F848-webxr-hand-hopfield-spatial-recall-mind/index.html
-
-**Files**: drafts/F848-webxr-hand-hopfield-spatial-recall-mind/SPEC.md, drafts/F848-webxr-hand-hopfield-spatial-recall-mind/index.html
