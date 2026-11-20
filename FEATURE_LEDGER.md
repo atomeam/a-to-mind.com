@@ -22305,3 +22305,12 @@ Void is now Verse everywhere.
 ## Guard restore (2026-11-20)
 
 Ledger guard restored this file from d8050eb after 88d20f0 broke it. Entries rebuilt from SPEC.md: F868-orientation-causal-attention-portal-mind. Write the ledger with git on disk, append only.
+
+## Frontier Engine F-869 (2026-11-20)
+
+**F869-webgpu-voxel-density-local-policy-sculptor-mind**
+
+Entry added by ledger-guard from drafts/F869-webgpu-voxel-density-local-policy-sculptor-mind/SPEC.md, after a full-file write dropped it.
+
+
+**Files**: drafts/F869-webgpu-voxel-density-local-policy-sculptor-mind/SPEC.md, drafts/F869-webgpu-voxel-density-local-policy-sculptor-mind/index.html
