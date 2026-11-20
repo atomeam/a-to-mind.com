@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F868 — Orientation Causal Attention Portal Mind</title>
+<style>
+  :root { --bg:#0a0c10; --fg:#e8eaf0; --accent:#7aa2ff; }
+  * { box-sizing:border-box; }
+  html,body { margin:0; height:100%; background:var(--bg); color:var(--fg); font:14px/1.4 system-ui,sans-serif; overflow:hidden; }
+  #stage { position:relative; width:100%; height:100%; }
+  canvas { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+  .portal {
+    position:absolute; width:72px; height:72px; border-radius:16px;
+    background:rgba(20,24,36,.85); border:1px solid rgba(122,162,255,.4);
+    box-shadow:0 8px 24px rgba(0,0,0,.4); cursor:pointer; user-select:none;
+    display:flex; align-items:center; justify-content:center; font-size:11px;
+    transition:transform .15s ease; will-change:transform,left,top;
+    backdrop-filter:blur(4px);
+  }
+  .portal:hover { border-color:var(--accent); }
+  #hud { position:fixed; top:12px; left:12px; background:rgba(0,0,0,.55); padding:8px 12px; border-radius:8px; font-size:12px; z-index:10; }
+  button { background:#1a2030; color:var(--fg); border:1px solid #3a4560; border-radius:6px; padding:4px 10px; margin-right:6px; cursor:pointer; }
+  button:hover { border-color:var(--accent); }
+  #log { margin-top:6px; color:#8a94a8; font-size:11px; max-width:280px; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="trail"></canvas>
+  <div id="hud">
+    <button id="seal">Seal</button>
+    <button id="reset">Reset</button>
+    <span id="status">causal attention mind</span>
+    <div id="log">Tilt or move pointer. Click a portal to reward.</div>
+  </div>
+</div>
+<script>
+(() => {
+  const N_PORTALS = 6;
+  const T = 12;          // sequence length
+  const D = 8;           // attention dim
+  const LR = 0.08;
+  const portals = [];
+  const seq = [];        // ring of sensor tokens
+  let q = randMat(D, 4), k = randMat(D, 4), v = randMat(D, 4);
+  let readout = randMat(3, D); // pooled -> fx,fy,hue
+  let orient = { beta:0, gamma:0 };
+  let pointer = { x:0, y:0, vx:0, vy:0 };
+  let lastPointer = { x:0, y:0 };
+  let sealed = false;
+
+  const stage = document.getElementById('stage');
+  const canvas = document.getElementById('trail');
+  const ctx = canvas.getContext('2d');
+  const status = document.getElementById('status');
+  const log = document.getElementById('log');
+
+  function resize() {
+    canvas.width = stage.clientWidth;
+    canvas.height = stage.clientHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function randMat(rows, cols) {
+    const m = new Float32Array(rows * cols);
+    for (let i = 0; i < m.length; i++) m[i] = (Math.random() - 0.5) * 0.4;
+    return m;
+  }
+  function matVec(m, rows, cols, vec) {
+    const out = new Float32Array(rows);
+    for (let r = 0; r < rows; r++) {
+      let s = 0;
+      for (let c = 0; c < cols; c++) s += m[r * cols + c] * vec[c];
+      out[r] = s;
+    }
+    return out;
+  }
+  function softmax(arr) {
+    let max = -Infinity;
+    for (const x of arr) if (x > max) max = x;
+    const ex = arr.map(x => Math.exp(x - max));
+    const sum = ex.reduce((a,b)=>a+b, 0);
+    return ex.map(x => x / (sum || 1));
+  }
+
+  // portals
+  for (let i = 0; i < N_PORTALS; i++) {
+    const el = document.createElement('div');
+    el.className = 'portal';
+    el.textContent = '•';
+    el.style.left = (20 + Math.random() * 60) + '%';
+    el.style.top = (20 + Math.random() * 60) + '%';
+    el.dataset.i = i;
+    stage.appendChild(el);
+    portals.push({
+      el,
+      x: parseFloat(el.style.left) / 100 * canvas.width,
+      y: parseFloat(el.style.top) / 100 * canvas.height,
+      vx: 0, vy: 0,
+      hue: 200 + i * 20
+    });
+    el.addEventListener('pointerdown', (e) => reward(i, e));
+  }
+
+  function pushSensor() {
+    const token = [
+      Math.max(-1, Math.min(1, orient.beta / 90)),
+      Math.max(-1, Math.min(1, orient.gamma / 90)),
+      Math.max(-1, Math.min(1, pointer.vx / 40)),
+      Math.max(-1, Math.min(1, pointer.vy / 40))
+    ];
+    seq.push(token);
+    if (seq.length > T) seq.shift();
+  }
+
+  function attend() {
+    if (seq.length < 2) return new Float32Array(D);
+    const Q = seq.map(t => matVec(q, D, 4, t));
+    const K = seq.map(t => matVec(k, D, 4, t));
+    const V = seq.map(t => matVec(v, D, 4, t));
+    // simple scaled dot (last query vs all keys)
+    const qLast = Q[Q.length - 1];
+    const scores = K.map(ki => {
+      let s = 0;
+      for (let d = 0; d < D; d++) s += qLast[d] * ki[d];
+      return s / Math.sqrt(D);
+    });
+    const w = softmax(scores);
+    const pooled = new Float32Array(D);
+    for (let i = 0; i < w.length; i++) {
+      for (let d = 0; d < D; d++) pooled[d] += w[i] * V[i][d];
+    }
+    return { pooled, w };
+  }
+
+  function step() {
+    pushSensor();
+    const { pooled, w } = attend() || { pooled: new Float32Array(D), w: [] };
+    const control = matVec(readout, 3, D, pooled);
+
+    // draw trail
+    ctx.fillStyle = 'rgba(10,12,16,0.12)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    if (w.length) {
+      ctx.strokeStyle = 'rgba(122,162,255,0.35)';
+      ctx.beginPath();
+      for (let i = 0; i < w.length; i++) {
+        const alpha = w[i];
+        const px = (i / w.length) * canvas.width;
+        const py = canvas.height * 0.15 + alpha * 40;
+        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+    }
+
+    portals.forEach((p, i) => {
+      const fx = control[0] * 0.35 + (Math.sin(performance.now()/800 + i) * 0.05);
+      const fy = control[1] * 0.35;
+      p.vx += fx;
+      p.vy += fy;
+      p.vx *= 0.92; p.vy *= 0.92;
+      p.x += p.vx; p.y += p.vy;
+      // soft walls
+      if (p.x < 40) { p.x = 40; p.vx *= -0.5; }
+      if (p.x > canvas.width - 40) { p.x = canvas.width - 40; p.vx *= -0.5; }
+      if (p.y < 40) { p.y = 40; p.vy *= -0.5; }
+      if (p.y > canvas.height - 40) { p.y = canvas.height - 40; p.vy *= -0.5; }
+      // mild repulsion
+      portals.forEach(o => {
+        if (o === p) return;
+        const dx = p.x - o.x, dy = p.y - o.y;
+        const d2 = dx*dx + dy*dy + 100;
+        if (d2 < 12000) {
+          const f = 80 / d2;
+          p.vx += dx * f; p.vy += dy * f;
+        }
+      });
+      p.el.style.left = p.x + 'px';
+      p.el.style.top = p.y + 'px';
+      const h = (control[2] * 40 + p.hue) % 360;
+      p.el.style.background = `hsla(${h}, 60%, 28%, 0.9)`;
+      p.el.style.borderColor = `hsla(${h}, 70%, 55%, 0.6)`;
+    });
+
+    requestAnimationFrame(step);
+  }
+
+  function reward(idx, e) {
+    e.preventDefault();
+    // simple delta update toward current portal being "good"
+    const { pooled } = attend() || { pooled: new Float32Array(D) };
+    const target = [0.2, 0.2, 0.1]; // mild positive bias
+    const pred = matVec(readout, 3, D, pooled);
+    for (let r = 0; r < 3; r++) {
+      const err = target[r] - pred[r];
+      for (let c = 0; c < D; c++) {
+        readout[r * D + c] += LR * err * pooled[c];
+      }
+    }
+    // light touch on Q/K/V
+    const noise = 0.02;
+    for (let i = 0; i < q.length; i++) q[i] += (Math.random()-0.5)*noise;
+    for (let i = 0; i < k.length; i++) k[i] += (Math.random()-0.5)*noise;
+    for (let i = 0; i < v.length; i++) v[i] += (Math.random()-0.5)*noise;
+    log.textContent = `rewarded portal ${idx} · weights adapted`;
+    portals[idx].el.style.transform = 'scale(1.15)';
+    setTimeout(() => portals[idx].el.style.transform = '', 180);
+  }
+
+  async function seal() {
+    const payload = {
+      q: Array.from(q), k: Array.from(k), v: Array.from(v),
+      readout: Array.from(readout), ts: Date.now()
+    };
+    try {
+      const db = await idbOpen();
+      const tx = db.transaction('store', 'readwrite');
+      tx.objectStore('store').put(payload, 'verse-f868-attn');
+      await tx.complete;
+      sealed = true;
+      status.textContent = 'sealed';
+      log.textContent = 'weights sealed to IndexedDB';
+      if (typeof BroadcastChannel !== 'undefined') {
+        const bc = new BroadcastChannel('f868-attn');
+        bc.postMessage(payload);
+      }
+    } catch (err) {
+      log.textContent = 'seal failed (session only)';
+    }
+  }
+
+  function idbOpen() {
+    return new Promise((res, rej) => {
+      const req = indexedDB.open('verse-f868', 1);
+      req.onupgradeneeded = () => req.result.createObjectStore('store');
+      req.onsuccess = () => res(req.result);
+      req.onerror = () => rej(req.error);
+    });
+  }
+
+  document.getElementById('seal').onclick = seal;
+  document.getElementById('reset').onclick = () => {
+    q = randMat(D, 4); k = randMat(D, 4); v = randMat(D, 4);
+    readout = randMat(3, D);
+    seq.length = 0;
+    log.textContent = 'weights reset';
+  };
+
+  window.addEventListener('deviceorientation', (e) => {
+    if (e.beta != null) orient.beta = e.beta;
+    if (e.gamma != null) orient.gamma = e.gamma;
+  });
+  stage.addEventListener('pointermove', (e) => {
+    pointer.vx = e.clientX - lastPointer.x;
+    pointer.vy = e.clientY - lastPointer.y;
+    lastPointer.x = e.clientX; lastPointer.y = e.clientY;
+    pointer.x = e.clientX; pointer.y = e.clientY;
+  });
+
+  // try load sealed
+  (async () => {
+    try {
+      const db = await idbOpen();
+      const tx = db.transaction('store', 'readonly');
+      const req = tx.objectStore('store').get('verse-f868-attn');
+      req.onsuccess = () => {
+        if (req.result) {
+          q = new Float32Array(req.result.q);
+          k = new Float32Array(req.result.k);
+          v = new Float32Array(req.result.v);
+          readout = new Float32Array(req.result.readout);
+          status.textContent = 'loaded sealed';
+          log.textContent = 'restored prior attention weights';
+        }
+      };
+    } catch {}
+  })();
+
+  if (typeof BroadcastChannel !== 'undefined') {
+    const bc = new BroadcastChannel('f868-attn');
+    bc.onmessage = (ev) => {
+      const p = ev.data;
+      if (p && p.q) {
+        q = new Float32Array(p.q); k = new Float32Array(p.k);
+        v = new Float32Array(p.v); readout = new Float32Array(p.readout);
+        log.textContent = 'adopted peer sealed weights';
+      }
+    };
+  }
+
+  requestAnimationFrame(step);
+  log.textContent = 'tilt device or move pointer · click portal to reward';
+})();
+</script>
+</body>
+</html>
