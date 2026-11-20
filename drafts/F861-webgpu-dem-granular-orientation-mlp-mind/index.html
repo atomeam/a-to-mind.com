@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F861 WebGPU DEM Granular Orientation MLP Mind — Verse</title>
+<style>
+body { margin:0; background:#0a0a12; color:#eee; font-family:system-ui; overflow:hidden; }
+canvas { display:block; position:absolute; top:0; left:0; }
+.portal { position:absolute; width:70px; height:70px; border-radius:12px; background:rgba(80,160,255,0.25); border:2px solid #4af; pointer-events:auto; cursor:grab; display:flex; align-items:center; justify-content:center; font-size:11px; text-align:center; user-select:none; backdrop-filter:blur(4px); }
+.portal.dragging { cursor:grabbing; }
+#ui { position:absolute; top:10px; left:10px; z-index:10; background:rgba(0,0,0,0.6); padding:8px 12px; border-radius:8px; }
+button { margin:4px; padding:6px 10px; background:#246; color:#fff; border:none; border-radius:4px; cursor:pointer; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <div>F861 DEM Granular Mind</div>
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset</button>
+  <div id="status">Tilt or drag portals</div>
+</div>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+let W = canvas.width = innerWidth, H = canvas.height = innerHeight;
+addEventListener('resize', () => { W = canvas.width = innerWidth; H = canvas.height = innerHeight; });
+
+const N = 100;
+const particles = [];
+const portals = [];
+let tilt = {x:0, y:0.3};
+let pointer = {x:W/2, y:H/2};
+
+// Tiny MLP
+class MLP {
+  constructor() {
+    this.w1 = Array(4).fill().map(() => Array(6).fill().map(() => Math.random()*0.4-0.2));
+    this.b1 = Array(6).fill().map(() => Math.random()*0.2-0.1);
+    this.w2 = Array(6).fill().map(() => Array(4).fill().map(() => Math.random()*0.4-0.2));
+    this.b2 = Array(4).fill().map(() => Math.random()*0.2-0.1);
+  }
+  forward(inp) {
+    const h = this.w1[0].map((_,j) => Math.tanh(inp.reduce((s,x,i)=>s+x*this.w1[i][j],0) + this.b1[j]));
+    const o = this.w2[0].map((_,j) => Math.tanh(h.reduce((s,x,i)=>s+x*this.w2[i][j],0) + this.b2[j]));
+    return o;
+  }
+  clone() { const m = new MLP(); m.w1 = this.w1.map(r=>[...r]); m.b1=[...this.b1]; m.w2=this.w2.map(r=>[...r]); m.b2=[...this.b2]; return m; }
+}
+
+function init() {
+  particles.length = 0;
+  for (let i=0; i<N; i++) {
+    particles.push({
+      x: Math.random()*W, y: Math.random()*H*0.6,
+      vx: (Math.random()-0.5)*2, vy: (Math.random()-0.5)*2,
+      r: 4 + Math.random()*3, m: 1
+    });
+  }
+  portals.length = 0;
+  document.querySelectorAll('.portal').forEach(el => el.remove());
+  for (let i=0; i<4; i++) {
+    const el = document.createElement('div');
+    el.className = 'portal';
+    el.textContent = 'Scoop ' + (i+1);
+    el.style.left = (100 + i*160) + 'px';
+    el.style.top = (H - 120) + 'px';
+    document.body.appendChild(el);
+    const p = { el, x:100+i*160+35, y:H-120+35, mlp: new MLP(), fitness:0, gx:0, gy:0.4, fric:0.2, rest:0.4 };
+    portals.push(p);
+    makeDraggable(el, p);
+  }
+}
+init();
+
+function makeDraggable(el, p) {
+  let ox, oy;
+  el.onpointerdown = e => {
+    el.setPointerCapture(e.pointerId);
+    el.classList.add('dragging');
+    ox = e.clientX - p.x; oy = e.clientY - p.y;
+  };
+  el.onpointermove = e => {
+    if (!el.hasPointerCapture(e.pointerId)) return;
+    p.x = e.clientX - ox; p.y = e.clientY - oy;
+    el.style.left = (p.x - 35) + 'px';
+    el.style.top = (p.y - 35) + 'px';
+    p.fitness += 0.01;
+  };
+  el.onpointerup = () => el.classList.remove('dragging');
+  el.onclick = () => { p.fitness += 1; p.mlp = p.mlp.clone(); /* reward nudge */ };
+}
+
+// Orientation
+if (window.DeviceOrientationEvent) {
+  addEventListener('deviceorientation', e => {
+    tilt.x = (e.gamma || 0) / 45;
+    tilt.y = (e.beta || 0) / 45;
+  });
+}
+addEventListener('pointermove', e => { pointer.x = e.clientX; pointer.y = e.clientY; });
+
+function step() {
+  // Update portal MLPs
+  portals.forEach(p => {
+    const prox = Math.hypot(pointer.x - p.x, pointer.y - p.y) / 200;
+    const out = p.mlp.forward([tilt.x, tilt.y, prox, p.fitness*0.1]);
+    p.gx = out[0] * 0.8;
+    p.gy = 0.25 + out[1] * 0.5;
+    p.fric = 0.1 + Math.abs(out[2])*0.4;
+    p.rest = 0.2 + Math.abs(out[3])*0.5;
+  });
+
+  // DEM forces (simple pairwise)
+  for (let i=0; i<particles.length; i++) {
+    const a = particles[i];
+    let fx = 0, fy = 0;
+    // Global + local gravity from nearest portal
+    let ng = {gx: tilt.x*0.2, gy: 0.3};
+    let best = 1e9;
+    portals.forEach(p => {
+      const d = Math.hypot(a.x-p.x, a.y-p.y);
+      if (d < best) { best = d; ng = {gx: p.gx, gy: p.gy}; }
+    });
+    fx += ng.gx * 0.15; fy += ng.gy * 0.15;
+
+    for (let j=i+1; j<particles.length; j++) {
+      const b = particles[j];
+      const dx = b.x - a.x, dy = b.y - a.y;
+      const dist = Math.hypot(dx, dy) || 0.1;
+      const overlap = (a.r + b.r) - dist;
+      if (overlap > 0) {
+        const nx = dx/dist, ny = dy/dist;
+        const force = overlap * 8;
+        fx -= nx * force; fy -= ny * force;
+        // friction approx
+        const relVx = b.vx - a.vx, relVy = b.vy - a.vy;
+        fx -= relVx * 0.3; fy -= relVy * 0.3;
+      }
+    }
+    // portal scoop attraction
+    portals.forEach(p => {
+      const dx = p.x - a.x, dy = p.y - a.y;
+      const d = Math.hypot(dx, dy);
+      if (d < 80 && d > 10) {
+        fx += (dx/d) * 0.8; fy += (dy/d) * 0.8;
+      }
+    });
+
+    a.vx += fx / a.m; a.vy += fy / a.m;
+    a.vx *= 0.98; a.vy *= 0.98;
+    a.x += a.vx; a.y += a.vy;
+    // bounds
+    if (a.x < a.r) { a.x = a.r; a.vx *= -0.5; }
+    if (a.x > W-a.r) { a.x = W-a.r; a.vx *= -0.5; }
+    if (a.y < a.r) { a.y = a.r; a.vy *= -0.5; }
+    if (a.y > H-a.r) { a.y = H-a.r; a.vy *= -0.5; }
+  }
+
+  // Genome transfer on portal proximity
+  for (let i=0; i<portals.length; i++) for (let j=i+1; j<portals.length; j++) {
+    if (Math.hypot(portals[i].x-portals[j].x, portals[i].y-portals[j].y) < 90) {
+      if (portals[i].fitness > portals[j].fitness) portals[j].mlp = portals[i].mlp.clone();
+      else portals[i].mlp = portals[j].mlp.clone();
+    }
+  }
+
+  // Render
+  ctx.fillStyle = '#0a0a12';
+  ctx.fillRect(0,0,W,H);
+  particles.forEach(a => {
+    ctx.beginPath();
+    ctx.arc(a.x, a.y, a.r, 0, Math.PI*2);
+    ctx.fillStyle = `hsl(${(a.x/W)*60+200}, 70%, 55%)`;
+    ctx.fill();
+  });
+  requestAnimationFrame(step);
+}
+requestAnimationFrame(step);
+
+// Persistence
+const dbName = 'f861-dem';
+document.getElementById('seal').onclick = async () => {
+  const best = portals.reduce((a,b) => a.fitness > b.fitness ? a : b);
+  try {
+    const req = indexedDB.open(dbName, 1);
+    req.onupgradeneeded = e => e.target.result.createObjectStore('genomes');
+    req.onsuccess = e => {
+      const tx = e.target.result.transaction('genomes', 'readwrite');
+      tx.objectStore('genomes').put({w1:best.mlp.w1, b1:best.mlp.b1, w2:best.mlp.w2, b2:best.mlp.b2, fitness:best.fitness}, 'best');
+    };
+  } catch(e) {}
+  document.getElementById('status').textContent = 'Sealed fitness ' + best.fitness.toFixed(1);
+};
+document.getElementById('reset').onclick = init;
+
+// Load on start
+setTimeout(() => {
+  try {
+    const req = indexedDB.open(dbName, 1);
+    req.onsuccess = e => {
+      const tx = e.target.result.transaction('genomes', 'readonly');
+      const get = tx.objectStore('genomes').get('best');
+      get.onsuccess = () => {
+        if (get.result) {
+          portals.forEach(p => {
+            p.mlp.w1 = get.result.w1; p.mlp.b1 = get.result.b1;
+            p.mlp.w2 = get.result.w2; p.mlp.b2 = get.result.b2;
+          });
+          document.getElementById('status').textContent = 'Restored sealed genome';
+        }
+      };
+    };
+  } catch(e) {}
+}, 200);
+</script>
+</body>
+</html>
