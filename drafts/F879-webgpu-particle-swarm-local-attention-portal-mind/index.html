@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F879 WebGPU Particle Swarm Local Attention Portal Mind</title>
+<style>
+body { margin:0; background:#0a0a12; color:#eee; font-family:system-ui; overflow:hidden; }
+canvas { display:block; position:absolute; top:0; left:0; }
+#portals { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; }
+.portal { position:absolute; width:80px; height:60px; background:rgba(40,60,100,0.7); border:2px solid #4af; border-radius:8px; pointer-events:auto; cursor:grab; display:flex; align-items:center; justify-content:center; font-size:12px; text-align:center; transition:transform 0.1s; }
+.portal:active { cursor:grabbing; }
+#ui { position:absolute; top:10px; left:10px; background:rgba(0,0,0,0.6); padding:8px; border-radius:6px; font-size:13px; }
+button { margin:2px; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="portals"></div>
+<div id="ui">
+  <div>F879 Particle Swarm + Local Attention Portals</div>
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset</button>
+  <span id="status">ready</span>
+</div>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+let W = canvas.width = innerWidth, H = canvas.height = innerHeight;
+addEventListener('resize', () => { W = canvas.width = innerWidth; H = canvas.height = innerHeight; });
+
+const N = 180;
+const particles = Array.from({length:N}, () => ({
+  x: Math.random()*W, y: Math.random()*H,
+  vx: (Math.random()-0.5)*1, vy: (Math.random()-0.5)*1
+}));
+
+const portals = [];
+for(let i=0;i<4;i++) {
+  const el = document.createElement('div');
+  el.className = 'portal';
+  el.textContent = 'Portal '+(i+1);
+  el.style.left = (100 + i*160) + 'px';
+  el.style.top = (100 + i*40) + 'px';
+  document.getElementById('portals').appendChild(el);
+  portals.push({el, x:100+i*160, y:100+i*40, reward:0});
+  makeDraggable(el, portals[i]);
+}
+
+function makeDraggable(el, p) {
+  let dx=0,dy=0, dragging=false;
+  el.onpointerdown = e => { dragging=true; dx=e.clientX-p.x; dy=e.clientY-p.y; el.setPointerCapture(e.pointerId); };
+  el.onpointermove = e => { if(dragging){ p.x=e.clientX-dx; p.y=e.clientY-dy; el.style.left=p.x+'px'; el.style.top=p.y+'px'; } };
+  el.onpointerup = () => dragging=false;
+  el.onclick = () => { p.reward += 1; status.textContent = 'rewarded'; setTimeout(()=>status.textContent='ready',800); };
+}
+
+const hist = [];
+let tilt = {x:0,y:0};
+addEventListener('deviceorientation', e => { tilt.x = (e.gamma||0)/90; tilt.y = (e.beta||0)/90; });
+let px=0,py=0;
+addEventListener('pointermove', e => { hist.push({vx:(e.clientX-px)/20, vy:(e.clientY-py)/20, tx:tilt.x, ty:tilt.y}); if(hist.length>16) hist.shift(); px=e.clientX; py=e.clientY; });
+
+let attnW = Array.from({length:32}, ()=>Math.random()*0.2-0.1);
+
+function attentionBias() {
+  if(hist.length<4) return {x:0,y:0};
+  let sx=0,sy=0,n=0;
+  for(let i=0;i<hist.length;i++){
+    const h=hist[i];
+    const w = 0.5 + attnW[i%32]* (portals.reduce((s,p)=>s+p.reward,0)*0.01);
+    sx += h.vx * w; sy += h.vy * w; n++;
+  }
+  return {x:sx/n, y:sy/n};
+}
+
+function step() {
+  const bias = attentionBias();
+  ctx.fillStyle = 'rgba(10,10,18,0.25)';
+  ctx.fillRect(0,0,W,H);
+  for(const p of particles) {
+    let ax=bias.x*0.5, ay=bias.y*0.5;
+    for(const portal of portals) {
+      const dx=portal.x+40-p.x, dy=portal.y+30-p.y;
+      const d2=dx*dx+dy*dy+100;
+      const f = 80 / d2;
+      ax += dx*f; ay += dy*f;
+    }
+    p.vx = p.vx*0.95 + ax*0.05; p.vy = p.vy*0.95 + ay*0.05;
+    p.x += p.vx; p.y += p.vy;
+    if(p.x<0||p.x>W) p.vx*=-1; if(p.y<0||p.y>H) p.vy*=-1;
+    ctx.fillStyle = '#6cf';
+    ctx.fillRect(p.x, p.y, 2, 2);
+  }
+  for(const portal of portals) {
+    let dens=0;
+    for(const p of particles) if(Math.hypot(p.x-portal.x-40, p.y-portal.y-30)<60) dens++;
+    portal.el.style.transform = `scale(${1+dens/40})`;
+    portal.el.style.background = `hsla(${200+dens*2},70%,40%,0.7)`;
+  }
+  requestAnimationFrame(step);
+}
+step();
+
+const status = document.getElementById('status');
+document.getElementById('seal').onclick = async () => {
+  const data = {attnW, rewards: portals.map(p=>p.reward)};
+  try {
+    const db = await new Promise((res,rej)=>{ const r=indexedDB.open('verse-f879',1); r.onupgradeneeded=e=>e.target.result.createObjectStore('g'); r.onsuccess=e=>res(e.target.result); r.onerror=rej; });
+    const tx=db.transaction('g','readwrite'); tx.objectStore('g').put(data,'genome');
+    const bc = new BroadcastChannel('f879-genome'); bc.postMessage(data);
+    status.textContent='sealed';
+  } catch(e) { status.textContent='seal failed'; }
+};
+document.getElementById('reset').onclick = () => { particles.forEach(p=>{p.x=Math.random()*W;p.y=Math.random()*H;}); portals.forEach(p=>p.reward=0); };
+</script>
+</body>
+</html>
